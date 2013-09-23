@@ -1,0 +1,387 @@
+package edu.asu.fengwang.visualization;
+
+import java.io.File;
+import java.io.IOException;
+import java.awt.Color;
+import java.awt.Point;
+import java.awt.geom.Point2D;
+import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
+import javax.imageio.ImageIO;
+
+import edu.asu.wangfeng.geo.GeoUtils;
+import edu.asu.wangfeng.geo.GoogleMercator;
+import edu.asu.wangfeng.geo.LatLng;
+
+public class KDEPainter {
+
+	
+	private int width;
+	private int height;
+	private int zoom;
+	private Point center;
+	
+	private double maxBandwidth;
+
+	public double getMaxBandwidth() {
+		return maxBandwidth;
+	}
+
+	public void setMaxBandwidth(double maxBandwidth) {
+		this.maxBandwidth = maxBandwidth;
+	}
+	
+
+	public Point getCenter() {
+		return center;
+	}
+
+	public void setCenter(Point center) {
+		this.center = center;
+	}
+
+	public int getZoom() {
+		return zoom;
+	}
+
+	public void setZoom(int zoom) {
+		this.zoom = zoom;
+	}
+
+	private List<Point> pointList;
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public List<Point> getPointList() {
+		return pointList;
+	}
+
+	public void setPointList(List<Point> pointList) {
+		this.pointList = pointList;
+	}
+
+	public void draw(File file) throws IOException {
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+		draw(image);
+		ImageIO.write(image, "png", file);
+	}
+
+	public void draw(BufferedImage image) {
+		// first, we count vertices
+		HashMap<Point, Double> valueMap = new HashMap<Point, Double>();
+		for (Point point : pointList) {
+			Double v = valueMap.get(point);
+			Double newValue = null;
+			if (v == null) {
+				newValue = new Double(1);
+			} else {
+				newValue = new Double(v.doubleValue() + 1);
+			}
+			valueMap.put(point, newValue);
+		}
+		
+		
+		
+		int limit = width/2;
+		int distanceI;
+		GoogleMercator mercator = new GoogleMercator();
+		mercator.setZoom(zoom);
+		GeoUtils utils = new GeoUtils();
+		for(distanceI=1; distanceI<=limit; distanceI++)
+		{
+			Point left = new Point(width/2 - distanceI, height/2);
+			Point right = new Point(width/2 + distanceI, height/2);
+			double distance = GeoUtils.getDistance(left, right, center, width, height, zoom);
+//			double distance = mercator.distance(new LatLng(left.x, left.y), new LatLng(right.x, right.y));
+			if(distance >= maxBandwidth){
+				break;
+			}
+		}
+		int pixelBandwidth = 2*distanceI;
+
+		// calculate weight
+		// distance
+		Point[] distinctPointArray = valueMap.keySet().toArray(new Point[valueMap.keySet().size()]);
+
+		WeightDistance[][] distance = new WeightDistance[distinctPointArray.length][distinctPointArray.length];
+		double[][] pixel = new double[height][width];
+		for (int i = 0; i < height; i++) {
+			Arrays.fill(pixel[i], 0);
+		}
+		for (int i = 0; i < distance.length; i++) {
+			for (int k = 0; k < distance[i].length; k++) {
+				distance[i][k] = new WeightDistance();
+
+				Point diff = new Point(distinctPointArray[i].x - distinctPointArray[k].x, distinctPointArray[i].y
+						- distinctPointArray[k].y);
+				distance[i][k].distance = diff.x * diff.x + diff.y * diff.y;
+
+				distance[i][k].id = k;
+				distance[i][k].weight = valueMap.get(distinctPointArray[i]).doubleValue();
+			}
+			Arrays.sort(distance[i]);
+			// prefix sum
+			for (int k = 1; k < distance[i].length; k++) {
+				distance[i][k].weight += distance[i][k - 1].weight;
+			}
+		}
+
+		double sumWeight = distance[0][distance[0].length - 1].weight;
+
+		for (int i = 0; i < distance.length; i++) {
+			double weight = distance[i][0].weight;
+			Point centerPoint = distinctPointArray[i];
+			int indexBound = pixelBandwidth;
+			int[] searchRange = { centerPoint.x - indexBound, centerPoint.y - indexBound, centerPoint.x + indexBound,
+					centerPoint.y + indexBound };
+
+			for (int x = searchRange[0]; x <= searchRange[2]; x++) {
+				for (int y = searchRange[1]; y <= searchRange[3]; y++) {
+					// in image?
+					Point curPixel = new Point(x, y);
+
+					if (!(curPixel.x >= 0 && curPixel.x < width && curPixel.y >= 0 && curPixel.y < height)) {
+						continue;
+					}
+
+					// we use circle
+					Point diff = new Point(curPixel.x - centerPoint.x, curPixel.y - centerPoint.y);
+					double squareDistance = diff.x * diff.x + diff.y * diff.y;
+					double squareBandwidth = pixelBandwidth * pixelBandwidth;
+					if (squareDistance > squareBandwidth) {
+						continue;
+					}
+					pixel[y][x] += weight * kernelFunction(diff, sumWeight, pixelBandwidth, squareBandwidth);
+				}
+			}
+		}
+		
+		// weight to image
+		ColorBrewer colorBrewer = new IntervalColorBrewer();
+		colorBrewer.init(pixel);
+		int[] scanline = new int[width];
+		int[][] scanline2 = new int[height][width];
+		// we use a fake image for testing
+		for (int i = 0; i < height; i++) {
+			for (int k = 0; k < width; k++) {
+				scanline[k] = colorBrewer.getColor(pixel[i][k]);
+				scanline2[i][k] = scanline[k];
+			}
+//			image.setRGB(0, i, width, 1, scanline, 0, 0);
+		}
+		
+		final int squaresize = 20;
+//		final int black = Color.BLACK.getRGB() + Color.BLACK.getAlpha();
+		final int black = Color.GRAY.getRGB() + Color.GRAY.getAlpha();
+
+//		for(Point point : pointList){
+//			scanline2[point.y][point.x] = black;
+//			for(int i = 0; i < squaresize; i++){
+//				//left
+//				scanline2[point.y-(squaresize/2)+i][point.x-(squaresize/2)] = black;
+//				//right
+//				scanline2[point.y+(squaresize/2)-i][point.x+(squaresize/2)] = black;
+//				//top
+//				scanline2[point.y-(squaresize/2)][point.x-(squaresize/2)+i] = black;
+//				//bottom
+//				scanline2[point.y+(squaresize/2)][point.x+(squaresize/2)-i] = black;
+//				
+//				//left
+//				scanline2[point.y-(squaresize/2)+i][point.x-(squaresize/2)+1] = black;
+//				//right
+//				scanline2[point.y+(squaresize/2)-i][point.x+(squaresize/2)+1] = black;
+//				//top
+//				scanline2[point.y-(squaresize/2)+1][point.x-(squaresize/2)+i] = black;
+//				//bottom
+//				scanline2[point.y+(squaresize/2)+1][point.x+(squaresize/2)-i] = black;
+//				
+////				//left
+////				scanline2[point.y-(squaresize/2)+i][point.x-(squaresize/2)-1] = black;
+////				//right
+////				scanline2[point.y+(squaresize/2)-i][point.x+(squaresize/2)-1] = black;
+////				//top
+////				scanline2[point.y-(squaresize/2)-1][point.x-(squaresize/2)+i] = black;
+////				//bottom
+////				scanline2[point.y+(squaresize/2)-1][point.x+(squaresize/2)-i] = black;
+//			}
+//		}
+		
+		for (int i = 0; i < height; i++){
+			image.setRGB(0, i, width, 1, scanline2[i], 0, 0);
+		}
+		
+		
+		image.flush();
+	}
+
+	int binarySearchBestFit(WeightDistance[] p, double value) {
+		int low, high;
+		int size = p.length;
+
+		// make sure that we are looking for the gap
+		if (p[0].weight >= value) {
+			return 0;
+		}
+
+		if (p[size - 1].weight <= value) {
+			return size - 1;
+		}
+
+		low = 0;
+		high = size;
+
+		while (true) {
+			int result = (low + high) / 2;
+
+			if (p[result].weight < value && p[result + 1].weight > value) {
+				return result + 1;
+			}
+
+			if (p[result + 1].weight < value) {
+				low = result + 1;
+			} else if (p[result].weight > value) {
+				high = result;
+			} else {
+				return result + 1;
+			}
+		}
+	}
+
+	double epanechnikov(double u) {
+		return 0.75 * (1 - u * u);
+	}
+
+	double kernelFunction(Point diff, double sumWeight, double h, double h2) {
+		Point2D.Double diffF = new Point2D.Double(diff.x / h, diff.y / h);
+		return epanechnikov(diffF.x) * epanechnikov(diffF.y) / (h2 * sumWeight);
+	}
+
+	private abstract class ColorBrewer {
+		protected final int[] colorBrewer = { 0xFFFFFFB2, 0xFFFED976, 0xFFFEB24C, 0xFFFD8D3C, 0xFFFC4E2A, 0xFFE31A1C,
+				0xFFB10026, 0xFFB10026 };
+
+		public abstract void init(double[][] pixel);
+
+		public abstract int getSolidColor();
+
+		public abstract int getColor(double value);
+	}
+
+	private class IntervalColorBrewer extends ColorBrewer {
+		double maxValue;
+
+		@Override
+		public int getColor(double value) {
+			if (value < Double.MIN_NORMAL) {
+				return 0;
+			}
+			return colorBrewer[(int) (value * 7 / maxValue)];
+		}
+		
+		public int getSolidColor(){
+			return -5177306;
+		}
+
+		@Override
+		public void init(double[][] pixel) {
+			maxValue = 0;
+			for (int i = 0; i < pixel.length; i++) {
+				for (int k = 0; k < pixel[i].length; k++) {
+					maxValue = Math.max(maxValue, pixel[i][k]);
+				}
+			}
+		}
+
+	}
+
+	private class QuantileColorBrewer extends ColorBrewer {
+
+		private double[] quantile;
+
+		@Override
+		public int getColor(double value) {
+			if (value < Double.MIN_NORMAL) {
+				return 0;
+			}
+			return colorBrewer[binarySearchBestFit(quantile, value)];
+		}
+		
+		public int getSolidColor(){
+			return 100;
+		}
+
+		@Override
+		public void init(double[][] pixel) {
+			double[] array = new double[pixel.length * pixel[0].length];
+			for (int i = 0, p = 0; i < pixel.length; i++) {
+				for (int k = 0; k < pixel[i].length; k++, p++) {
+					array[p] = pixel[i][k];
+				}
+			}
+			Arrays.sort(array);
+
+			int nonZeroIndex;
+			for (nonZeroIndex = 0; nonZeroIndex < array.length && array[nonZeroIndex] < Double.MIN_NORMAL; nonZeroIndex++)
+				;
+			int nonZeroSize = array.length - nonZeroIndex;
+			quantile = new double[8];
+			quantile[0] = array[nonZeroIndex] - 1;
+			quantile[7] = array[array.length - 1] + 1;
+			for (int i = 1; i < 7; i++) {
+				int low = i * nonZeroSize / 7 + nonZeroIndex;
+				quantile[i] = (array[low] + array[low + 1]) / 2;
+			}
+		}
+
+		int binarySearchBestFit(double[] p, double value) {
+			int low, high;
+			int size = p.length;
+
+			// make sure that we are looking for the gap
+			if (p[0] >= value) {
+				return 0;
+			}
+
+			if (p[size - 1] <= value) {
+				return size - 1;
+			}
+
+			low = 0;
+			high = size;
+
+			while (true) {
+				int result = (low + high) / 2;
+
+				if (p[result] < value && p[result + 1] > value) {
+					return result + 1;
+				}
+
+				if (p[result + 1] < value) {
+					low = result + 1;
+				} else if (p[result] > value) {
+					high = result;
+				} else {
+					return result + 1;
+				}
+			}
+		}
+	}
+
+}

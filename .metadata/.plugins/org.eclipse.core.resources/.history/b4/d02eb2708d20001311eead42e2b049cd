@@ -1,0 +1,19 @@
+package edu.asu.wangfeng.geo;
+
+public class LatLng {
+	private double lat;
+	private double lng;
+	
+	LatLng(double lat, double lng){
+		this.lat = lat;
+		this.lng = lng;
+	}
+	
+	public double lat(){
+		return lat;
+	}
+	
+	public double lat(){
+		return lat;
+	}
+}

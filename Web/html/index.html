@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--
+ @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
+ created on August 28, 2013
+-->
+<html>
+<head>
+<title>Surnames</title>
+
+<link rel="stylesheet" type="text/css" href="arrange.css" media="screen" />
+<link href="social-buttons.css" rel="stylesheet" />
+</head>
+<body>
+
+<!-- imports -->
+
+<script type="text/javascript" src="../php/lib/jquery-ui-1.10.2/jquery-1.9.1.js"></script>
+<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCudbuVD03AQ0UFE-dZShgEx_CYSUUsWmI&sensor=false"></script>
+<script type="text/javascript" src="../php/javascript/state.js"></script>
+<script type="text/javascript" src="../php/javascript/init.js"></script>
+<script type="text/javascript" src="../php/javascript/overlay.js"></script>
+<script type="text/javascript" src="../php/javascript/query.js"></script>
+
+<!-- user interaction methods -->
+<script type="text/javascript">
+	var lastName = "";
+
+	function surnameInputKeyPressed(e){
+		if(e.keyCode == 13){
+			onClickShowKDE();
+		}
+	}
+</script>
+
+<!-- page layout -->
+
+<div id ="footer">
+	Surname: <input type="text" id="surname_input" name="surname"
+				onkeypress="surnameInputKeyPressed(event)" autocomplete = "off">
+	<button onclick="onClickShowKDE()">Submit</button>
+ 	<button id="captureButton" onclick="onClickCaptureButton()">Capture</button>
+ 	<br />
+ 	<a id="capturedimagelink" href = "" target="_blank">Captured Image</a>
+ 	<br />
+ 	<a href="https://twitter.com/share?url=www.asu.edu&text=I found my surname density on http://www.google.com" class="sb small blue twitter" data-lang="en" target="_blank">Tweet</a>
+ 	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+ 	<!-- <a href="https://www.facebook.com/sharer/sharer.php?u=http://www.google.com/" class = "sb small blue facebook" target="_blank">
+		Share on Facebook
+	</a> -->
+	<a href="#" class = "sb small blue facebook"
+	  onclick="
+	    window.open(
+	      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+	      'facebook-share-dialog', 
+	      'width=626,height=436'); 
+	    return false;">
+	  Share on Facebook
+	</a>
+
+</div>
+
+<div id="centercontainter">
+	<div id="loading"><img src="ajax-loader.gif" alt="Loading..." /></div>
+	<div id="main" />
+</div>
+
+<!-- map initialization -->
+<script>
+	//KDEWindow();
+</script>
+
+</body>
+</html> 

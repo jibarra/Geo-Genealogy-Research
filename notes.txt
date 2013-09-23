@@ -1,0 +1,104 @@
+Install Eclipse EE:
+http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/keplerr
+
+Fix errors:
+java.ws.* errors:
+	info here:
+	install jersey: http://jersey.java.net/download.html (select non-examples bundle)
+	Import the external .jar file from /jaxrs-ri/api/javax.ws.rs-api-2.0 using these instructions: http://stackoverflow.com/questions/4119448/the-import-javax-servlet-cant-be-resolved
+	
+javax.servlet.* errors:
+	No need for apache tomcat. Import external .jar file from \jaxrs-ri\ext\javax.servlet-api-3.0.1
+
+com.sun.jersey.api.json.JSONWithPadding errors:
+	Download Jersey Bundle 1.8 from http://download.java.net/maven/2/com/sun/jersey/jersey-bundle/1.8/
+	Import the external jersey-bundle-1.8.jar file
+	
+*May need to import jars instead of keeping them external later*
+*these libraries are now in the libs folder to keep it with the project*
+
+Upon loading the server:
+	Change the loaded external jar files for the server: http://pipecuts.wordpress.com/2011/01/30/classnotfoundexception-org-objectweb-asm-classvisitor/
+
+Download Jackson:
+	http://jackson.codehaus.org/1.9.11/jackson-all-1.9.11.jar
+
+Download Jersey 1.17.1:
+http://repo1.maven.org/maven2/com/sun/jersey/jersey-archive/1.17.1/jersey-archive-1.17.1.zip
+http://repo1.maven.org/maven2/com/sun/jersey/jersey-bundle/1.17.1/jersey-bundle-1.17.1.jar
+
+Download Jersey 2.0 RI:
+http://repo1.maven.org/maven2/org/glassfish/jersey/bundles/jaxrs-ri/2.2/jaxrs-ri-2.2.zip
+
+Create a folder for libraries
+Copy over \jaxrs-ri\ext\javax.servlet-api-3.0.1.jar from the Jersey 2.0 RI folder to the this new folder
+Copy over the entire \lib\ folder from the 1.17.1 folder
+Copy over the jersey-bundle-1.17.1.jar that was downloaded
+
+Right click the webservice project in Eclipse
+	Go to Java Build Path and the Libraries tab
+	Select Add JARs...
+	Add the javax.servlet-api-3.0.1.jar file to the project
+	Repeat and add the jersey-bundle.1.17.1.jar file to the project
+	
+Install a Tomcat 7.0 server, making sure to allow ti to run the webservice project
+Double click the server to open up the overview. Press "Open launch configuration" link.
+Under class path, press Add JARs...
+	Add the jackson-mapper-asl-1.9.2.jar, javax.servlet-api-3.0.1.jar and asm-3.1.jar to the server
+	
+Site:
+Be sure to include necessary java scripts:
+Google Map API: https://developers.google.com/maps/documentation/javascript/tutorial 
+JQuery: "../php/lib/jquery-ui-1.10.2/jquery-1.9.1.js"
+Include libraries BEFORE created javascript files
+
+Changed the document load function from $(document).load(...) to $(window).load(...)
+	Originally had problems running this function on load
+	
+Included the correct .css file.
+Service takes a while to load (that's why results weren't displayed before)
+The arrange.css file has rules for divs for the centercontainer, map, loading and footer.
+
+in the web.xml file in the web service project, this should be added:
+	<init-param>
+		<param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+		<param-value>true</param-value>
+	</init-param>
+	
+The server should be updated correctly in the context.xml file of the server to point to the corect database location
+
+Need to include all of jackson .jars in the server libs and under class paths of the servers
+	This fixes the problem with not formatting the json correctly.
+
+Import mysql-connector-java-5.1.26-bin.jar file to connect to mysql server properly
+
+include in context.xml:
+<Resource name="jdbc/phonebook" auth="Container" type="javax.sql.DataSource"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               url="jdbc:mysql://localhost:3306/test"
+               driverClassName="com.mysql.jdbc.Driver"
+               username="root" password="password" />
+			   
+<Resource name="jdbc/phonebook" auth="Container" type="javax.sql.DataSource"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               url="jdbc:mysql://10.211.21.81:3306/phonebook"
+               driverClassName="com.mysql.jdbc.Driver"
+               username="wangfeng" password="1234" />
+Change url to the mysql location
+
+include in context.xml:
+	<dependency>
+    	<groupId>com.sun.jersey</groupId>
+		<artifactId>jersey-json</artifactId>
+		<version>1.8</version>
+	</dependency>
+	
+For uploading, the following directory must exist: (add the upload folder)
+C:\Users\jlibarr1\Documents\Code\Facebook Code\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps\webservice\image\upload
+
+Changing the center point to center.x+1 puts the heat maps in the seemingly correct locations at the country level
+This strategy does not work well for global maps or places around the equator
+Problems must be from conversion between lon/lat to world to screen
+
+https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates
+https://developers.google.com/maps/documentation/javascript/maptypes#MapCoordinates

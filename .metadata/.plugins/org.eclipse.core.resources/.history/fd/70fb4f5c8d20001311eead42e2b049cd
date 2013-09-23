@@ -1,0 +1,10 @@
+package edu.asu.wangfeng.geo;
+
+public class LatLng {
+	private double lat;
+	private double lng;
+	
+	LatLng(){
+		
+	}
+}
