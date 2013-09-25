@@ -1,8 +1,12 @@
 /**
  * @author Feng Wang
+ * @author Jose Ibarra, Jose.Ibarra@asu.edu, Arizona State University
+ * Modified on September 10, 2013 and after
  */
-
+var disableQueries = false;
 function kdeQuery() {
+	if(disableQueries)
+		return;
 	if (typeof (kde.overlay) == 'undefined' || kde.overlay == null) {
 		return;
 	}
@@ -120,11 +124,23 @@ function captureUploadImp(configuredData) {
 			// 		alert('posted');
 			// 	}
 			// });
+			var center = kde.map.getBounds().getCenter();
 			$('#loading').hide();
 			$('#captureButton').hide();
 			$('#capturedimagelink').attr('href', completeURL);
-			// $('#capturedimagelink').attr('target', '_blank');
+			$('#capturedimage').attr('src', completeURL);
 			$('#capturedimagelink').show();
+			$('#footer').css('height', '30%');
+			$('#centercontainer').css('height', '70%');
+			$('#main').css('height', '100%');
+			var body=document.getElementsByTagName('body')[0];
+			body.style.height='83.3%';
+			disableQueries = true;
+			kde.map.setCenter(new google.maps.LatLng(35.8, -97.51808));
+			//Once center is moved to original position, enable queries
+			setTimeout(function(){ 	disableQueries = false }, 1000);
+			//34.047526139331
+			//-97.60597274999998
 		}
 	});
 }

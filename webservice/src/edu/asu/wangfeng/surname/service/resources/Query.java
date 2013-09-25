@@ -86,6 +86,7 @@ public class Query extends WFQuery{
 		PreparedStatement statement = null;
 		ResultSet resultset = null;
 		
+		long tstart = System.currentTimeMillis();
 		
 		try {
 			connection = connectDatabase();
@@ -98,6 +99,8 @@ public class Query extends WFQuery{
 			statement.setDouble(3, ne.x);
 			statement.setDouble(4, sw.y);
 			statement.setDouble(5, ne.y);
+			
+			System.out.println(statement);
 			
 			resultset = statement.executeQuery();
 			while (resultset.next()) {
@@ -113,6 +116,9 @@ public class Query extends WFQuery{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		
+		long tend = System.currentTimeMillis();
+		System.out.println("Elapsed time for query: " + (tend-tstart) / 1000.0);
 		
 		result.setImage(imagePath);
 		result.setNumber(coordinateVec.size());
@@ -132,6 +138,7 @@ public class Query extends WFQuery{
 		painter.setFilename(imageDir + imagePath);
 		painter.setZoom(zoom);
 		painter.setBandwidth(240);
+		System.out.println("Drawing KDE");
 		painter.drawKDEMap();
 		return new JSONWithPadding(result, callback);
 	}

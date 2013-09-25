@@ -1,7 +1,7 @@
 /**
  * @author Feng Wang, fwang49@asu.edu, Arizona State University
  * @author Jose Ibarra, Jose.Ibarra@asu.edu, Arizona State University
- * Modified on September 9, 2013
+ * Modified on September 9, 2013 and after
  */
 
 function KDEOverlay(map) {

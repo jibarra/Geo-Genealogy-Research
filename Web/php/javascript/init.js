@@ -2,8 +2,8 @@
  * @author Feng Wang, Arizona State University, fwang49@asu.edu
  * created on March 19, 2013
  *
- * @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
- * modified on August 28, 2013
+ * @author Jose Ibarra, Jose.Ibarra@asu.edu, Arizona State University
+ * Modified on August 28, 2013 and after
  *
  * Initialize the page, map, location
  */

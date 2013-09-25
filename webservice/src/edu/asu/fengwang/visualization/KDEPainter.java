@@ -5,7 +5,10 @@ package edu.asu.fengwang.visualization;
  * Long conversion
  */
 
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -25,6 +28,7 @@ public class KDEPainter {
     private String filename;
     private double[][] weightMatrix;
     private int width, height;
+    private final int personBandwidth = 20;
 
     public void setZoom(int zoom) {
     	this.zoom = zoom;
@@ -57,28 +61,53 @@ public class KDEPainter {
 		GoogleMercator mercator = new GoogleMercator();
 		mercator.setZoom(zoom);
 	
-		for (int i = 0; i < height; i++) {
-		    weightMatrix[i] = new double[width];
-		}
-		for (int i = 0; i < height; i++) {
-		    for (int k = 0; k < width; k++) {
-				double sum = 0;
+		long tstart = System.currentTimeMillis();
 		
-				Point curPoint = new Point();
-				curPoint.x = leftTopPixel.x + k;
-				curPoint.y = leftTopPixel.y + i;
-	
-				LatLng latLng = mercator.fromPointToLatLng(curPoint);
-				for (LatLng sample : sampleList) {
-				    double distance = mercator.distance(latLng, sample);
-				    if (distance <= bandwidth) {
-						double temp = distance / bandwidth;
-						sum += 2 / Math.PI * (1 - temp * temp);
-				    }
-				}
-				weightMatrix[i][k] = sum;
-		    }
+		Vector<Point> personPoints = new Vector<Point>();
+		for(LatLng latlng : sampleList){
+			Point p = mercator.fromLatLngToPoint(latlng);
+			personPoints.add(p);
 		}
+		
+		HashMap<Point, Double> valueMap = new HashMap<Point, Double>();
+		for(Point point : personPoints){
+			Double v = valueMap.get(point);
+			Double newValue = null;
+			if(v==null)
+				newValue = new Double(1);
+			else
+				newValue = new Double(v.doubleValue() + 1);
+			valueMap.put(point, newValue);
+		}
+		
+		Point[] distinctPointArray = valueMap.keySet().toArray(new Point[valueMap.keySet().size()]);
+		
+		
+//		for (int i = 0; i < height; i++) {
+//		    weightMatrix[i] = new double[width];
+//		}
+//		for (int i = 0; i < height; i++) {
+//		    for (int k = 0; k < width; k++) {
+//				double sum = 0;
+//		
+//				Point curPoint = new Point();
+//				curPoint.x = leftTopPixel.x + k;
+//				curPoint.y = leftTopPixel.y + i;
+//	
+//				LatLng latLng = mercator.fromPointToLatLng(curPoint);
+//				for (LatLng sample : sampleList) {
+//				    double distance = mercator.distance(latLng, sample);
+//				    if (distance <= bandwidth) {
+//						double temp = distance / bandwidth;
+//						sum += 2 / Math.PI * (1 - temp * temp);
+//				    }
+//				}
+//				weightMatrix[i][k] = sum;
+//		    }
+//		}
+		
+		long tend = System.currentTimeMillis();
+		System.out.println("Elapsed time for drawing: " + (tend-tstart) / 1000.0);
 		writeIntoPNG();
     }
 
