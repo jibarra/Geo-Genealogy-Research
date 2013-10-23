@@ -4,11 +4,12 @@
  * Modified on September 9, 2013 and after
  */
 
-function KDEOverlay(map) {
+function KDEOverlay(map, nametype) {
 	this.map_ = map;
 	this.bounds_ = this.map_.getBounds();
 	this.div_ = null;
 	this.setMap(this.map_);
+	this.overlayNameType = nametype;
 }
 KDEOverlay.prototype = new google.maps.OverlayView();
 KDEOverlay.prototype.onAdd = function() {
@@ -18,12 +19,25 @@ KDEOverlay.prototype.onAdd = function() {
 	div.style.position = "absolute";
 
 	var img = document.createElement("img");
-	if (typeof (state.overlayImage) == 'undefined'
-			|| state.overlayImage == null) {
-		img.src = state.serviceBase + 'image/kdecache/' + 'blank.png';
-	} else {
-		img.src = state.serviceBase + 'image/kdecache/' + state.overlayImage;
+
+	if(this.overlayNameType == "surname"){
+		if (typeof (state.surnameOverlayImage) == 'undefined'
+			|| state.surnameOverlayImage == null) {
+			img.src = state.serviceBase + 'image/kdecache/' + 'blank.png';
+		} else {
+			img.src = state.serviceBase + 'image/kdecache/' + state.surnameOverlayImage;
+		}
 	}
+	else if(this.overlayNameType == "forename"){
+		if (typeof (state.forenameOverlayImage) == 'undefined'
+			|| state.forenameOverlayImage == null) {
+			img.src = state.serviceBase + 'image/kdecache/' + 'blank.png';
+		} else {
+			img.src = state.serviceBase + 'image/kdecache/' + state.forenameOverlayImage;
+		}
+		// alert(img.src);
+	}
+
 	img.style.width = "100%";
 	img.style.height = "100%";
 	
@@ -54,15 +68,17 @@ KDEOverlay.prototype.draw = function() {
 	var toppos = $('#centercontainter').height();
 	leftpos = leftpos/2 - 50;
 	toppos = toppos/2 + 50;
-	$('#loading').css('left', '' + leftpos + 'px');
-	$('#loading').css('top', '' + toppos + 'px');
+	$('#loadingsurname').css('left', '' + leftpos/2 + 'px');
+	$('#loadingsurname').css('top', '' + toppos + 'px');
+	$('#loadingforename').css('left', '' + (leftpos/2)*3 + 'px');
+	$('#loadingforename').css('top', '' + toppos + 'px');
 }
-KDEOverlay.prototype.show = function() {
+KDEOverlay.prototype.show = function(nametype) {
 	if (this.div_) {
 		this.div_.style.visibility = "visible";
 	}
 }
-KDEOverlay.prototype.onRemove = function() {
+KDEOverlay.prototype.onRemove = function(nametype) {
 	this.div_.parentNode.removeChild(this.div_);
 	this.div_ = null;
 }

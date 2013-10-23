@@ -36,7 +36,7 @@ import edu.asu.wangfeng.geo.LatLng;
 import edu.asu.wangfeng.google.staticmaps.GoogleStaticMapsGenerator;
 import edu.asu.wangfeng.surname.service.netbeans.BuildResultBean;
 
-@Path("/buildmap")
+@Path("/surnamebuildmap")
 public class NameMapBuilder extends WFQuery {
 	private String imageDir;
 	private String resultDir;
@@ -50,7 +50,7 @@ public class NameMapBuilder extends WFQuery {
 	@GET
 	@Produces("application/x-javascript")
 	public JSONWithPadding query(@QueryParam("callback") @DefaultValue("callback") String callback,
-			@QueryParam("surname") @DefaultValue("") String surname,
+			@QueryParam("name") @DefaultValue("") String surname,
 			@QueryParam("image") @DefaultValue("blank.png") String imageFilename,
 			@QueryParam("latsw") @DefaultValue("0.0") double latsw,
 			@QueryParam("lngsw") @DefaultValue("0.0") double lngsw,

@@ -13,22 +13,51 @@ html,body{
 
 #centercontainter {
     height: 90%;
+    width:100%;
 }
-#centercontainter #main {
+#centercontainter #surnamemap {
    height: 100%;
-    width: 100%;
+    width: 49.5%;
     float: left;
 }
+
+#centercontainter #forenamemap {
+   height: 100%;
+    width: 49.5%;
+    float:right;
+}
+
 
 #capturedimagelink {
     
 }
 
-#loading{
+#surnameContainer {
+    width:50%;
+    float:left;
+}
+
+#forenameContainer {
+    width:50%;
+    float:right;
+}
+
+#socialMedia{
+    margin: 0 auto;
+    text-align: center;
+}
+
+#loadingforename{
+    position:absolute;
+    z-index:99;
+}
+
+#loadingsurname{
 	position:absolute;
     z-index:99;
 }
 #footer {
+    position: relative;
     height: 10%;
 }
 .clearfloat {

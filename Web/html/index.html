@@ -28,23 +28,45 @@
 
 	function surnameInputKeyPressed(e){
 		if(e.keyCode == 13){
-			onClickShowKDE();
+			onClickShowKDE("surname");
+		}
+	}
+
+	function forenameInputKeyPressed(e){
+		if(e.keyCode == 13){
+			onClickShowKDE("forename");
 		}
 	}
 </script>
 
 <!-- page layout -->
 <div id = "layout">
+<!-- divs for the inputs, buttons and image links -->
 <div id ="footer">
-	Surname: <input type="text" id="surname_input" name="surname"
-				onkeypress="surnameInputKeyPressed(event)" autocomplete = "off">
-	<button onclick="onClickShowKDE()">Submit</button>
- 	<button id="captureButton" onclick="onClickCaptureButton()">Capture</button>
- 	<br />
- 	<a id="capturedimagelink" href = "" target="_blank"><br /><img id="capturedimage" width="350" height="150" /></a>
+	<div>
+	<div id ="surnameContainer">
+		Surname: <input type="text" id="surname_input" name="surname"
+					onkeypress="surnameInputKeyPressed(event)" autocomplete = "off">
+		<button onclick="onClickShowKDE('surname')">Submit</button>
+	 	<button id="captureButton" onclick="onClickCaptureButton('surname')">Capture</button>
+	 	<a id="capturedimagelink" href = "" target="_blank"><br /><img id="capturedimage" width="350" height="150" /></a>
+	 	<div id="surnameMeanIncomeText"></div>
+	 	<div id="surnameMedianIncomeText"></div>
+ 	</div>
 
- 	<br />
- 	<a href="https://twitter.com/share?url=www.asu.edu&text=I found my surname density on http://www.google.com" class="sb small blue twitter" data-lang="en" target="_blank">Tweet</a>
+ 	<div id ="forenameContainer">
+		Forename: <input type="text" id="forename_input" name="forename"
+					onkeypress="forenameInputKeyPressed(event)" autocomplete = "off">
+		<button onclick="onClickShowKDE('forename')">Submit</button>
+	 	<button id="forenameCaptureButton" onclick="onClickCaptureButton('forename')">Capture</button>
+	 	<a id="forenameCapturedimagelink" href = "" target="_blank"><br /><img id="forenameCapturedimage" width="350" height="150" /></a>
+	 	<div id="forenameMeanIncomeText"></div>
+	 	<div id="forenameMedianIncomeText"></div>
+ 	</div>
+	</div>
+
+ 	<div id="socialMedia">
+	<a id="twitter" href="https://twitter.com/share?url=www.asu.edu&text=I found my surname density at www.asu.edu" class="sb small blue twitter" data-lang="en" target="_blank">Tweet</a>
  	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
 
 	<a href="#" class = "sb small blue facebook"
@@ -56,19 +78,19 @@
 	    return false;">
 	  Share on Facebook
 	</a>
+	</div>
 
 </div>
 
+<!-- divs for the maps and loading -->
 <div id="centercontainter">
-	<div id="loading"><img src="ajax-loader.gif" alt="Loading..." /></div>
-	<div id="main" />
+	<div id="loadingsurname"><img src="ajax-loader.gif" alt="Loading..." /></div>
+	<div id="surnamemap" />
 </div>
-</div>
+<div id="loadingforename"><img src="ajax-loader.gif" alt="Loading..." /></div>
+<div id="forenamemap">hi</div>
 
-<!-- map initialization -->
-<script>
-	//KDEWindow();
-</script>
+</div>
 
 </body>
 </html> 

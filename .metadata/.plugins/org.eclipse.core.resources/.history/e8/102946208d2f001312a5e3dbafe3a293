@@ -1,0 +1,79 @@
+package edu.asu.joseibarra.test;
+
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+public class TestDB {
+
+	
+	public static void main(String[] args){
+		try{
+			System.out.println("Loading driver...");
+			Class.forName("com.mysql.jdbc.Driver");
+			System.out.println("Driver loaded!");
+		} catch (ClassNotFoundException e){
+			throw new RuntimeException("Cannot find the driver in the classpath!", e);
+		}
+		
+		String url = "jdbc:mysql://localhost:3306/phonebook";
+		String username = "root";
+		String password = "password";
+		java.sql.Connection connection = null;
+		try{
+			System.out.println("Connectnig database...");
+			connection = DriverManager.getConnection(url, username, password);
+			System.out.println("Database connected!");
+		}
+		catch(SQLException e){
+			throw new RuntimeException("Cannot connect the database!", e);
+		}
+		
+		String querySQL = "SELECT DISTINCT surname FROM average_income WHERE surname LIKE ?";
+		String updateSQL = "UPDATE average_income"+
+							" SET average_median = (SELECT AVG(census.median_income)"+
+							" FROM census, phonebook"+
+							" WHERE phonebook.geoid_census_tract = census.census_tract_id"+
+							" AND phonebook.surname = ?),"+
+							" average_mean = (SELECT AVG(census.mean_income)"+
+							" FROM census, phonebook "+
+							" WHERE phonebook.geoid_census_tract = census.census_tract_id"+
+							" AND phonebook.surname = ?)" +
+							" WHERE surname = ?";
+		PreparedStatement queryStatement = null;
+		PreparedStatement updateStatement = null;
+		ResultSet queryResults = null;
+		String stringVal = "sm";
+		char val = 'a';
+		String surname = null;
+		
+		try {
+			while(val <= 'z'){
+				queryStatement = connection.prepareStatement(querySQL, java.sql.ResultSet.TYPE_FORWARD_ONLY,
+						java.sql.ResultSet.CONCUR_READ_ONLY);
+				queryStatement.setString(1, stringVal + val + "%");
+				System.out.println(queryStatement);
+				queryResults = queryStatement.executeQuery();
+				
+				while(queryResults.next()){
+					surname = queryResults.getString(1);
+					updateStatement = connection.prepareStatement(updateSQL, java.sql.ResultSet.TYPE_FORWARD_ONLY,
+							java.sql.ResultSet.CONCUR_READ_ONLY);
+					updateStatement.setString(1, surname);
+					updateStatement.setString(2, surname);
+					updateStatement.setString(3,surname);
+					updateStatement.executeUpdate();
+				}
+				
+				val++;
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("Closing the connection.");
+	    if (connection != null) try { connection.close(); } catch (SQLException ignore) {}
+	}
+}

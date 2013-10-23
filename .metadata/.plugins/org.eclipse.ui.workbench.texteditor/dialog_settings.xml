@@ -13,16 +13,16 @@
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="sw" key="selection"/>
+		<item value="init-param" key="selection"/>
 		<list key="findhistory">
-			<item value="sw"/>
-			<item value="imagepath"/>
-			<item value="center"/>
-			<item value="lonLatToworld"/>
-			<item value="Point"/>
-			<item value="getmaxpixels"/>
-			<item value="lontox"/>
-			<item value="lonlattoworld"/>
+			<item value="init-param"/>
+			<item value="POJO"/>
+			<item value="POJOMappingFeature"/>
+			<item value="forename"/>
+			<item value="surname"/>
+			<item value="query"/>
+			<item value="system.out"/>
+			<item value="average_income"/>
 		</list>
 		<list key="replacehistory">
 		</list>
