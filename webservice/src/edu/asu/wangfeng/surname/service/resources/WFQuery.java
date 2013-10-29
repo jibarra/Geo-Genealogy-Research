@@ -1,6 +1,7 @@
 package edu.asu.wangfeng.surname.service.resources;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 
 import javax.naming.InitialContext;
@@ -13,6 +14,23 @@ public class WFQuery {
 		javax.naming.Context envContext = (javax.naming.Context) initContext.lookup("java:/comp/env");
 		DataSource ds = (DataSource) envContext.lookup("jdbc/phonebook");
 		Connection conn = ds.getConnection();
+		
+		//OPTIONALLY: Comment above code and uncomment below code
+		//Use only if web service server is not hosted on this computer, using Tomcat
+//		String url = "jdbc:mysql://localhost:3306/phonebook";
+//		String username = "root";
+//		String password = "password";
+//		java.sql.Connection conn = null;
+//		
+//		try{
+//			System.out.println("Connecting database...");
+//			conn = DriverManager.getConnection(url, username, password);
+//			System.out.println("Database connected!");
+//		}
+//		catch(SQLException e){
+//			throw new RuntimeException("Cannot connect the database!", e);
+//		}
+		
 		return conn;
 	}
 }

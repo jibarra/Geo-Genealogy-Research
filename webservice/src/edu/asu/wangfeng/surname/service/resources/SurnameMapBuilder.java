@@ -23,8 +23,8 @@ import edu.asu.joseibarra.services.name.QueryName;
 import edu.asu.wangfeng.geo.LatLng;
 import edu.asu.wangfeng.surname.service.netbeans.BuildResultBean;
 
-@Path("/forenamebuildmap")
-public class ForenameMapBuilder extends WFQuery {
+@Path("/surnamebuildmap")
+public class SurnameMapBuilder extends WFQuery {
 	private String imageDir;
 	private String resultDir;
 
@@ -37,7 +37,7 @@ public class ForenameMapBuilder extends WFQuery {
 	@GET
 	@Produces("application/x-javascript")
 	public JSONWithPadding query(@QueryParam("callback") @DefaultValue("callback") String callback,
-			@QueryParam("name") @DefaultValue("") String forename,
+			@QueryParam("name") @DefaultValue("") String surname,
 			@QueryParam("image") @DefaultValue("blank.png") String imageFilename,
 			@QueryParam("latsw") @DefaultValue("0.0") double latsw,
 			@QueryParam("lngsw") @DefaultValue("0.0") double lngsw,
@@ -55,7 +55,7 @@ public class ForenameMapBuilder extends WFQuery {
 			LatLng sw = new LatLng(latsw, lngsw);
 			LatLng ne = new LatLng(latne, lngne);
 			LatLng center = new LatLng(latcenter, lngcenter);
-			query.queryName(forename, sw, ne, center, width, height, zoom, "forename", imageFilename, -1);
+			query.queryName(surname, sw, ne, center, width, height, zoom, "surname", imageFilename, -1);
 		}
 
 		NameMapBuilder builder = new NameMapBuilder();

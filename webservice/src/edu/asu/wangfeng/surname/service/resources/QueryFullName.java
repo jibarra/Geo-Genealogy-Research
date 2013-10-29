@@ -13,18 +13,17 @@ import javax.ws.rs.core.Context;
 
 import com.sun.jersey.api.json.JSONWithPadding;
 
-import edu.asu.wangfeng.geo.LatLng;
-import edu.asu.wangfeng.surname.service.netbeans.QueryBean;
-import edu.asu.wangfeng.surname.service.resources.WFQuery;
 import edu.asu.joseibarra.services.name.QueryName;
+import edu.asu.wangfeng.geo.LatLng;
+import edu.asu.wangfeng.surname.service.netbeans.QueryFullNameBean;
 
 /* Modified by Jose Ibarra
  * Added functionality for proper Google Map Coordinate to Lat
  * Long conversion
  */
 
-@Path("/queryForename")
-public class QueryForename extends WFQuery{
+@Path("/queryFullName")
+public class QueryFullName extends WFQuery{
 	private String imageDir;
 	
 	@Context
@@ -34,8 +33,9 @@ public class QueryForename extends WFQuery{
 	
 	@GET
 	@Produces("application/x-javascript")
-	public JSONWithPadding queryForename(
+	public JSONWithPadding queryFullName(
 			@QueryParam("callback") @DefaultValue("callback") String callback,
+			@QueryParam("surname") @DefaultValue("") String surname,
 			@QueryParam("forename") @DefaultValue("") String forename,
 			@QueryParam("latsw") @DefaultValue("0.0") double latsw,
 			@QueryParam("lngsw") @DefaultValue("0.0") double lngsw,
@@ -47,9 +47,11 @@ public class QueryForename extends WFQuery{
 			@QueryParam("height") @DefaultValue("0") int height,
 			@QueryParam("zoom_level") @DefaultValue("5") int zoom
 			) throws IOException{
+		
 		QueryName query = new QueryName();
-		QueryBean result = query.queryName(forename, new LatLng(latsw, lngsw), new LatLng(latne, lngne), new LatLng(latcenter, lngcenter), 
-				width, height, zoom, "forename", imageDir, -1);
+		QueryFullNameBean result = query.queryFullName(surname, forename, new LatLng(latsw, lngsw), 
+				new LatLng(latne, lngne), new LatLng(latcenter, lngcenter), width, height, zoom, imageDir,
+				-1);
 		return new JSONWithPadding(result, callback);
 	}
 }

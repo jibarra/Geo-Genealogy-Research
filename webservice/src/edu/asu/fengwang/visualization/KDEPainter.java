@@ -54,7 +54,7 @@ public class KDEPainter {
     	this.filename = filename;
     }
 
-    public void drawKDEMap() throws IOException {
+    public void drawKDEMap(int type) throws IOException {
 		width = rightBottomPixel.x - leftTopPixel.x;
 		height = rightBottomPixel.y - leftTopPixel.y;
 		
@@ -178,12 +178,23 @@ public class KDEPainter {
 		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		int[] scanline = new int[width];
 		// we use a fake image for testing
-		for (int i = 0; i < height; i++) {
-			for (int k = 0; k < width; k++) {
-				scanline[k] = colorBrewer.getColor(pixel[i][k]);
+		if(type == 1){
+			for (int i = 0; i < height; i++) {
+				for (int k = 0; k < width; k++) {
+					scanline[k] = colorBrewer.getSurnameColor(pixel[i][k]);
+				}
+				image.setRGB(0, i, width, 1, scanline, 0, 0);
 			}
-			image.setRGB(0, i, width, 1, scanline, 0, 0);
 		}
+		else{
+			for (int i = 0; i < height; i++) {
+				for (int k = 0; k < width; k++) {
+					scanline[k] = colorBrewer.getForenameColor(pixel[i][k]);
+				}
+				image.setRGB(0, i, width, 1, scanline, 0, 0);
+			}
+		}
+		
 		pixel = null;
 		image.flush();
 		ImageIO.write(image, "png", file);
@@ -219,13 +230,29 @@ public class KDEPainter {
 	    private class ColorBrewer {
 			private final int[] colorBrewer = { 0xFFFFFFB2, 0xFFFED976, 0xFFFEB24C,
 				0xFFFD8D3C, 0xFFFC4E2A, 0xFFE31A1C, 0xFFB10026, 0xFFB10026 };
+			private final int[] forenameColorBrewer = { 0xFFB2B2FF, 0xFF7C7DF7, 0xFF004CFF,
+				0xFF0080FF, 0xFF00B3FF, 0xFF05C6ED, 0xFF00FFFF, 0xFF00FBFF };
 			private double maxValue;
-	
+			
 			public int getColor(double value) {
 			    if (value < Double.MIN_NORMAL) {
 			    	return 0;
 			    }
 			    return colorBrewer[(int) (value * 7 / maxValue)];
+			}
+	
+			public int getSurnameColor(double value) {
+			    if (value < Double.MIN_NORMAL) {
+			    	return 0;
+			    }
+			    return colorBrewer[(int) (value * 7 / maxValue)];
+			}
+			
+			public int getForenameColor(double value){
+				if (value < Double.MIN_NORMAL) {
+			    	return 0;
+			    }
+			    return forenameColorBrewer[(int) (value * 7 / maxValue)];
 			}
 
 			public void init(double[][] pixel) {
