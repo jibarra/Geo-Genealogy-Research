@@ -1,6 +1,0 @@
-INDEX VERSION 1.122+C:\Users\jlibarr1\Documents\Code\Facebook Code\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
-3090200186.index
-3995824017.index
-2372973610.index
-4118627951.index
-1967845464.index

@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<session version="1.0">
-<refactoring comment="Copy element &apos;NameMapBuilder.java&apos; to &apos;webservice/src/edu.asu.wangfeng.surname.service.resources&apos;&#x0D;&#x0A;- Original project: &apos;webservice&apos;&#x0D;&#x0A;- Destination element: &apos;webservice/src/edu.asu.wangfeng.surname.service.resources&apos;&#x0D;&#x0A;- Original element: &apos;edu.asu.wangfeng.surname.service.resources.NameMapBuilder.java&apos;" description="Copy compilation unit" destination="/src&lt;edu.asu.wangfeng.surname.service.resources" element1="/src&lt;edu.asu.wangfeng.surname.service.resources{NameMapBuilder.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1382482481899" units="1" version="1.0"/>
-</session>
