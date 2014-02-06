@@ -1,0 +1,129 @@
+Start with mongodb in console: mongo
+show databases: show dbs
+start using a database: use <dbname>
+show all collections: db.getCollectionNames();
+show all indexes: db.collectionName.getIndexes();
+show explanation of indices used: .explain()
+	if indexes used, should be in indexBounds array
+start localhost mongo:
+	go to mongo directory
+	mongod.exe --config ./mongo.config
+
+db.testData.find( { "name.forename" : "JOSE" } );
+db.phonebook.find( { "name.surname" : "IBARRA" } );
+
+db.phonebook.ensureIndex( { "name.surname" : 1 } );
+
+Execute on surname BROWN Amazon/remote MongoDB: 88s
+Execute on surname BROWN Amazon/localhost MySQL: 86s
+
+Execute with: db.phonebook.find( { "name.surname" : "BROWN" }, { "name.forename" : 1, "name.surname" : 1, _id : 0})
+
+Common surnames: http://en.wikipedia.org/wiki/List_of_most_common_surnames_in_North_America
+
+First execute on surname BROWN localhost MongoDB: 81s
+First execute on surname BROWN localhost MySQL: 282s
+Second execute on surname BROWN localhost MongoDB: 3.19s
+Second execute on surname BROWN localhost MySQL: 1.84s
+
+First execute on surname IBARRA localhost MongoDB: 6.85s
+First execute on surname IBARRA localhost MySQL: 9.21s
+Second execute on surname IBARRA localhost MongoDB: 0.19s
+Second execute on surname IBARRA localhost MySQL: 0.27s
+
+First execute on surname JONES localhost MongoDB: 85.29s
+First execute on surname JONES localhost MySQL: 91.69s
+Second execute on surname JONES localhost MongoDB: 2.79s
+Second execute on surname JONES localhost MySQL: 1.51s
+
+ATHERTON: Place 5000 on Census list, could be a good limit for precomputed names
+
+May want to use Jongo for the java driver
+
+Mongo schema representation:
+{
+	_id : ObjectId("..."),
+	name : {
+		forename : "...",
+		surname : "..."
+	}
+	address : {
+		address : "...",
+		city : "...",
+		state : "...",
+		zipcode : "..."
+	}
+	location : {
+		type : "Feature",
+		geometry : {
+			type : "Point",
+			coordinates : [
+				lat,
+				lng
+			]
+		}
+	}
+	geoid : {
+		state : "...",
+		county : "...",
+		countysub : "...",
+		census_tract : "...",
+		block : "..."
+	}
+}
+
+Need columns:
+short census id
+HC01_EST_VC02 - Less than $10k
+HC01_EST_VC03 - $10k to $15k
+HC01_EST_VC04 - $15k to $25k
+HC01_EST_VC05 - $25k to $35k
+HC01_EST_VC06 - $35k to $50k
+HC01_EST_VC07 - $50k to $75k
+HC01_EST_VC08 - $75k to $100k
+HC01_EST_VC09 - $100k to $150k
+HC01_EST_VC10 - $150k to $200k
+HC01_EST_VC11 - More than $200k
+Column numbers of these column names:
+Have to account for commas in name of area (2 extra commas), otherwise woudl start at 12
+2 -> 1
+14 -> 13
+22 -> 21
+30 -> 29
+38 -> 37
+46 -> 45
+54 -> 53
+62 -> 61
+70 -> 69
+78 -> 77
+86 -> 85
+
+Need to add columns to DB to incorporate the new data (incomeRange1 to incomeRange10)
+	Changed mind, creating new table:
+	CREATE TABLE census_income_ranges (
+		census_tract_id CHAR(11) NOT NULL,
+		income_range_1 DOUBLE DEFAULT NULL,
+		income_range_2 DOUBLE DEFAULT NULL,
+		income_range_3 DOUBLE DEFAULT NULL,
+		income_range_4 DOUBLE DEFAULT NULL,
+		income_range_5 DOUBLE DEFAULT NULL,
+		income_range_6 DOUBLE DEFAULT NULL,
+		income_range_7 DOUBLE DEFAULT NULL,
+		income_range_8 DOUBLE DEFAULT NULL,
+		income_range_9 DOUBLE DEFAULT NULL,
+		income_range_10 DOUBLE DEFAULT NULL,
+		FOREIGN KEY (census_tract_id) REFERENCES census(census_tract_id)
+	) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+	
+Unique less than: 
+	100:1,585,370
+		Means there are 64,099 unique surnames >= 100
+	50:1,537,258
+		Means there are 112,211 unique surnames >= 50
+	25:1,456,648
+		Means there are 192,821 unique surnames >= 25
+	20:1,421,248
+		Means there are 228,221 unique surnames >=20
+Unique names in database:
+	Surname: 1,649,469 unique
+	Forename: 1,424,140 or 1,424,197 unique

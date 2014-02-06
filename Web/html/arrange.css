@@ -1,0 +1,124 @@
+html,body{
+    font: 100%;
+    margin: 0;
+    padding: 0;
+    /*text-align: center;*/
+    height: 100%;
+}
+
+.ui-widget {
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 1.0em;
+}
+
+#layout {
+    width: 100%;
+    height: 100%;
+    margin: 0px auto;
+}
+
+#centercontainter {
+    /*height: 80%;
+    width: 100%;*/
+}
+#centercontainter #surnamemap {
+   /*height: 100%;
+    width: 100%;*/
+    height: 419px;
+    width: 776px;
+/*    height: 90px;
+    width: 170px;*/
+    float:left;
+}
+
+#centercontainter #forenamemap {
+   height: 100%;
+    width: 100%;
+    float:left;
+}
+
+#centercontainter #combinationmap {
+   height: 100%;
+    width: 100%;
+    float:left;
+}
+
+
+#capturedimagelink {
+    
+}
+
+.social_media{
+/*    margin: 0 auto; */
+    /*text-align: center;
+    position:absolute;
+    z-index:0;*/
+    clear:both;
+    text-align: center;
+    height: 419px;
+    width: 776px;
+}
+
+#loadingforename{
+    position:absolute;
+    z-index:99;
+}
+
+#loadingsurname{
+	position:absolute;
+    z-index:99;
+}
+#footer {
+    position: relative;
+    height: 20%;
+}
+.clearfloat {
+    clear:both;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
+
+.palette {
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: bottom;
+  margin: 4px 0 4px 6px;
+  padding: 4px;
+  background: #fff;
+  border: solid 1px #aaa;
+}
+
+.swatch {
+  display: block;
+  vertical-align: middle;
+  width: 37px;
+  height: 22px;
+}
+
+svg {
+  font: 10px sans-serif;
+}
+
+.histogramTitle{
+  font: 16px sans-serif;
+}
+
+.axisLabel{
+  font: 10px sans-serif;
+}
+
+.bar rect {
+  fill: steelblue;
+  shape-rendering: crispEdges;
+}
+
+.bar text {
+  fill: #000000;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}

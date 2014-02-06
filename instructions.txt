@@ -1,0 +1,143 @@
+INSTRUCTIONS TO INSTALL WEBSERVICE SERVER ON COMPUTER:
+DOWNLAD AND INSTALL ECLIPSE EE:
+http://www.eclipse.org/downloads/packages/eclipse-ide-java-ee-developers/keplerr
+Select the relevant Eclipse for your Operating System
+Default settings are fine
+
+DOWNLOAD AND INSTALL TOMCAT 7.0:
+http://apache.tradebit.com/pub/tomcat/tomcat-7/v7.0.42/bin/apache-tomcat-7.0.42.exe
+Default settings are fine (install should be in C:/ directory)
+
+Create a folder to store the code in an easy to find location (ie Documents/Code/)
+	Copy the provided code here
+Load Eclipse. The workspace should be a directory where the code is stored (ie Documents/Code/)
+
+SETUP THE ECLIPSE PROJECT (IF NOT SHOWING UP)
+Right click the Project Explorer in Eclipse and select Import > Import...
+	Type in "existing projects" in the search bar and select Existing Projects into Workspace
+	Press next then browse for the directory where the code is stored
+	The project "webservice" should be located under the Projects list when the code directory is found.
+	Select the webservice project and Finish
+
+DOWNLOAD JERSEY/MYSQL FILES AND CREATE LIBS FOLDER:
+Download Jersey 1.17.1:
+http://repo1.maven.org/maven2/com/sun/jersey/jersey-archive/1.17.1/jersey-archive-1.17.1.zip
+http://repo1.maven.org/maven2/com/sun/jersey/jersey-bundle/1.17.1/jersey-bundle-1.17.1.jar
+
+Download Jersey 2.0 RI:
+http://repo1.maven.org/maven2/org/glassfish/jersey/bundles/jaxrs-ri/2.2/jaxrs-ri-2.2.zip
+
+Download MySQL Connector:
+http://dev.mysql.com/downloads/mirror.php?id=414247
+
+Extract all zip files.
+Create a folder for libraries called libs (if it doesn't exist) in the web service code location (ie Documents/Code/Facebook Code/webservice/libs)
+Copy over the entire \lib\ folder from the jersey-archive-1.17.1/lib/ folder (from the Jersey 1.17.1 zip download)
+Copy over the jersey-bundle-1.17.1.jar that was downloaded (from the Jersey 1.17.1 jar download)
+Copy over \jaxrs-ri\ext\javax.servlet-api-3.0.1.jar that was downloaded (from the Jersey 2.0 RI download)
+Copy over the mysql-connector-java-5.1.26-bin.jar that was downloaded (from the MySQL Connector download)
+
+Right click the Project Explorer and select Refresh.
+
+COPY OVER JERSEY FILES TO PROJECT (IF ERRORS DID NOT DISAPPEAR - WARNINGS WILL STILL BE THERE):
+Right click the webservice project in Eclipse and select Properties
+	Go to Java Build Path and the Libraries tab
+	Select Add JARs...
+	Navigate to the libs folder location
+	Add the javax.servlet-api-3.0.1.jar file to the project
+	Repeat and add the jersey-bundle.1.17.1.jar file to the project
+*remove missing jars that may be left over from other setups (they have a red x and say (missing))*
+
+CREATE TOMCAT SERVER IN ECLIPSE:
+Create a Tomcat 7.0 server, making sure to allow it to run the webservice project
+	Right click on the Server tab at the bottom and select New -> Server
+	Select Tomcat v7.0 Server and leave the default host name (localhost)
+	If asked for the Tomcat installation directory, find where the Tomcat folder was installed using the Browse... button
+		(this is typically in the C:/ base folder)
+	Add the webservice project to the projects the server is configured for and press Finish
+	
+Copy to webservice/WebRoot/WEB-INF/lib/ from webservice/libs/:
+	mysql-connector-java-5.1.26-bin.jar
+	asm-3.1.jar
+	jackson-mapper-asl-1.9.2.jar
+	javax.servlet-api-3.0.1.jar
+	jersey-bundle.1.17.1.jar
+	jackson-core-asl-1.9.2.jar
+	jackson-jaxrs-1.9.2.jar
+	jackson-xc-1.9.2.jar
+	
+Double click the server to open up the overview. Press "Open launch configuration" link under General Information
+Under the Classpath tab, click the User Entries list then press Add JARs...
+	Add (from the webservice/WebRoot/WEB-INF/lib/ path)
+		asm-3.1.jar
+		jackson-mapper-asl-1.9.2.jar
+		javax.servlet-api-3.0.1.jar
+		jersey-bundle.1.17.1.jar
+		jackson-core-asl-1.9.2.jar
+		jackson-jaxrs-1.9.2.jar
+		jackson-xc-1.9.2.jar
+		
+SETUP SERVER FOR CORRECT DATABASE:
+Open the server configuration folder in Eclipse (typically under Servers/Tomcat_v7.0_Server at localhost-config)
+Open the file context.xml (Right click -> Open With -> Text Editor for easy editing)
+Add the following lines before the </Context> line:
+	<Resource name="jdbc/phonebook" auth="Container" type="javax.sql.DataSource"
+               maxActive="100" maxIdle="30" maxWait="10000"
+               url="jdbc:mysql://DB_LOCATION"
+               driverClassName="com.mysql.jdbc.Driver"
+               username="USER" password="PASSWORD" />
+	DB_LOCATION is the location of the database (default is localhost:3306/phonebook)
+	USER is the username to access the database
+	PASSWORD is the password for the username used to access the database
+If the web service server will not be using Tomcat:
+	Open WFQuery.java in the Java Resources (src/edu.asu.wangfeng.surname.service.resources)
+	Comment out the uncommented 4 lines of code
+	Uncomment the lines below //OPTIONALLY: Comment above code and uncomment below code comment
+	Change the url, username and password strings to the correct values for the server
+
+At this point, everything should be loaded properly. If the server can be started (see below) and runs correctly, 
+the web service server has been setup correctly on this computer.
+
+CHANGING THE COLUMNS TO SEARCH IN THE DATABASE OR CHANGING THE DATABASE NAME TO SEARCH:
+Under the folder webservice/edu.asu.joseibarra.services.name is the QueryName.java file, containing the SQL queries
+Two SQL calls are made, both labeled by comments SQL LOCATED HERE
+	The first SQL gets the latitude and logitude for where people are located, given their surname/forename and a min/max lon/lat.
+	The second SQL query gets the average mean and average median for a given surname/forename.
+	The line labeled "CAN BE COMMENTED OUT TO IGNORE INCOME" can be commented out to ignore this query. The following two lines have to be uncommented, however.
+	
+Remove Limits on SQL Queries
+Under the folder webservice/edu.asu.joseibarra.services.name is the QueryName.java file, containing the SQL queries and the limit
+The comment SQL LIMIT HERE indicates the variable used to limit the SQL queries
+	Change the value of this variable to the max value required
+	The default limit is 25,000
+
+
+RUNNING THE WEB SERVER:
+With Eclipse open with the settings above, go to the Servers tab at the bottom part of the screen.
+	Right click the Tomcat server and select start (or restart if already running)
+*Any changes to the web services or server (including the changes above) requires the web server to be restarted*
+To check the service is running, go to the url of the server and add /surnameservice/ - A webpage should display indicating
+	the service was loaded correctly
+	Default location: http://localhost:8080/surnameservice/
+	Nondefault: http://WEB_SERVICE_SERVER/surnameservice/
+
+CHANGE THE MAP LOCATION:
+Find the state.js file in the provided files (\Web\php\javascript\) and open it
+The centerLat and centerLon variable correspond to the lat and lon of teh center of the map
+zoomLevel corresponds to teh zoom level of the map
+If the web service server is not ran on this computer with default settings, the serviceBase and httpServiceBase must be
+	changed to the location of the web service server. If the server is hosted on the current computer,
+	the default location of the service is http://localhost:8080/surnameservice/
+
+DOWNLOAD REQUIRED LIBRARIES FOR WEB APP:
+Download jQuery UI:
+http://jqueryui.com/resources/download/jquery-ui-1.10.2.zip
+
+Unzip jQuery UI folder.
+Copy the jQuery UI folder to the lib folder in \Documents\Code\Facebook Code\Web\php\lib
+	
+RUNNING THE WEB APPLICATION:
+Find the index.html file in the provided files (Documents\Code\Facebook Code\Web\html\index.html)
+Right click it and select Open With > and select your browser of choice.
+If the server is setup correctly and the database is pointed to correctly, the map should update
+	when a name is entered and submitted
