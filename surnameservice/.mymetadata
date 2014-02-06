@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-module
+  type="WEB"
+  name="surnameservice"
+  id="myeclipse.1365544668171"
+  context-root="/surnameservice"
+  j2ee-spec="6.0"
+  archive="surnameservice.war">
+  <attributes>
+    <attribute name="webrootdir" value="WebRoot" />
+  </attributes>
+</project-module>
+

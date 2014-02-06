@@ -15,10 +15,16 @@
     External Javascript Libraries
 -->
   <script type="text/javascript" src="../php/lib/d3.v3.min.js"></script>
+<<<<<<< HEAD
 <!--   // <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
   // <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script> -->
   <script type="text/javascript" src="../php/lib/jquery-1.11.0.min.js"></script>
   <script type="text/javascript" src="../php/lib/jquery-ui-minified/jquery-ui.min.js"></script>
+=======
+  <script type="text/javascript" src="../php/lib/jquery-1.11.0.min.js"></script>
+  <script type="text/javascript" src="../php/lib/jquery-ui-minified/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="../php/lib/d3.layout.cloud.js"></script>
+>>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
   <script type="text/javascript"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCudbuVD03AQ0UFE-dZShgEx_CYSUUsWmI&sensor=false"></script>
 
@@ -31,6 +37,10 @@
 <script type="text/javascript" src="../php/javascript/query.js"></script>
 <script type="text/javascript" src="../php/javascript/generateHistogram.js"></script>
 <script type="text/javascript" src="../php/javascript/areaZoom.js"></script>
+<<<<<<< HEAD
+=======
+<script type="text/javascript" src="../php/javascript/nameWordle.js"></script>
+>>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
 
 <!--
     Stylesheets
@@ -56,6 +66,7 @@
 
     function histogramOptionsChanged(nameType){
       if(nameType == "surname"){
+<<<<<<< HEAD
         // generateHistogram($('#surname_bins').val(), "surname", $('#surnameIncomeType').val());
         // generatePieChart($('#surname_bins').val(), "surname", $('#surnameIncomeType').val());
         generateIncomeDistributionBar($('#surname_bins').val(), "surname", $('#surnameIncomeType').val());
@@ -63,6 +74,11 @@
       else if(nameType == "forename"){
         // generateHistogram($('#forename_bins').val(), "forename", $('#forenameIncomeType').val());
         // generatePieChart($('#forename_bins').val(), "forename", $('#forenameIncomeType').val());
+=======
+        generateIncomeDistributionBar($('#surname_bins').val(), "surname", $('#surnameIncomeType').val());
+      }
+      else if(nameType == "forename"){
+>>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
         generateIncomeDistributionBar($('#forename_bins').val(), "forename", $('#forenameIncomeType').val());
       }
     }
@@ -90,7 +106,10 @@
   <ul>
     <li><a href="#tabSurname">Surname</a></li>
     <li><a href="#tabs-2">Forename</a></li>
+<<<<<<< HEAD
     <li><a href="#tabs-3">Combination</a></li>
+=======
+>>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
   </ul>
   <div id="tabSurname">
     <div id ="surnameContainer">
@@ -103,7 +122,11 @@
         <button onclick="onClickShowKDE('surname')">Submit</button>
         <button id="captureButton" onclick="onClickCaptureButton('surname')">Capture</button>
         <a id="capturedimagelink" href = "" target="_blank">Captured Image</a>
+<<<<<<< HEAD
         <select name="surnameusareas" id="surnameusareas" onchange="usAreaSelected('surname')">
+=======
+        <!-- <select name="surnameusareas" id="surnameusareas" onchange="usAreaSelected('surname')">
+>>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
           <option value="US">United States</option>
           <option value="AL">Alabama</option>
           <option value="AK">Alaska</option>
@@ -155,7 +178,11 @@
           <option value="WV">West Virginia</option>
           <option value="WI">Wisconsin</option>
           <option value="WY">Wyoming</option>
+<<<<<<< HEAD
         </select>
+=======
+        </select> -->
+>>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
         <div id="surnameMeanIncomeText"></div>
         <div id="surnameMedianIncomeText"></div>
         <div id="loadingsurnamehistogram"><img src="ajax-loader.gif" alt="Loading..." /></div>
@@ -175,6 +202,7 @@
       <div id="loadingsurname"><img src="ajax-loader.gif" alt="Loading..." /></div>
     </div>
 
+<<<<<<< HEAD
   </div>
   <div id="tabs-2">
     <div id ="forenameContainer">
@@ -264,6 +292,26 @@
 <script>
   
 </script>
+=======
+    <div id="social_media_surname" class="social_media" >
+      <a id="twitter" href="https://twitter.com/share?url=www.asu.edu&text=I found my surname and forename density at www.asu.edu" class="sb small blue twitter" data-lang="en" target="_blank">Tweet</a>
+      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+      <a href="#" class = "sb small blue facebook"
+        onclick="
+          window.open(
+            'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+            'facebook-share-dialog', 
+            'width=626,height=436'); 
+          return false;">
+        Share on Facebook
+      </a>
+    </div>
+    <div>
+    </div>
+  </div>
+</div>
+>>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
  
 </body>
 </html>

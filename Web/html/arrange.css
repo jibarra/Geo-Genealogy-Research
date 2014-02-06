@@ -18,8 +18,13 @@ html,body{
 }
 
 #centercontainter {
+<<<<<<< HEAD
     height: 80%;
     width: 100%;
+=======
+    /*height: 80%;
+    width: 100%;*/
+>>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
 }
 #centercontainter #surnamemap {
    /*height: 100%;
@@ -48,11 +53,23 @@ html,body{
     
 }
 
+<<<<<<< HEAD
 #socialMedia{
 /*    margin: 0 auto; */
     text-align: center;
     position:absolute;
     z-index:0;
+=======
+.social_media{
+/*    margin: 0 auto; */
+    /*text-align: center;
+    position:absolute;
+    z-index:0;*/
+    clear:both;
+    text-align: center;
+    height: 419px;
+    width: 776px;
+>>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
 }
 
 #loadingforename{
