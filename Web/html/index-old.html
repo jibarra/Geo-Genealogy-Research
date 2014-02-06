@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!--
+ @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
+ created on August 28, 2013
+-->
+<html>
+<head>
+<title>Name Density</title>
+
+<link rel="stylesheet" type="text/css" href="arrange.css" media="screen" />
+<link href="social-buttons.css" rel="stylesheet" />
+</head>
+<body>
+
+<!-- imports -->
+<script type="text/javascript" src="../php/lib/d3.v3.min.js"></script>
+<script type="text/javascript" src="../php/lib/jquery-ui-1.10.2/jquery-1.9.1.js"></script>
+<script type="text/javascript"
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCudbuVD03AQ0UFE-dZShgEx_CYSUUsWmI&sensor=false"></script>
+<script type="text/javascript" src="../php/javascript/state.js"></script>
+<script type="text/javascript" src="../php/javascript/init.js"></script>
+<script type="text/javascript" src="../php/javascript/overlay.js"></script>
+<script type="text/javascript" src="../php/javascript/query.js"></script>
+<script type="text/javascript" src="../php/javascript/generateHistogram.js"></script>
+
+
+<!-- user interaction methods -->
+<script type="text/javascript">
+
+	function surnameInputKeyPressed(e){
+		if(e.keyCode == 13){
+			onClickShowKDE("surname");
+		}
+	}
+
+	function forenameInputKeyPressed(e){
+		if(e.keyCode == 13){
+			onClickShowKDE("forename");
+		}
+	}
+
+	function histogramOptionsChanged(nameType){
+	  if(nameType == "surname"){
+	    // generateHistogram($('#surname_bins').val(), "surname", $('#surnameIncomeType').val());
+	    // generatePieChart($('#surname_bins').val(), "surname", $('#surnameIncomeType').val());
+	    generateIncomeDistributionBar($('#surname_bins').val(), "surname", $('#surnameIncomeType').val());
+	  }
+	  else if(nameType == "forename"){
+	    // generateHistogram($('#forename_bins').val(), "forename", $('#forenameIncomeType').val());
+	    // generatePieChart($('#forename_bins').val(), "forename", $('#forenameIncomeType').val());
+	    generateIncomeDistributionBar($('#forename_bins').val(), "forename", $('#forenameIncomeType').val());
+	  }
+	}
+</script>
+
+<!-- page layout -->
+<div id = "layout">
+<!-- divs for the inputs, buttons and image links -->
+<div id ="footer">
+	<div id ="surnameContainer">
+		Surname: <input type="text" id="surname_input" name="surname"
+					onkeypress="surnameInputKeyPressed(event)" autocomplete = "off">
+		<button onclick="onClickShowKDE('surname')">Submit</button>
+	 	<button id="captureButton" onclick="onClickCaptureButton('surname')" class="hideFirst">Capture</button>
+	 	<a id="capturedimagelink" href = "" target="_blank">Captured Image</a>
+	 	<div id="surnameMeanIncomeText"></div>
+	 	<div id="surnameMedianIncomeText"></div>
+	 	<div id="loadingsurnamehistogram"><img src="ajax-loader.gif" alt="Loading..." /></div>
+	 	<div id="surname_distribution_bar"></div>
+	 	<div id="surname_histogram_options">
+		  Bins: <input type=number id="surname_bins" value=20 max=40  min=2 onchange="histogramOptionsChanged('surname')" autocomplete = "off">
+		  Income Type:
+		  <select id="surnameIncomeType" onchange="histogramOptionsChanged('surname')">
+		    <option value="mean">Mean</option>
+		    <option value="median">Median</option>
+		  </select>
+		</div>
+ 	</div>
+
+ 	<div id="socialMedia">
+	<a id="twitter" href="https://twitter.com/share?url=www.asu.edu&text=I found my surname and forename density at www.asu.edu" class="sb small blue twitter" data-lang="en" target="_blank">Tweet</a>
+ 	<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+
+	<a href="#" class = "sb small blue facebook"
+	  onclick="
+	    window.open(
+	      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href),
+	      'facebook-share-dialog', 
+	      'width=626,height=436'); 
+	    return false;">
+	  Share on Facebook
+	</a>
+
+	<br />
+		<button onclick="onClickCombineButton()" id="combine_submit">Combine Maps</button>
+		<a id="combineCapturedImageLink" href = "" target="_blank"><br />Combined Image</a>
+		<div id="loadingCombine"><img src="ajax-loader.gif" alt="Loading..." width=38 height=38 /></div>
+	</div>
+
+ 	<div id ="forenameContainer">
+		Forename: <input type="text" id="forename_input" name="forename"
+					onkeypress="forenameInputKeyPressed(event)" autocomplete = "off">
+		<button onclick="onClickShowKDE('forename')">Submit</button>
+	 	<button id="forenameCaptureButton" onclick="onClickCaptureButton('forename')">Capture</button>
+	 	<a id="forenameCapturedimagelink" href = "" target="_blank">Captured Image</a>
+	 	<div id="forenameMeanIncomeText"></div>
+	 	<div id="forenameMedianIncomeText"></div>
+	 	<div id="loadingforenamehistogram"><img src="ajax-loader.gif" alt="Loading..." /></div>
+	 	<div id="forename_distribution_bar"></div>
+	 	<div id="forename_histogram_options" hidden=true>
+		  Bins: <input type=number id="forename_bins" value=20 max=40  min=2 onchange="histogramOptionsChanged('forename')" autocomplete = "off">
+		  Income Type:
+		  <select id="forenameIncomeType" onchange="histogramOptionsChanged('forename')">
+		    <option value="mean">Mean</option>
+		    <option value="median">Median</option>
+		  </select>
+		</div>
+ 	</div>
+</div>
+
+<!-- divs for the maps and loading -->
+<div id="centercontainter">
+	<div id="loadingsurname"><img src="ajax-loader.gif" alt="Loading..." /></div>
+	<div id="surnamemap" />
+</div>
+<div id="loadingforename"><img src="ajax-loader.gif" alt="Loading..." /></div>
+<div id="forenamemap"></div>
+
+</div>
+
+</body>
+</html> 

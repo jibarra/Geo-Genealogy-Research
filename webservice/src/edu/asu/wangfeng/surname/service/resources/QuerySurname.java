@@ -28,7 +28,7 @@ public class QuerySurname extends WFQuery{
 	
 	@Context
 	public void setServletContext(ServletContext context) {
-		imageDir = context.getRealPath("image/kdecache") + File.separatorChar;
+		imageDir = context.getRealPath("image/kdecachesurname") + File.separatorChar;
 	}
 	
 	@GET
@@ -46,10 +46,9 @@ public class QuerySurname extends WFQuery{
 			@QueryParam("height") @DefaultValue("0") int height,
 			@QueryParam("zoom_level") @DefaultValue("5") int zoom
 			) throws IOException{
-		
 		QueryName query = new QueryName();
 		QueryBean result = query.queryName(surname, new LatLng(latsw, lngsw), new LatLng(latne, lngne), 
-				new LatLng(latcenter, lngcenter), width, height, zoom, "surname", imageDir, -1);
+				new LatLng(latcenter, lngcenter), width, height, zoom, "surname", imageDir, "regular", -1);
 		return new JSONWithPadding(result, callback);
 	}
 }

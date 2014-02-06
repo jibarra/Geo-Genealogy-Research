@@ -49,9 +49,10 @@ public class QueryFullName extends WFQuery{
 			) throws IOException{
 		
 		QueryName query = new QueryName();
-		QueryFullNameBean result = query.queryFullName(surname, forename, new LatLng(latsw, lngsw), 
-				new LatLng(latne, lngne), new LatLng(latcenter, lngcenter), width, height, zoom, imageDir,
-				-1);
+		QueryFullNameBean result = new QueryFullNameBean();
+//		QueryFullNameBean result = query.queryFullName(surname, forename, new LatLng(latsw, lngsw), 
+//				new LatLng(latne, lngne), new LatLng(latcenter, lngcenter), width, height, zoom, imageDir,
+//				"STRING", -1);
 		return new JSONWithPadding(result, callback);
 	}
 }

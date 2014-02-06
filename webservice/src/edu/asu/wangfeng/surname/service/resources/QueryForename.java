@@ -29,7 +29,7 @@ public class QueryForename extends WFQuery{
 	
 	@Context
 	public void setServletContext(ServletContext context) {
-		imageDir = context.getRealPath("image/kdecache") + File.separatorChar;
+		imageDir = context.getRealPath("image/kdecacheforename") + File.separatorChar;
 	}
 	
 	@GET
@@ -49,7 +49,7 @@ public class QueryForename extends WFQuery{
 			) throws IOException{
 		QueryName query = new QueryName();
 		QueryBean result = query.queryName(forename, new LatLng(latsw, lngsw), new LatLng(latne, lngne), new LatLng(latcenter, lngcenter), 
-				width, height, zoom, "forename", imageDir, -1);
+				width, height, zoom, "forename", imageDir, "regular", -1);
 		return new JSONWithPadding(result, callback);
 	}
 }

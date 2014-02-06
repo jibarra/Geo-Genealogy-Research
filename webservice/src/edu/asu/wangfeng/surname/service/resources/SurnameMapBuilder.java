@@ -27,11 +27,12 @@ import edu.asu.wangfeng.surname.service.netbeans.BuildResultBean;
 public class SurnameMapBuilder extends WFQuery {
 	private String imageDir;
 	private String resultDir;
+	private final String resultFolder = "uploadSurname";
 
 	@Context
 	public void setServletContext(ServletContext context) {
-		imageDir = context.getRealPath("image/kdecache") + File.separatorChar;
-		resultDir = context.getRealPath("image/upload") + File.separatorChar;
+		imageDir = context.getRealPath("image/kdecachesurname") + File.separatorChar;
+		resultDir = context.getRealPath("image/" + resultFolder) + File.separatorChar;
 	}
 
 	@GET
@@ -55,12 +56,12 @@ public class SurnameMapBuilder extends WFQuery {
 			LatLng sw = new LatLng(latsw, lngsw);
 			LatLng ne = new LatLng(latne, lngne);
 			LatLng center = new LatLng(latcenter, lngcenter);
-			query.queryName(surname, sw, ne, center, width, height, zoom, "surname", imageFilename, -1);
+			query.queryName(surname, sw, ne, center, width, height, zoom, "surname", imageFilename, "regular", -1);
 		}
 
 		NameMapBuilder builder = new NameMapBuilder();
 		BuildResultBean result = builder.nameMapBuilder(imageFile, imageFilename, width, height, 
-				new LatLng(latne, lngsw), zoom, resultDir);
+				new LatLng(latne, lngsw), zoom, resultDir, resultFolder);
 		return new JSONWithPadding(result, callback);
 	}
 }

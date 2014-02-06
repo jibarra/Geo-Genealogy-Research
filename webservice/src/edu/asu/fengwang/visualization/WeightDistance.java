@@ -1,6 +1,7 @@
 package edu.asu.fengwang.visualization;
 
 public class WeightDistance implements Comparable<WeightDistance> {
+//public class WeightDistance{
 	public double distance;
 	public double weight;
 	public int id;

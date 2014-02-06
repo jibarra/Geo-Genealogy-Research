@@ -17,7 +17,8 @@ import edu.asu.wangfeng.surname.service.netbeans.BuildResultBean;
 
 public class NameMapBuilder {
 	public BuildResultBean nameMapBuilder(File imageFile, String imageFilename, int width, int height, 
-			LatLng topLeftLatLng, int zoom, String resultDir) throws IOException{
+			LatLng topLeftLatLng, int zoom, String resultDir, String imageFolderName) throws IOException{
+		BuildResultBean result = new BuildResultBean();
 		BufferedImage kdeImage = ImageIO.read(imageFile);
 		// build base map
 		int xnum = width / 640;
@@ -27,6 +28,11 @@ public class NameMapBuilder {
 		}
 		if (height % 640 != 0) {
 			ynum++;
+		}
+		if(xnum == 0 || ynum == 0 || height == 0 || width == 0){
+			result.setFilename("blank.png");
+			result.setUrl("image/" + imageFolderName + "/blank.png");
+			return result;
 		}
 		int unitWidth = width / xnum;
 		int unitHeight = height / ynum;
@@ -68,9 +74,8 @@ public class NameMapBuilder {
 		graphics.drawImage(kdeImage, rop, 0, 0);
 		String resultFilename = resultDir +  imageFilename;
 		ImageIO.write(resultImage, "png", new File(resultFilename));
-		BuildResultBean result = new BuildResultBean();
 		result.setFilename(imageFilename);
-		result.setUrl("image/upload/" + imageFilename);
+		result.setUrl("image/" + imageFolderName + "/" + imageFilename);
 		return result;
 	}
 }

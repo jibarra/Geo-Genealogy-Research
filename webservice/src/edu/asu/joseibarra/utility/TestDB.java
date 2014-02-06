@@ -1,4 +1,4 @@
-package edu.asu.joseibarra.test;
+package edu.asu.joseibarra.utility;
 
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -105,7 +105,6 @@ public class TestDB {
 			}
 		}
 		 catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		 }
 		
@@ -254,7 +253,6 @@ public class TestDB {
 //				val++;
 //			}
 //		} catch (SQLException e) {
-//			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
 		

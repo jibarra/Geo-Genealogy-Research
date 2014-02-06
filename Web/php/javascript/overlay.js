@@ -23,17 +23,26 @@ KDEOverlay.prototype.onAdd = function() {
 	if(this.overlayNameType == "surname"){
 		if (typeof (state.surnameOverlayImage) == 'undefined'
 			|| state.surnameOverlayImage == null) {
-			img.src = state.serviceBase + 'image/kdecache/' + 'blank.png';
+			img.src = state.serviceBase + 'image/kdecachesurname/' + 'blank.png';
 		} else {
-			img.src = state.serviceBase + 'image/kdecache/' + state.surnameOverlayImage;
+			img.src = state.serviceBase + 'image/kdecachesurname/' + state.surnameOverlayImage;
 		}
 	}
 	else if(this.overlayNameType == "forename"){
 		if (typeof (state.forenameOverlayImage) == 'undefined'
 			|| state.forenameOverlayImage == null) {
-			img.src = state.serviceBase + 'image/kdecache/' + 'blank.png';
+			img.src = state.serviceBase + 'image/kdecacheforename/' + 'blank.png';
 		} else {
-			img.src = state.serviceBase + 'image/kdecache/' + state.forenameOverlayImage;
+			img.src = state.serviceBase + 'image/kdecacheforename/' + state.forenameOverlayImage;
+		}
+		// alert(img.src);
+	}
+	else if(this.overlayNameType == "combined"){
+		if (typeof (state.forenameOverlayImage) == 'undefined'
+			|| state.forenameOverlayImage == null) {
+			img.src = state.serviceBase + 'image/kdecachecombined/' + 'blank.png';
+		} else {
+			img.src = state.serviceBase + 'image/kdecachecombined/' + state.combinedOverlayImage;
 		}
 		// alert(img.src);
 	}
@@ -64,15 +73,24 @@ KDEOverlay.prototype.draw = function() {
 	div.style.width = (ne.x - sw.x) + 'px';
 	div.style.height = (sw.y - ne.y) + 'px';
 
-	var leftpos = $('#centercontainter').width();
-	var toppos = $('#centercontainter').height();
-	leftpos = leftpos/2 - 50;
-	toppos = toppos/2 + 50;
-	$('#loadingsurname').css('left', '' + leftpos/2 + 'px');
+	positionMapLoadingIndicators();
+}
+
+function positionMapLoadingIndicators(){
+	var leftpos = $('#surnamemap').width();
+	var toppos = $('#surnamemap').height();
+	leftpos = leftpos/2;
+	toppos = toppos/2 + $('#surnameContainer').height();
+	$('#loadingsurname').css('left', '' + leftpos + 'px');
 	$('#loadingsurname').css('top', '' + toppos + 'px');
-	$('#loadingforename').css('left', '' + (leftpos/2)*3 + 'px');
+	leftpos = $('#forenamemap').width();
+	toppos = $('#forenamemap').height();
+	leftpos = leftpos/2;
+	toppos = toppos/2 + $('#forenameContainer').height();
+	$('#loadingforename').css('left', '' + leftpos + 'px');
 	$('#loadingforename').css('top', '' + toppos + 'px');
 }
+
 KDEOverlay.prototype.show = function(nametype) {
 	if (this.div_) {
 		this.div_.style.visibility = "visible";
