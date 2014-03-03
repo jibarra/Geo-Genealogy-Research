@@ -50,9 +50,9 @@ public class CreateAllNameMap extends WFQuery{
 //	    outFile.close();
 //	    outFile = null;
 		CreateAllNameMap allNames = new CreateAllNameMap();
-//		allNames.queryName("*", new LatLng(22.75592037564069, -131.83937118749998), new LatLng(51.454006703387115, -62.31788681249998), 
-//				new LatLng(37.1049635395139, -97.73780868749998), 776, 419, 4, "surname", "C:\\Users\\jlibarr1\\Desktop\\temp", -1);
-		allNames.createHeatMap();
+		allNames.queryName("*", new LatLng(22.75592037564069, -131.83937118749998), new LatLng(51.454006703387115, -62.31788681249998), 
+				new LatLng(37.1049635395139, -97.73780868749998), 776, 419, 4, "surname", "C:\\Users\\jlibarr1\\Desktop\\temp", -1);
+//		allNames.createHeatMap();
 	}
 	
 	public void createHeatMap() throws IOException{
@@ -249,7 +249,7 @@ public class CreateAllNameMap extends WFQuery{
 		    pointVec = null;
 		    
 			
-			OutputStream outFile = new FileOutputStream("C:\\Users\\jlibarr1\\Desktop\\temp\\valueMap.ser");
+			OutputStream outFile = new FileOutputStream("C:\\Users\\jlibarr1\\Downloads\\forenameValueMap.ser");
 			OutputStream outBuffer = new BufferedOutputStream(outFile);
 		    ObjectOutput output = new ObjectOutputStream(outBuffer);
 		    output.writeObject(savedMap);

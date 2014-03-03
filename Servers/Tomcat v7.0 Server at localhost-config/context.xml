@@ -29,20 +29,12 @@
     <!--
     <Valve className="org.apache.catalina.valves.CometConnectionManagerValve" />
     -->
-<<<<<<< HEAD
     
     <Resource name="jdbc/phonebook" auth="Container" type="javax.sql.DataSource"
-=======
 	<Resource name="jdbc/phonebook" auth="Container" type="javax.sql.DataSource"
->>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
                maxActive="100" maxIdle="30" maxWait="10000"
                url="jdbc:mysql://localhost:3306/phonebook"
                driverClassName="com.mysql.jdbc.Driver"
                username="root" password="password" />
-<<<<<<< HEAD
     
-
-=======
-	
->>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
 </Context>

@@ -10,7 +10,6 @@
 
 //kde object for the surname
 var kde;
-<<<<<<< HEAD
 //kde object for teh forename
 var kde2;
 
@@ -22,8 +21,6 @@ var kde3;
 // 		selected : 0
 // 	});
 // });
-=======
->>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
 
 function onClickShowKDE(nametype) {
 	positionMapLoadingIndicators();
@@ -39,7 +36,6 @@ function onClickShowKDE(nametype) {
 				kdeQuery(nametype, 'Probabilistic');
 		}
 	}
-<<<<<<< HEAD
 	else if(nametype == "forename"){
 		state.kdeForename = $('#forename_input').val().toUpperCase();
 		$('#forename_distribution_bar').hide();
@@ -50,8 +46,6 @@ function onClickShowKDE(nametype) {
 		}
 			
 	}
-=======
->>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
 }
 
 function onClickCaptureButton(nametype) {
@@ -61,7 +55,6 @@ function onClickCaptureButton(nametype) {
 		if(state.kdeSurname)
 			captureUpload(nametype);
 	}
-<<<<<<< HEAD
 	else if(nametype == "forename"){
 		state.kdeForename = $('#forename_input').val().toUpperCase();
 		if(state.kdeForename)
@@ -78,8 +71,7 @@ function onClickShowCombineKDE(){
 	if(state.surnameOverlayImage != null && state.forenameOverlayImage != null){
 		kdeCombineQuery();
 	}
-=======
->>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
+
 }
 
 /*
@@ -128,7 +120,6 @@ function KDEWindow(nameType) {
 			}
 		});
 	}
-<<<<<<< HEAD
 	else if(nameType == "forename"){
 		google.maps.event.addListener(this.map, "idle", function() {
 			if (state.kdeForename != '') {
@@ -142,15 +133,12 @@ function KDEWindow(nameType) {
 		});
 	}
 	
-=======
->>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
 }
 
 
 var requestCount = 0;
 $(window).load(function() {
 	kde = new KDEWindow("surname");
-<<<<<<< HEAD
 	kde2 = new KDEWindow("forename");
 	kde3 = new KDEWindow("combination");
 	requestCount = 0;
@@ -176,37 +164,20 @@ $(window).load(function() {
 	$('#forename_distribution_bar').hide();
 	$('#forename_histogram_options').hide();
 	$('#loadingforenamehistogram').hide();
-=======
 	requestCount = 0;
-	
-	positionSocialMedia();
-	positionMapLoadingIndicators();
-	$('#loadingsurname').hide();
-	$('#captureButton').hide();
-	$('#capturedimagelink').hide();
-	$('#surnameMedianIncomeText').hide();
-	$('#surnameMeanIncomeText').hide();
-	$('#surname_distribution_bar').hide();
-	$('#surname_histogram_options').hide();
-	$('#loadingsurnamehistogram').hide();
->>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
+
 	var curURL = document.URL;
 	var completeURL = "https://twitter.com/share?url=" + curURL + "&text=I found my surname and forename density at " + curURL;
 	$('#twitter').attr('href', completeURL);
 
 	$(function() {
-<<<<<<< HEAD
 	    $( "#tabs" ).tabs({heightStyle: "fill", widthStyle: "auto", disabled: [2], 
-=======
-	    $( "#tabs" ).tabs({heightStyle: "fill", widthStyle: "auto", 
->>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
 	      activate: function(event, ui){
 	      	if(ui.newTab.index() == 0){
 	      		var center = kde.map.getCenter();
 	      		google.maps.event.trigger(kde.map, 'resize');
 	      		kde.map.setCenter(center);
 	      	}
-<<<<<<< HEAD
 	        else if(ui.newTab.index() == 1){
 	        	var center = kde2.map.getCenter();
 	        	google.maps.event.trigger(kde2.map, 'resize');
@@ -218,8 +189,6 @@ $(window).load(function() {
 	        	kde3.map.setCenter(center);
 	        	onClickShowCombineKDE();
 	        }
-=======
->>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
 	      }
 	    });
   	});
@@ -234,15 +203,12 @@ function positionMapLoadingIndicators(){
 	toppos = toppos/2 + $('#surnameContainer').height();
 	$('#loadingsurname').css('left', '' + leftpos + 'px');
 	$('#loadingsurname').css('top', '' + toppos + 'px');
-<<<<<<< HEAD
 	leftpos = $('#forenamemap').width();
 	toppos = $('#forenamemap').height();
 	leftpos = leftpos/2;
 	toppos = toppos/2 + $('#forenameContainer').height();
 	$('#loadingforename').css('left', '' + leftpos + 'px');
 	$('#loadingforename').css('top', '' + toppos + 'px');
-=======
->>>>>>> 2e8e17b3de72ef3a3beef5bae414b70b426c352d
 }
 
 function positionSocialMedia(){
