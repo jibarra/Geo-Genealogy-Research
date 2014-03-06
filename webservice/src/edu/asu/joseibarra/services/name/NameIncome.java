@@ -454,12 +454,12 @@ public class NameIncome{
 	    //GIANNATTASIO, stop at giannasi
 	    //TOCHTROP
 	    //ULIN, stop at ULIK, ULICNY
-	    while(!iter.name.equals("VAN NATTER")){
+	    while(!iter.name.equals("VANDENBROECK")){
 	    	iter = iterRanges.poll();
 	    }
 	    iter = iterRanges.poll();
 	    
-	    NameIncomeSimilarityThread[] threads = new NameIncomeSimilarityThread[7];
+	    NameIncomeSimilarityThread[] threads = new NameIncomeSimilarityThread[6];
 	    System.out.println("Creating threads...");
 	    for(int i = 0; i < threads.length; i++){
 	    	threads[i] = new NameIncomeSimilarityThread(savedRanges, iterRanges);
@@ -517,6 +517,7 @@ public class NameIncome{
 	public static void main(String[] args) throws NamingException, IOException, SQLException {
 		NameIncome test = new NameIncome();
 //		test.transferDB();
-		test.createAllIncomeRangesForename();
+//		test.createAllIncomeRangesForename();
+		test.findAllSimilarNames();
 	}
 }
