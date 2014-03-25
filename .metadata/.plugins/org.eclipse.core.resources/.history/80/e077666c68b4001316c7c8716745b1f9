@@ -1,0 +1,43 @@
+package edu.asu.joseibarra.services;
+
+import java.io.File;
+
+import javax.servlet.ServletContext;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+
+import com.sun.jersey.api.json.JSONWithPadding;
+
+/* Modified by Jose Ibarra
+ * Added functionality for proper Google Map Coordinate to Lat
+ * Long conversion
+ */
+
+@Path("/queryIncomeSurname")
+public class QueryIncomeSurname extends WFQuery{
+	private String imageDir;
+	
+	@Context
+	public void setServletContext(ServletContext context) {
+//		imageDir = context.getRealPath("image/kdecacheforename") + File.separatorChar;
+	}
+	
+	@GET
+	@Produces("application/x-javascript")
+	public JSONWithPadding querySurname(
+			@QueryParam("surname") @DefaultValue("") String surname,
+			@QueryParam("latsw") @DefaultValue("0.0") double latsw,
+			@QueryParam("lngsw") @DefaultValue("0.0") double lngsw,
+			@QueryParam("latne") @DefaultValue("0.0") double latne,
+			@QueryParam("lngne") @DefaultValue("0.0") double lngne,
+			@QueryParam("callback") @DefaultValue("callback") String callback
+			){
+		QueryNameIncome query = new QueryNameIncome();
+		QueryNameIncomeBean result = query.queryNameIncome(surname, "surname", new LatLng(latsw, lngsw), new LatLng(latne, lngne));
+		return new JSONWithPadding(result, callback);
+	}
+}

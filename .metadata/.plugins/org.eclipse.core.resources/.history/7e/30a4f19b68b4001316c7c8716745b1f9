@@ -1,0 +1,8 @@
+package edu.asu.joseibarra.services;
+
+import javax.ws.rs.Path;
+
+@Path("/surname")
+public class SurnameService {
+
+}

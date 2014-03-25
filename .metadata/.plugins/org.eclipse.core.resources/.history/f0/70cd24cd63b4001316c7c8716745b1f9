@@ -1,0 +1,5 @@
+package edu.asu.joseibarra.zillow;
+
+public class ZillowQuery {
+
+}

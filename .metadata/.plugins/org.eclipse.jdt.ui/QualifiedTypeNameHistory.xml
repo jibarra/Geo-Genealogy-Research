@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="javax.xml.parsers.DocumentBuilderFactory"/>
+<fullyQualifiedTypeName name="javax.xml.parsers.DocumentBuilder"/>
+<fullyQualifiedTypeName name="javax.xml.parsers.ParserConfigurationException"/>
+<fullyQualifiedTypeName name="org.xml.sax.SAXException"/>
+<fullyQualifiedTypeName name="java.io.IOException"/>
+<fullyQualifiedTypeName name="org.w3c.dom.Document"/>
+<fullyQualifiedTypeName name="org.w3c.dom.Element"/>
+<fullyQualifiedTypeName name="javax.ws.rs.GET"/>
+<fullyQualifiedTypeName name="javax.ws.rs.core.Response"/>
+<fullyQualifiedTypeName name="javax.ws.rs.PathParam"/>
+<fullyQualifiedTypeName name="javax.ws.rs.QueryParam"/>
+<fullyQualifiedTypeName name="org.w3c.dom.NodeList"/>
+<fullyQualifiedTypeName name="edu.asu.joseibarra.zillow.ZillowQuery"/>
+<fullyQualifiedTypeName name="edu.asu.wangfeng.geo.utility.LatLng"/>
+<fullyQualifiedTypeName name="edu.asu.wangfeng.geo.GoogleMercator"/>
+<fullyQualifiedTypeName name="edu.asu.joseibarra.name.utility.KDEPainterEfficient"/>
+<fullyQualifiedTypeName name="com.sun.jersey.api.json.JSONWithPadding"/>
+<fullyQualifiedTypeName name="edu.asu.wangfeng.service.netbeans.BuildResultBean"/>
+<fullyQualifiedTypeName name="edu.asu.wangfeng.google.staticmaps.GoogleStaticMapsGenerator"/>
+<fullyQualifiedTypeName name="edu.asu.joseibarra.geo.GoogleMercator"/>
+<fullyQualifiedTypeName name="edu.asu.joseibarra.geo.KDEPainterEfficient"/>
+<fullyQualifiedTypeName name="edu.asu.joseibarra.services.WFQuery"/>
+<fullyQualifiedTypeName name="edu.asu.joseibarra.name.utility.QueryNameIncome"/>
+<fullyQualifiedTypeName name="edu.asu.wangfeng.service.netbeans.QueryNameIncomeBean"/>
+<fullyQualifiedTypeName name="edu.asu.joseibarra.geo.LatLng"/>
+<fullyQualifiedTypeName name="edu.asu.joseibarra.name.utility.QueryName"/>
+<fullyQualifiedTypeName name="edu.asu.wangfeng.service.netbeans.QueryBean"/>
+<fullyQualifiedTypeName name="javax.ws.rs.Path"/>
+</qualifiedTypeNameHistroy>
