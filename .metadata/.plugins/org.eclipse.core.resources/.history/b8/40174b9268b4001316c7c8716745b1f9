@@ -1,6 +1,0 @@
-package edu.asu.joseibarra.services;
-
-@Path("/surname")
-public class SurnameService {
-
-}
