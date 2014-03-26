@@ -2,17 +2,17 @@
 <meta charset="utf-8">
 <!--
  @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
- created on November 25, 2013 ane edited into 2014
+ created on November 25, 2013 and edited into 2014
 -->
 <html lang="en">
 <head>
-<!--   <meta http-equiv="content-type" content="text/html; charset=UTF8">
-  <meta charset="utf-8"> -->
+  <!-- meta properties for facebook and social media crawlers -->
   <meta property="og:image" content="http://ec2-54-201-211-102.us-west-2.compute.amazonaws.com:8080/nameweb/html/AllofUSHeatmapWithBackground.png" />
   <meta property="og:title" content="Name Density & Similar Names" />
   <meta property="og:site_name" content="Name Density & Similar Names" />
   <meta property="og:description" content="Find your name's distribution in the United States and see your name's income distribution. Discover other names with similar population and income distributions." />
   <meta property="og:url" content="http://ec2-54-201-211-102.us-west-2.compute.amazonaws.com:8080/nameweb/html/" />
+
   <title>Name Density</title>
 
 <!--
@@ -46,159 +46,180 @@
 
 <script>
 
+  //Functions to process text box key presses. Waits for enter key to process
   function surnameInputKeyPressed(e){
-        if(e.keyCode == 13){
-            onClickShowKDE("surname");
-        }
+    if(e.keyCode == 13){
+        onClickShowKDE("surname");
     }
+  }
+  function forenameInputKeyPressed(e){
+    if(e.keyCode == 13){
+        onClickShowKDE("forename");
+    }
+  }
 
-    function forenameInputKeyPressed(e){
-        if(e.keyCode == 13){
-            onClickShowKDE("forename");
-        }
+  //Resets the distribution tool
+  function resetDistributionTool(e){
+    distributionToolData = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
+    generateDistributionTool();
+    if($('#surnameWordleType').val() == 'distributiontool'){
+      window.clearInterval(toolClicked);
+      toolClicked = setInterval("updateSimilarIncomeWordleForTool('surname')", 2000);
     }
+  }
 
-    function resetDistributionTool(e){
-      distributionToolData = [10, 10, 10, 10, 10, 10, 10, 10, 10, 10];
-      generateDistributionTool();
-      if($('#surnameWordleType').val() == 'distributiontool'){
-        window.clearInterval(toolClicked);
-        toolClicked = setInterval("updateSimilarIncomeWordleForTool('surname')", 2000);
+  //Processes the type of wordle being changed by the user.
+  function wordleTypeChanged(nameType){
+    if(nameType == "surname"){
+      $("option[value='specificIncomeRange']").remove();
+      if(!state.kdeSurname){
+        return;
+      }
+      state.kdeSurname = $('#surname_input').val().toUpperCase();
+      if($('#surnameWordleType').val() == 'l2'){
+        updateSimilarMapWordle(nameType, 'l2');
+      }
+      else if($('#surnameWordleType').val() == 'core'){
+        updateSimilarMapWordle(nameType, 'core');
+      }
+      else if($('#surnameWordleType').val() == 'income'){
+        updateSimilarIncomeWordle(nameType);
+      }
+      else if($('#surnameWordleType').val() == 'distributiontool'){
+        updateSimilarIncomeWordleForTool(nameType);
       }
     }
+  }
 
-    function usAreaSelected(nameType){
-      if(nameType == "surname"){
-        $('#forenameusareas').val($('#surnameusareas').val());
-        zoomToArea($('#surnameusareas').val(), nameType);
+  //Processes the type of map being changed by the user.
+  function mapTypeSelected(nameType){
+    if(nameType == "surname"){
+      state.kdeSurname = $('#surname_input').val().toUpperCase();
+      if(!state.kdeSurname){
+        return;
       }
-      else if(nameType == "forename"){
-        $('#surnameusareas').val($('#forenameusareas').val());
-        zoomToArea($('#forenameusareas').val(), nameType);
+      if($('#surnameMapType').val() == 'regular'){
+        kdeQuery(nameType, '');
       }
-      histogramQuery("surname");
-      histogramQuery("forename");
-    }
-
-    function wordleTypeChanged(nameType){
-      if(nameType == "surname"){
-        state.kdeSurname = $('#surname_input').val().toUpperCase();
-        $("option[value='specificIncomeRange']").remove();
-        if(state.kdeSurname){
-          if($('#surnameWordleType').val() == 'l2')
-            updateSimilarMapWordle(nameType, 'l2');
-          else if($('#surnameWordleType').val() == 'core')
-            updateSimilarMapWordle(nameType, 'core');
-          else if($('#surnameWordleType').val() == 'income')
-            updateSimilarIncomeWordle(nameType);
-          else if($('#surnameWordleType').val() == 'distributiontool')
-            updateSimilarIncomeWordleForTool(nameType);
-        }
+      else if($('#surnameMapType').val() == 'probabilistic'){
+        kdeQuery(nameType, 'Probabilistic');
       }
     }
-
-    function mapTypeSelected(nameType){
-      if(nameType == "surname"){
-        state.kdeSurname = $('#surname_input').val().toUpperCase();
-        if(state.kdeSurname){
-          if($('#surnameMapType').val() == 'regular')
-          kdeQuery(nameType, '');
-          else if($('#surnameMapType').val() == 'probabilistic')
-            kdeQuery(nameType, 'Probabilistic');
-        }
+    else if(nameType == "forename"){
+      state.kdeForename = $('#forename_input').val().toUpperCase();
+      if(state.kdeForename){
+        return;
       }
-      else if(nameType == "forename"){
-        state.kdeForename = $('#forename_input').val().toUpperCase();
-        if(state.kdeForename){
-          if($('#forenameMapType').val() == 'regular')
-          kdeQuery(nameType, '');
-          else if($('#forenameMapType').val() == 'probabilistic')
-            kdeQuery(nameType, 'Probabilistic');
-        }
+      if($('#forenameMapType').val() == 'regular'){
+        kdeQuery(nameType, '');
+      }
+      else if($('#forenameMapType').val() == 'probabilistic'){
+        kdeQuery(nameType, 'Probabilistic');
       }
     }
+  }
 
 </script>
-
 </head>
 
 <body>
 
+<!-- Tabs for the user, split into the type of name -->
 <div id="tabs">
   <ul>
     <li><a href="#tabSurname">Surname</a></li>
     <li><a href="#tabForename">Forename</a></li>
   </ul>
+  <!-- Surname tab -->
   <div id="tabSurname">
-    <div id ="surnameContainerLeft" style="float:left;">
-        <div id="allUSMap">
-          <img src="AllofUSHeatmapWithBackground.png" style="visibility:hidden" />
-          <img src="AllofUSHeatmap.png" style="visibility:hidden" />
-        </div>
-        <b>Surname:</b> <input type="text" id="surname_input" name="surname"
-                    onkeypress="surnameInputKeyPressed(event)" autocomplete = "off">
-        <select name="surnameMapType" id="surnameMapType" onchange="mapTypeSelected('surname')">
-          <option value="regular">Regular Distribution</option>
-          <option value="probabilistic">Probabilistic Distribution</option>
-        </select>
-        <span class="helpdialog">?
-          <span>The distribution dropdown allows selection the<br />
-          distribution type of the map. The <b>regular distribution</b><br />
-          shows the most dense areas with no modifications<br />
-          while the <b>probabilstic distribution</b> shows where a<br />
-          person with that name is most likely to be met when<br/>
-          compared to the US's overall distribution.</span>
-        </span>
-        <button onclick="onClickShowKDE('surname')">Submit</button>
-        <button id="surnameCaptureButton" onclick="onClickCaptureButton('surname')">Capture</button>
-        <a id="surnamecapturedimagelink" href = "" target="_blank">Captured Image</a>
-        
-        <div id="surnameMeanIncomeText"></div>
-        <div id="surnameMedianIncomeText"></div>
-        
-        <div id="loadingsurnamehistogram"><img src="ajax-loader.gif" alt="Loading..." /></div>
-        <div id="surnamehistogram">
-          <div style="float:left;margin-top:30px;">
-            <div id="histogramLabel">
-              <b>Income Distribution:</b>
-              <span class="helpdialog">?
-                <span>The colored histogram displays the income<br />
-                distribution for the inputted name. The bins<br />
-                represent the Census's distribution bins for<br />
-                census tract areas. Hover over a bin to see<br />
-                the bin's range and the specific percentage<br />
-                of people within that bin's range. Click on a<br />
-                range to find similar names according to that<br />
-                bin's value.
-                </span>
-              </span>
-            </div>
-            <div id="surname_distribution_bar"></div>
-          </div>
-          <div id="incomeLegend" style="float:left;"></div>
-          
-        </div>
-        <div id="centercontainer" class="centercontainer">
-          <div id="mapdiv" style="float:left;margin-top:10px;">
-            <div><b>Name Distribution Heatmap:</b>
-              <span class="helpdialog">?
-                <span>The map displays the most dense areas for the<br />
-                inputted name based on the distribution type<br />
-                selected. The <b>regular distribution</b> shows the<br />
-                most dense areas with no modifications while<br />
-                the <b>probabilstic distribution</b> shows where a<br />
-                person with that name is most likely to be met<br/>
-                when compared to the US's overall distribution.</span>
-              </span>
-            </div>
-            <div id="surnamemap" class="namemap" style="float:left;"></div>
-            <div id="loadingsurname"><img src="ajax-loader.gif" alt="Loading..." /></div>
-            <div class="legendspace"></div>
-            <div id="mapLegend"></div>
-          </div>
-        </div>
+    <!-- Images for the social media crawlers -->
+    <div id="allUSMap">
+      <img src="AllofUSHeatmapWithBackground.png" style="visibility:hidden" />
+      <img src="AllofUSHeatmap.png" style="visibility:hidden" />
     </div>
+
+    <!-- Holds the objects for the left size of the screen (For large screens).
+      Will be the top container if the screen is too small. -->
+    <div id ="surnameContainerLeft" style="float:left;">
+      <!-- Surname input from the user -->
+      <b>Surname:</b> <input type="text" id="surname_input" name="surname"
+                  onkeypress="surnameInputKeyPressed(event)" autocomplete = "off">
+      <!-- Allows user selection of the heatmap type -->
+      <select name="surnameMapType" id="surnameMapType" onchange="mapTypeSelected('surname')">
+        <option value="regular">Regular Distribution</option>
+        <option value="probabilistic">Probabilistic Distribution</option>
+      </select>
+
+      <span class="helpdialog">?
+        <span>The distribution dropdown allows selection the<br />
+        distribution type of the map. The <b>regular distribution</b><br />
+        shows the most dense areas with no modifications<br />
+        while the <b>probabilstic distribution</b> shows where a<br />
+        person with that name is most likely to be met when<br/>
+        compared to the US's overall distribution.</span>
+      </span>
+
+      <button onclick="onClickShowKDE('surname')">Submit</button>
+      <button id="surnameCaptureButton" onclick="onClickCaptureButton('surname')">Capture</button>
+      <a id="surnamecapturedimagelink" href = "" target="_blank">Captured Image</a>
+      
+      <!-- Histogram output based on user input. -->
+      <div id="loadingsurnamehistogram"><img src="ajax-loader.gif" alt="Loading..." /></div>
+      <div id="surnamehistogram">
+        <div style="float:left;margin-top:30px;">
+          <div id="histogramLabel">
+            <b>Income Distribution:</b>
+            <span class="helpdialog">?
+              <span>The colored histogram displays the income<br />
+              distribution for the inputted name. The bins<br />
+              represent the Census's distribution bins for<br />
+              census tract areas. Hover over a bin to see<br />
+              the bin's range and the specific percentage<br />
+              of people within that bin's range. Click on a<br />
+              range to find similar names according to that<br />
+              bin's value.
+              </span>
+            </span>
+          </div>
+          <!-- Histogram distribution bar for surname -->
+          <div id="surname_distribution_bar"></div>
+        </div>
+        <!-- Legend for the income distribution -->
+        <div id="incomeLegend" style="float:left;"></div>
+      </div>
+
+      <!-- Container to hold the map -->
+      <div id="centercontainer" class="centercontainer">
+        <!-- Container holding the map -->
+        <div id="mapdiv" style="float:left;margin-top:10px;">
+          <div><b>Name Distribution Heatmap:</b>
+            <span class="helpdialog">?
+              <span>The map displays the most dense areas for the<br />
+              inputted name based on the distribution type<br />
+              selected. The <b>regular distribution</b> shows the<br />
+              most dense areas with no modifications while<br />
+              the <b>probabilstic distribution</b> shows where a<br />
+              person with that name is most likely to be met<br/>
+              when compared to the US's overall distribution.</span>
+            </span>
+          </div>
+          <!-- The surname map -->
+          <div id="surnamemap" class="namemap" style="float:left;"></div>
+          <!-- Loading indicator -->
+          <div id="loadingsurname"><img src="ajax-loader.gif" alt="Loading..." /></div>
+          <!-- Div to separate the legend from teh map -->
+          <div class="legendspace"></div>
+          <!-- Map legend -->
+          <div id="mapLegend"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Holds the objects for the right side of the screen, as long as the screen is large.
+      If the screen is small, this should be the bottom container -->
     <div id ="surnameContainerRight" style="float:left;">
+      <!-- The distribution tool, allowing users to input a specific distribution
+        to find similar income distributions -->
       <div id="distributionToolContainer" style="float:left;margin-left:15px;margin-top:55px;width:555px;text-align:center;">
         <div style=""><b>Distribution Tool:</b>
           <span class="helpdialog">?
@@ -218,8 +239,11 @@
           </span>
           <button onclick="resetDistributionTool()">Reset</button>
         </div>
+        <!-- The div that will represent the distribution tool -->
         <div id="distributionTool" style=""></div>
       </div>
+
+      <!-- Holds the wordle information -->
       <div name="surnamewordlediv" id="surnamewordlediv" width=555 style="clear:both;margin-top:45px;">
         <b>Similar Names Word Cloud Type:</b>
         <span class="helpdialog wordlehelpwide" id="wordlehelp">?
@@ -234,39 +258,57 @@
             similar names based on the distribution tool input.<br />
             Click on a name to load thatname's distribution.</span>
         </span>
+        <!-- Allows the user to select the wordle type for the wordle -->
         <select name="surnameWordleType" id="surnameWordleType" onchange="wordleTypeChanged('surname')">
           <option value="core">Core Map Similarity</option>
           <option value="l2">L2 Map Similarity</option>
           <option value="income">Income Similarity</option>
           <option value="distributiontool">Distribution Tool Similarity</option>
         </select>
-        <div id="surnameWordleChart" width=500 height=500 style="margin-left:27.5px;">
-        </div>
+        <!-- The word cloud output -->
+        <div id="surnameWordleChart" width=500 height=500 style="margin-left:27.5px;"></div>
+        <!-- Loading indicator for the word cloud -->
         <div id="loadingsurnamewordle"><img src="ajax-loader.gif" alt="Loading..." /></div>
+        <!-- Separates the legend from tehw ordle -->
         <div class="legendspace"></div>
+        <!-- The legend for the wordle -->
         <div id="wordleLegend"></div>
       </div>
     </div>
 
+    <!-- Holds the social media objects -->
     <div id="social_media_surname" class="social_media" style="clear:both;">
       <a id="twitter" href="" class="sb small blue twitter" data-lang="en" target="_blank">Tweet</a>
-      <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+      <script>
+        !function(d,s,id){
+          var js,fjs=d.getElementsByTagName(s)[0];
+          if(!d.getElementById(id)){
+            js=d.createElement(s);
+            js.id=id;js.src="https://platform.twitter.com/widgets.js";
+            fjs.parentNode.insertBefore(js,fjs);
+          }
+        }(document,"script","twitter-wjs");
+      </script>
 
       <a id="facebook" href="" class = "sb small blue facebook" target="_blank">
         Share on Facebook
       </a>
     </div>
+
     <br />
+    <!-- Holds the description of the page and any help for the user -->
     <div id="helpdescription" style="font-size: 0.7em; clear:both;">Highlight a black 
-        <span class="helpdialog helpdescription">?
-          <span>Help will display near<br />
-            the question mark.
-          </span>
+      <span class="helpdialog helpdescription">
+        ?
+        <span>
+          Help will display near<br />
+          the question mark.
         </span>
-         to view help and descriptions about a part of the page. Best viewed at 1600x900 resolution or higher, in Chrome (Version 33 or higher) or Firefox (Version 24 or higher).
-      </div>
-      <br />
-      <div style="font-size: 0.7em; clear:both;">Copyright © 2014 Arizona State University</div>
+      </span>
+      to view help and descriptions about a part of the page. Best viewed at 1600x900 resolution or higher, in Chrome (Version 33 or higher) or Firefox (Version 24 or higher).
+    </div>
+    <br />
+    <div style="font-size: 0.7em; clear:both;">Copyright © 2014 Arizona State University</div>
   </div>
   
 
