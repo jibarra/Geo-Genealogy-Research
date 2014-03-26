@@ -34,7 +34,6 @@
 <script type="text/javascript" src="../javascript/overlay.js"></script>
 <script type="text/javascript" src="../javascript/query.js"></script>
 <script type="text/javascript" src="../javascript/generateRangeHistogram.js"></script>
-<script type="text/javascript" src="../javascript/areaZoom.js"></script>
 <script type="text/javascript" src="../javascript/nameWordle.js"></script>
 
 <!--
@@ -119,6 +118,10 @@
     }
   }
 
+  function incomeTypeSelected(nameType){
+    incomeRangesQuery("surname", $('#incomeDataType').val());
+  }
+
 </script>
 </head>
 
@@ -180,6 +183,11 @@
               bin's value.
               </span>
             </span>
+
+            <select name="incomeDataType" id="incomeDataType" onchange="incomeTypeSelected('surname')">
+              <option value="census">Census Data</option>
+              <option value="zillow">Zillow Data</option>
+            </select>
           </div>
           <!-- Histogram distribution bar for surname -->
           <div id="surname_distribution_bar"></div>

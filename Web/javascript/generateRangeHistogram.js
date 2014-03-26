@@ -60,8 +60,6 @@ String.prototype.width = function(font) {
   return w;
 }
 
-
-
 function generateIncomeDistributionBar(nameType, data){
 	var numBins = 10;
 	var values = data;
@@ -171,4 +169,82 @@ function setupHistogramData(nameType){
 		titleText : titleText
 	}
 	return returnValues;
+}
+
+function incomeRangesQuery(nameType, incomeType){
+	if(typeof (nameType) == 'undefined' || nameType == null){
+		return;
+	}
+
+	if(typeof(incomeType) == 'undefined' || incomeType == null){
+		return;
+	}
+
+	if(incomeType == 'census'){
+		state.incomeServiceBase = state.serviceBase;
+	}
+	else if(incomeType == 'zillow'){
+		state.incomeServiceBase = "";
+	}
+
+	if(nameType == 'surname'){
+		if(typeof (state.kdeSurname) == 'undefined' || state.kdeSurname == null){
+			return;
+		}
+		boundsOnEarth = kde.map.getBounds();
+		queryData = {
+			surname : state.kdeSurname
+		};
+	}
+	else if(nameType == 'forename'){
+		if(typeof (state.kdeForename) == 'undefined' || state.kdeForename == null){
+			return;
+		}
+		boundsOnEarth = forenamekde.map.getBounds();
+		queryData = {
+			forename : state.kdeForename
+		};
+	}
+	incomeRangesQueryImp(queryData, nameType);
+}
+
+function incomeRangesQueryImp(configuredData, nameType){
+	if(typeof (nameType) == 'undefined' || name == null){
+		return;
+	}
+	if(typeof (configuredData) == 'undefined' || configuredData == null){
+		return;
+	}
+	var scriptLocation;
+	if(nameType == "surname"){
+		$('#loadingsurnamehistogram').show();
+		scriptLocation = state.incomeServiceBase + 'services/queryIncomeRangesSurname?callback=?';
+	}
+	else if(nameType == "forename"){
+		$('#loadingforenamehistogram').show();
+		scriptLocation = state.incomeServiceBase + 'services/queryIncomeRangesForename?callback=?';
+	}
+	else{
+		return;
+	}
+	$.ajax(scriptLocation, {
+		data : configuredData,
+		dataType : 'jsonp',
+		global: true,
+
+		error : function(jqXHR, textStatus, errorThrown) {
+			console.log(textStatus);
+			console.log(jqXHR);
+			console.log(errorThrown);
+			if(nameType == "surname")
+				$('#loadingsurnamehistogram').hide();
+			else if(nameType == "forename")
+				$('#loadingforenamehistogram').hide();
+			alert('Error');
+		},
+		success : function(data, textStatus, jqXHR) {
+			state.surnameIncomeRanges = data;
+			generateIncomeDistributionBar(nameType, data);
+		}
+	});
 }

@@ -25,7 +25,7 @@ function onClickShowKDE(nametype) {
 			else if($('#surnameMapType').val() == 'probabilistic')
 				kdeQuery(nametype, 'Probabilistic');
 			$('#mapLegend').show();
-			incomeRangesQuery("surname");
+			incomeRangesQuery("surname", $('#incomeDataType').val());
 			if($('#surnameWordleType').val() == 'specificIncomeRange'){
 				$('#surnameWordleType').val("income");
 				$("option[value='specificIncomeRange']").remove();
