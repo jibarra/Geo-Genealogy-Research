@@ -1,11 +1,11 @@
-package edu.asu.joseibarra.geo;
-
-import java.awt.Point;
-
 /* Modified by Jose Ibarra
  * Added functionality for proper Google Map Coordinate to Lat
  * Long conversion
  */
+
+package edu.asu.joseibarra.geo;
+
+import java.awt.Point;
 
 public class GoogleMercator {
 	    private final int TILE_SIZE = 256;
@@ -73,22 +73,6 @@ public class GoogleMercator {
 		double y = 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1-x));
 		return radius * y;
     }
-    
-//    public double getDistance(Point p1, Point p2, Point center, int width, int height, int zoomLevel){
-//		LatLng a = screenToLonLat(p1, zoomLevel, center, width, height);
-//		LatLng b = screenToLonLat(p2, zoomLevel, center, width, height);
-//		return distance(a, b);
-//	}
-//    
-//    public LatLng screenToLonLat(Point p, int zoomLevel, Point center, int width, int height) {
-//		Point world = screenToWorld(p, center, width, height);
-//		return fromPointToLatLng(world);
-//	}
-//    
-//    public Point screenToWorld(Point p, Point center, int width, int height) {
-//		Point tempCenter = new Point(width / 2, height / 2);
-//		return new Point(center.x - tempCenter.x + p.x, center.y - tempCenter.y + p.y);
-//	}
     
     public static void main(String[] args) {
 		GoogleMercator mercator = new GoogleMercator();

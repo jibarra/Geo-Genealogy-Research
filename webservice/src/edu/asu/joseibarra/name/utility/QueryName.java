@@ -19,6 +19,7 @@ import edu.asu.wangfeng.service.netbeans.QueryBean;
 public class QueryName extends WFQuery {
 	private final int LOWER_NAME_LIMIT = 25;
 	
+	// Method for finding and returning the precompiled name map
 	public QueryBean queryCreatedName(String name, String imageDir, String mapType) throws IOException{
 		QueryBean result = new QueryBean();
 		if(name.length() == 0){
@@ -37,8 +38,7 @@ public class QueryName extends WFQuery {
 			imagePath = "Regular/" + firstChar + "/image/" + name + "image.png";
 		else
 			imagePath = "Probabilistic/" + firstChar + "/image/" + name + "image.png";
-//		imagePath = "ec2-54-201-211-102.us-west-2.compute.amazonaws.com:8080\\surnameservice\\" + imagePath;
-//		imagePath = "localhost:8080\\nameservice\\" + imagePath;
+
 		file = new File(imageDir + imagePath);
 		if(file.exists()){
 			result.setImage(imagePath);
@@ -50,11 +50,9 @@ public class QueryName extends WFQuery {
 			result.setNumber(0);
 			return result;
 		}
-//		result.setImage(imagePath);
-//		result.setNumber(0);
-//		return result;
 	}
 	
+	// Method for creating a name map (not precompiled)
 	public QueryBean queryName(String name, LatLng sw, LatLng ne, LatLng center, int width,
 			int height, int zoom, String nameType, String imageDir, String mapType, int sqlLimit) 
 					throws IOException{

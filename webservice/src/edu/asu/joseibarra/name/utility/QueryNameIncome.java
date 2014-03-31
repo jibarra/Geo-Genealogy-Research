@@ -29,7 +29,6 @@ public class QueryNameIncome extends WFQuery{
 		LinkedList<Double> meanIncomes = new LinkedList<Double>();
 		LinkedList<Double> medianIncomes = new LinkedList<Double>();
 		
-		long start = System.nanoTime();
 		try {
 			connection = connectDatabase();
 			//SQL LOCATED HERE
@@ -61,10 +60,6 @@ public class QueryNameIncome extends WFQuery{
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		long end = System.nanoTime();
-//    	System.out.println("Time to execute and store " + name + " histogram incomes: "
-//		+ ((end-start) / 1000000000.0) + " seconds");
     	
     	if(meanIncomes.size() < 100){
     		result.setMeanIncome(null);
