@@ -1,3 +1,8 @@
+/* Modified by Jose Ibarra
+ * Combined surname services into one file for cleaner
+ * code. Surname services can now be found at /surname/SERVICE_NAME/
+ */
+
 package edu.asu.joseibarra.services;
 
 import java.io.File;
@@ -26,9 +31,6 @@ public class SurnameService {
 	
 	@Context
 	public void setServletContext(ServletContext context) {
-//		imageDir = context.getRealPath("image/kdecacheforename") + File.separatorChar;
-//		imageDir = context.getRealPath("image/kdeprecalcsurname") + File.separatorChar;
-//		imageDir = "C:\\Users\\jlibarr1\\Documents\\Code\\Surname Heatmaps Code (Production)\\surnameservice\\resources\\kdeprecalcsurname\\";
 		imageDir = context.getRealPath("") + File.separatorChar + "resources" + File.separatorChar;
 	}
 	

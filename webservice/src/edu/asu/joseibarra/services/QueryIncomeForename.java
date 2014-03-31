@@ -1,3 +1,8 @@
+/* Modified by Jose Ibarra
+ * Added functionality for proper Google Map Coordinate to Lat
+ * Long conversion
+ */
+
 package edu.asu.joseibarra.services;
 
 import java.io.File;
@@ -16,10 +21,7 @@ import edu.asu.joseibarra.geo.LatLng;
 import edu.asu.joseibarra.name.utility.QueryNameIncome;
 import edu.asu.wangfeng.service.netbeans.QueryNameIncomeBean;
 
-/* Modified by Jose Ibarra
- * Added functionality for proper Google Map Coordinate to Lat
- * Long conversion
- */
+
 
 @Path("/queryIncomeForename")
 public class QueryIncomeForename extends WFQuery{

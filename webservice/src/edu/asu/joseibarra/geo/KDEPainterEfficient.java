@@ -1,9 +1,9 @@
-package edu.asu.joseibarra.geo;
-
 /* Modified by Jose Ibarra
  * Added functionality for proper Google Map Coordinate to Lat
  * Long conversion
  */
+
+package edu.asu.joseibarra.geo;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
