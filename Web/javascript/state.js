@@ -6,12 +6,12 @@ var state = {
 	//This is the variable for the maps' zoom level
 	//Lower numbers show more of the world (more zoomed out)
 	zoomLevel : 4,
-	surnameOverlayImage : 'blank.png',
-	forenameOverlayImage : 'blank.png',
-	combinedOverlayImage : 'blank.png',
-	surnameCaptureImage : 'blank.png',
-	forenameCaptureImage : 'blank.png',
-	combineCaptureImage : 'blank.png',
+	surnameOverlayImage : 'images/blank.png',
+	forenameOverlayImage : 'images/blank.png',
+	combinedOverlayImage : 'images/blank.png',
+	surnameCaptureImage : 'images/blank.png',
+	forenameCaptureImage : 'images/blank.png',
+	combineCaptureImage : 'images/blank.png',
 	surnameLoaded : false,
 	forenameLoaded : false,
 	kdeSurname : '',

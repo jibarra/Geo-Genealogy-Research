@@ -7,7 +7,7 @@
 <html lang="en">
 <head>
   <!-- meta properties for facebook and social media crawlers -->
-  <meta property="og:image" content="http://ec2-54-201-211-102.us-west-2.compute.amazonaws.com:8080/nameweb/html/AllofUSHeatmapWithBackground.png" />
+  <meta property="og:image" content="http://ec2-54-201-211-102.us-west-2.compute.amazonaws.com:8080/nameweb/html/images/AllofUSHeatmapWithBackground.png" />
   <meta property="og:title" content="Name Density & Similar Names" />
   <meta property="og:site_name" content="Name Density & Similar Names" />
   <meta property="og:description" content="Find your name's distribution in the United States and see your name's income distribution. Discover other names with similar population and income distributions." />
@@ -137,8 +137,8 @@
   <div id="tabSurname">
     <!-- Images for the social media crawlers -->
     <div id="allUSMap">
-      <img src="AllofUSHeatmapWithBackground.png" style="visibility:hidden" />
-      <img src="AllofUSHeatmap.png" style="visibility:hidden" />
+      <img src="images/AllofUSHeatmapWithBackground.png" style="visibility:hidden" />
+      <img src="images/AllofUSHeatmap.png" style="visibility:hidden" />
     </div>
 
     <!-- Holds the objects for the left size of the screen (For large screens).
@@ -167,7 +167,7 @@
       <a id="surnamecapturedimagelink" href = "" target="_blank">Captured Image</a>
       
       <!-- Histogram output based on user input. -->
-      <div id="loadingsurnamehistogram"><img src="ajax-loader.gif" alt="Loading..." /></div>
+      <div id="loadingsurnamehistogram"><img src="images/ajax-loader.gif" alt="Loading..." /></div>
       <div id="surnamehistogram">
         <div style="float:left;margin-top:30px;">
           <div id="histogramLabel">
@@ -214,7 +214,7 @@
           <!-- The surname map -->
           <div id="surnamemap" class="namemap" style="float:left;"></div>
           <!-- Loading indicator -->
-          <div id="loadingsurname"><img src="ajax-loader.gif" alt="Loading..." /></div>
+          <div id="loadingsurname"><img src="images/ajax-loader.gif" alt="Loading..." /></div>
           <!-- Div to separate the legend from teh map -->
           <div class="legendspace"></div>
           <!-- Map legend -->
@@ -276,7 +276,7 @@
         <!-- The word cloud output -->
         <div id="surnameWordleChart" width=500 height=500 style="margin-left:27.5px;"></div>
         <!-- Loading indicator for the word cloud -->
-        <div id="loadingsurnamewordle"><img src="ajax-loader.gif" alt="Loading..." /></div>
+        <div id="loadingsurnamewordle"><img src="images/ajax-loader.gif" alt="Loading..." /></div>
         <!-- Separates the legend from tehw ordle -->
         <div class="legendspace"></div>
         <!-- The legend for the wordle -->
@@ -334,13 +334,13 @@
         <a id="forenamecapturedimagelink" href = "" target="_blank">Captured Image</a>
         <div id="surnameMeanIncomeText"></div>
         <div id="surnameMedianIncomeText"></div>
-        <div id="loadingforenamehistogram"><img src="ajax-loader.gif" alt="Loading..." /></div>
+        <div id="loadingforenamehistogram"><img src="images/ajax-loader.gif" alt="Loading..." /></div>
         <div id="forename_distribution_bar"></div>
     </div>
 
     <div id="forenamecentercontainter" class="centercontainer">
       <div id="forenamemap" class="namemap" style="float:left;"></div>
-      <div id="loadingforename"><img src="ajax-loader.gif" alt="Loading..." /></div>
+      <div id="loadingforename"><img src="images/ajax-loader.gif" alt="Loading..." /></div>
       <div name="forenamewordlediv" id="forenamewordlediv" style="float:left;">
         Wordle Type:
         <select name="forenameWordleType" id="forenameWordleType" onchange="wordleTypeChanged('forename')">
