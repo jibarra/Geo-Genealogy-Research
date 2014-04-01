@@ -2,6 +2,7 @@ package edu.asu.joseibarra.services;
 
 import java.io.IOException;
 
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.QueryParam;
@@ -19,7 +20,8 @@ public class ZillowService {
 	@Path("/getRegionChildren")
 	public Response getRegionChildren(
 			@QueryParam("state") String state,
-			@QueryParam("childtype") String childtype
+			@QueryParam("childtype") String childtype,
+			@QueryParam("callback") @DefaultValue("callback") String callback
 			) throws SAXException, IOException{
 		if(state == null || childtype == null
 				|| state.length() <= 0 || childtype.length() <= 0){
@@ -30,4 +32,6 @@ public class ZillowService {
 		
 		return Response.status(200).entity(query.getRegionChildren(state, childtype)).build();
 	}
+	
+	
 }

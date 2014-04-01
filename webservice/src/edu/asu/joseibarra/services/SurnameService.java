@@ -8,6 +8,7 @@ package edu.asu.joseibarra.services;
 import java.io.File;
 import java.io.IOException;
 
+import javax.naming.NamingException;
 import javax.servlet.ServletContext;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -19,6 +20,7 @@ import javax.ws.rs.core.Context;
 import com.sun.jersey.api.json.JSONWithPadding;
 
 import edu.asu.joseibarra.geo.LatLng;
+import edu.asu.joseibarra.name.utility.NameIncome;
 import edu.asu.joseibarra.name.utility.QueryName;
 import edu.asu.joseibarra.name.utility.QueryNameIncome;
 import edu.asu.wangfeng.service.netbeans.QueryBean;
@@ -47,6 +49,23 @@ public class SurnameService {
 			){
 		QueryNameIncome query = new QueryNameIncome();
 		QueryNameIncomeBean result = query.queryNameIncome(surname, "surname", new LatLng(latsw, lngsw), new LatLng(latne, lngne));
+		return new JSONWithPadding(result, callback);
+	}
+	
+	@GET
+	@Produces("application/x-javascript")
+	@Path("/queryIncomeRanges")
+	public JSONWithPadding queryIncomeRanges(
+			@QueryParam("surname") @DefaultValue("") String surname,
+			@QueryParam("incomeType") @DefaultValue("census") String incomeType,
+			@QueryParam("callback") @DefaultValue("callback") String callback
+			) throws NamingException{
+		if(incomeType == null || surname == null || incomeType.equals("") || surname.equals("")){
+			return new JSONWithPadding(new double[10]);
+		}
+		
+		NameIncome income = new NameIncome();
+		double[] result = income.queryIncomeRangeSurname(surname, incomeType);
 		return new JSONWithPadding(result, callback);
 	}
 	

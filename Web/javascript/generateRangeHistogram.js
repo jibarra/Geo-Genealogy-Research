@@ -184,7 +184,7 @@ function incomeRangesQuery(nameType, incomeType){
 		state.incomeServiceBase = state.serviceBase;
 	}
 	else if(incomeType == 'zillow'){
-		state.incomeServiceBase = "";
+		state.incomeServiceBase = "http://localhost:8080/webservice/";
 	}
 
 	if(nameType == 'surname'){
@@ -193,7 +193,8 @@ function incomeRangesQuery(nameType, incomeType){
 		}
 		boundsOnEarth = kde.map.getBounds();
 		queryData = {
-			surname : state.kdeSurname
+			surname : state.kdeSurname,
+			incomeType : incomeType
 		};
 	}
 	else if(nameType == 'forename'){
@@ -205,10 +206,10 @@ function incomeRangesQuery(nameType, incomeType){
 			forename : state.kdeForename
 		};
 	}
-	incomeRangesQueryImp(queryData, nameType);
+	incomeRangesQueryImp(queryData, nameType, incomeType);
 }
 
-function incomeRangesQueryImp(configuredData, nameType){
+function incomeRangesQueryImp(configuredData, nameType, incomeType){
 	if(typeof (nameType) == 'undefined' || name == null){
 		return;
 	}
@@ -218,7 +219,12 @@ function incomeRangesQueryImp(configuredData, nameType){
 	var scriptLocation;
 	if(nameType == "surname"){
 		$('#loadingsurnamehistogram').show();
-		scriptLocation = state.incomeServiceBase + 'services/queryIncomeRangesSurname?callback=?';
+		if(incomeType == 'census'){
+			scriptLocation = state.incomeServiceBase + 'services/queryIncomeRangesSurname?callback=?';
+		}
+		else if (incomeType == 'zillow'){
+			scriptLocation = state.incomeServiceBase + 'services/surname/queryIncomeRanges?callback=?';
+		}
 	}
 	else if(nameType == "forename"){
 		$('#loadingforenamehistogram').show();
