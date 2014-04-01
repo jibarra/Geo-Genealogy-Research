@@ -249,6 +249,8 @@ function incomeRangesQueryImp(configuredData, nameType, incomeType){
 			alert('Error');
 		},
 		success : function(data, textStatus, jqXHR) {
+			console.log(scriptLocation);
+			console.log(configuredData);
 			state.surnameIncomeRanges = data;
 			generateIncomeDistributionBar(nameType, data);
 		}

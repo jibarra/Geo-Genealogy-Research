@@ -15,17 +15,20 @@ import java.util.LinkedList;
 
 import javax.naming.NamingException;
 
+import org.xml.sax.SAXException;
+
 import edu.asu.joseibarra.services.WFQuery;
 import edu.asu.joseibarra.utility.IncomeSimilarity;
+import edu.asu.joseibarra.zillow.ZillowQuery;
 
 public class NameIncome extends WFQuery{
 //public class NameIncome{
 	
 	public double[] queryIncomeRangeSurname(String surname, String incomeType) throws NamingException{
-		if(incomeType == "census"){
+		if(incomeType.equals("census")){
 			return queryIncomeRangeName("surname", surname);
 		}
-		else if(incomeType == "zillow"){
+		else if(incomeType.equals("zillow")){
 			return queryIncomeRangeNameZillow("surname", surname);
 		}
 		return new double[10];
@@ -35,7 +38,19 @@ public class NameIncome extends WFQuery{
 		return queryIncomeRangeName("forename", forename);
 	}
 	
+	/*
+	 * Find the income range based on zillow. Get the list of location of names then
+	 * query zillow for data to correlate together.
+	 */
 	private double[] queryIncomeRangeNameZillow(String nameType, String name){
+		ZillowQuery zillow = new ZillowQuery();
+		try {
+			zillow.getRegionChildren("NV", "zipcode");
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return new double[10];
 	}
 	

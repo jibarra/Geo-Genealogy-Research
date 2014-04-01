@@ -1,6 +1,7 @@
 package edu.asu.joseibarra.zillow;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -39,11 +40,20 @@ public class ZillowQuery {
 		return "";
 	}
 	
-	public String getRegionChildren(String state, String childtype) throws SAXException, IOException{
-		Document serviceDoc = docBuilder.parse(REGION_CHILDREN_URL + "?zws-id=" + ZWSID + "&state=" + state+ "&childtype=" + childtype);
+	public void getRegionChildrenForState(String state, String childtype, ZillowStateZipDemographics stateStorage){
+		if(state.equals("GA")){
+			return;
+		}
+		Document serviceDoc = null;
+		try {
+			serviceDoc = docBuilder.parse(REGION_CHILDREN_URL + "?zws-id=" + ZWSID + "&state=" + state + "&childtype=" + childtype);			
+		} catch (SAXException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		Element regionElement = (Element)serviceDoc.getElementsByTagName("list").item(0);
 		NodeList regionList = regionElement.getChildNodes();
-		String outputList = "";
 		
 		int size = regionList.getLength();
 		for(int i = 0; i < size; i++){
@@ -53,9 +63,38 @@ public class ZillowQuery {
 			if(zindex == null){
 				continue;
 			}
-			outputList += name.getTextContent() + ": " + zindex.getAttribute("currency") + " " + zindex.getTextContent() + "\n";
+			stateStorage.addZipValue(name.getTextContent(), Integer.parseInt(zindex.getTextContent()));
 		}
-		return outputList;
+	}
+	
+	public void setupStateZipDemographics(String childtype){
+		ZillowQuery.stateZipDemographics = new HashMap<String, ZillowStateZipDemographics>();
+		for(int i = 0; i < US_STATES.length; i++){
+			System.out.println("Setting up " + US_STATES[i]);
+			stateZipDemographics.put(US_STATES[i], new ZillowStateZipDemographics(US_STATES[i]));
+			getRegionChildrenForState(US_STATES[i], childtype, stateZipDemographics.get(US_STATES[i]));
+		}
+	}
+	
+	public void getRegionChildren(String state, String childtype) throws SAXException, IOException{
+		if(ZillowQuery.stateZipDemographics == null){
+			setupStateZipDemographics(childtype);
+		}
+		
+		ZillowStateZipDemographics stateDemographics = ZillowQuery.stateZipDemographics.get(state);
+		if(stateDemographics == null){
+			return;
+		}
+		
+		HashMap<String, Integer> values = stateDemographics.getZipValues();
+		if(values == null){
+			return;
+		}
+		
+		System.out.println("Printing demographics for " + state);
+		for(String s : values.keySet()){
+			System.out.println(s + ": " + values.get(s));
+		}
 	}
 	
 	public static void main(String[] args) throws SAXException, IOException{
@@ -63,8 +102,11 @@ public class ZillowQuery {
 //		System.out.println(service.getZestimate("48749425", false));
 //		System.out.println(service.getSearchResults("901 Scarlet Haze Avenue", "89183", false));
 //		System.out.println(service.getDemographics("89183"));
-		System.out.println(service.getRegionChildren("az", "zipcode"));
+//		System.out.println(service.getRegionChildren("az", "zipcode"));
 	}
+	
+	private static HashMap<String, ZillowStateZipDemographics> stateZipDemographics = null;
+//	private static ZillowStateZipDemographics[] stateZipDemographics = null;
 	
 	private static final DocumentBuilderFactory dbFac;
     private static final DocumentBuilder docBuilder;
@@ -80,6 +122,11 @@ public class ZillowQuery {
             throw new RuntimeException(e);
         }
     }
+	
+	private static final String[] US_STATES = {"AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL",
+		"GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE",
+		"NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT",
+		"VT","VA","WA","WV","WI","WY"};
 	
 	private final String ZWSID = "X1-ZWz1b8t7153ksr_728x4";
 	private final String ZESTIMATE_URL = "http://www.zillow.com/webservice/GetZestimate.htm";
