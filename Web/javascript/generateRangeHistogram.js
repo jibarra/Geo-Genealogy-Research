@@ -1,6 +1,8 @@
  // @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
  // created on November 25, 2013 ane edited into 2014
 
+ //Linted on April 7, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
+
 var OrRd = {
 3: ["#fee8c8","#fdbb84","#e34a33"],
 4: ["#fef0d9","#fdcc8a","#fc8d59","#d7301f"],

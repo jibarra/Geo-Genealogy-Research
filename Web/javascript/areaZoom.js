@@ -1,3 +1,10 @@
+/**
+ * @author Jose Ibarra, Jose.Ibarra@asu.edu, Arizona State University
+ * Modified on September 10, 2013 and after into 2014
+
+  Linted on April 7, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
+ */
+
 var largeStateZoom = 5;
 var medStateZoom = 6;
 var smallStateZoom = 7;
@@ -54,14 +61,15 @@ var stateCoords = {
 	WV : [new google.maps.LatLng(39.0000, -80.5000), smallStateZoom],
 	WI : [new google.maps.LatLng(44.5000, -89.5000), smallStateZoom],
 	WY : [new google.maps.LatLng(43.0000, -107.5000), smallStateZoom]
-}
+};
 
 function zoomToArea(areaName, nameType){
+	"use strict";
 	state.forenameLoaded = false;
 	state.surnameLoaded = false;
 	$( "#tabs" ).tabs("disable", 2);
 	var area = stateCoords[areaName];
-	if(area == null || typeof(area) == 'undefined')
+	if(area === null || typeof(area) == "undefined")
 		return;
 	var coords = area[0];
 	
