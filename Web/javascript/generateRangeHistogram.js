@@ -42,7 +42,6 @@ function generateHistogramColorFixed(value, maxValue, colors){
 	if(value <= 0)
 		return colors[0];
 	if(value >= maxValue){
-		console.log("here");
 		return colors[colors.length-1];
 	}
 	return colors[Math.floor(value / (maxValue / (colors.length-1)))];
@@ -249,8 +248,6 @@ function incomeRangesQueryImp(configuredData, nameType, incomeType){
 			alert('Error');
 		},
 		success : function(data, textStatus, jqXHR) {
-			console.log(scriptLocation);
-			console.log(configuredData);
 			state.surnameIncomeRanges = data;
 			generateIncomeDistributionBar(nameType, data);
 		}

@@ -453,7 +453,7 @@ function updateSimilarMapWordle(nametype, wordletype) {
 			limit : 100
 		};
 	}
-		
+
 	$.ajax(scriptLocation, {
 		data: configuredData,
 		dataType: "jsonp",
