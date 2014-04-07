@@ -30,7 +30,7 @@ public class ZillowService {
 			
 		ZillowQuery query = new ZillowQuery();
 		
-		return Response.status(200).entity(query.getRegionChildren(state, childtype)).build();
+		return Response.status(200).entity("nothing").build();
 	}
 	
 	
