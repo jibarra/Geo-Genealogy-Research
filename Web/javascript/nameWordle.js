@@ -4,6 +4,7 @@
 
  Linted on April 7, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
  */
+ 
 var wordleMax;
 var wordleMin;
 
