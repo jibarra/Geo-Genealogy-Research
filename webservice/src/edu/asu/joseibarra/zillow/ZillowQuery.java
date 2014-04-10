@@ -46,6 +46,7 @@ public class ZillowQuery {
 		if(state.equals("GA")){
 			return;
 		}
+		
 		Document serviceDoc = null;
 		try {
 			serviceDoc = docBuilder.parse(REGION_CHILDREN_URL + "?zws-id=" + ZWSID + "&state=" + state + "&childtype=" + childtype);			
@@ -66,13 +67,14 @@ public class ZillowQuery {
 				continue;
 			}
 			stateStorage.addZipValue(name.getTextContent(), Integer.parseInt(zindex.getTextContent()));
+			zipDemographics.put(name.getTextContent(), Integer.parseInt(zindex.getTextContent()));
 		}
 	}
 	
 	public void setupStateZipDemographics(String childtype){
 		ZillowQuery.stateZipDemographics = new HashMap<String, ZillowStateZipDemographics>();
+		ZillowQuery.zipDemographics = new HashMap<String, Integer>();
 		for(int i = 0; i < US_STATES.length; i++){
-			System.out.println("Setting up " + US_STATES[i]);
 			stateZipDemographics.put(US_STATES[i], new ZillowStateZipDemographics(US_STATES[i]));
 			getRegionChildrenForState(US_STATES[i], childtype, stateZipDemographics.get(US_STATES[i]));
 		}
@@ -95,56 +97,42 @@ public class ZillowQuery {
 		}
 	}
 	
-	public void getRegionChildren(String state, String childtype) throws SAXException, IOException{
+	public void loadRegionChildren(String childtype) throws SAXException, IOException{
 		checkStateZipDemographics(childtype);
 		
-//		ZillowStateZipDemographics stateDemographics = ZillowQuery.stateZipDemographics.get(state);
-//		if(stateDemographics == null){
-//			return;
+//		int max = 0;
+//		int min = 999999999;
+//		int zipCount = 0;
+//		String minZip = "";
+//		String maxZip = "";
+//		for(int i = 0; i < US_STATES.length; i++){
+//			ZillowStateZipDemographics stateDemographics = ZillowQuery.stateZipDemographics.get(US_STATES[i]);
+//			HashMap<String, Integer> values = stateDemographics.getZipValues();
+//			for(String s : values.keySet()){
+//				zipCount++;
+//				int value = values.get(s);
+//				if(value < min){
+//					min = value;
+//					minZip=s;
+//				}
+//				else if(value > max){
+//					max = value;
+//					maxZip=s;
+//				}
+//			}
 //		}
 //		
-//		HashMap<String, Integer> values = stateDemographics.getZipValues();
-//		if(values == null){
-//			return;
+//		for(int i = 0; i < US_STATES.length; i++){
+//			ZillowStateZipDemographics stateDemographics = ZillowQuery.stateZipDemographics.get(US_STATES[i]);
+//			HashMap<String, Integer> values = stateDemographics.getZipValues();
+//			for(String s : values.keySet()){
+//				System.out.println(values.get(s));
+//			}
 //		}
-		
-//		System.out.println("Printing demographics for " + state);
-//		for(String s : values.keySet()){
-//			System.out.println(s + ": " + values.get(s));
-//		}
-		int max = 0;
-		int min = 999999999;
-		int zipCount = 0;
-		String minZip = "";
-		String maxZip = "";
-		for(int i = 0; i < US_STATES.length; i++){
-			ZillowStateZipDemographics stateDemographics = ZillowQuery.stateZipDemographics.get(US_STATES[i]);
-			HashMap<String, Integer> values = stateDemographics.getZipValues();
-			for(String s : values.keySet()){
-				zipCount++;
-				int value = values.get(s);
-				if(value < min){
-					min = value;
-					minZip=s;
-				}
-				else if(value > max){
-					max = value;
-					maxZip=s;
-				}
-			}
-		}
-		
-		for(int i = 0; i < US_STATES.length; i++){
-			ZillowStateZipDemographics stateDemographics = ZillowQuery.stateZipDemographics.get(US_STATES[i]);
-			HashMap<String, Integer> values = stateDemographics.getZipValues();
-			for(String s : values.keySet()){
-				System.out.println(values.get(s));
-			}
-		}
-		
-		System.out.println("Min-> Zip: " + minZip + ", " + min);
-		System.out.println("Max-> Zip: " + maxZip + ", " + max);
-		System.out.println("# Zips: " + zipCount);
+//		
+//		System.out.println("Min-> Zip: " + minZip + ", " + min);
+//		System.out.println("Max-> Zip: " + maxZip + ", " + max);
+//		System.out.println("# Zips: " + zipCount);
 	}
 	
 	public Integer getZipCodeValue(String state, String zipcode){
@@ -163,6 +151,11 @@ public class ZillowQuery {
 		return values.get(zipcode);
 	}
 	
+	public Integer getZipCodeValue(String zipcode){
+		checkStateZipDemographics("zipcode");
+		return zipDemographics.get(zipcode);
+	}
+	
 	public static void main(String[] args) throws SAXException, IOException{
 		ZillowQuery service = new ZillowQuery();
 //		System.out.println(service.getZestimate("48749425", false));
@@ -174,6 +167,7 @@ public class ZillowQuery {
 	private static final int numUpdateDays = 7;
 	private static Calendar lastUpdate = null;
 	private static HashMap<String, ZillowStateZipDemographics> stateZipDemographics = null;
+	private static HashMap<String, Integer> zipDemographics = null;
 //	private static ZillowStateZipDemographics[] stateZipDemographics = null;
 	
 	private static final DocumentBuilderFactory dbFac;

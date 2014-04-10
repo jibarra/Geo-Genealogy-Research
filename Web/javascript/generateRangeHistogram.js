@@ -26,9 +26,15 @@ var Greens = {
 var surnameHistogramSVG = null;
 var forenameHistogramSVG = null;
 var histogramRangeMax = 20;
+var zillowRangeMax = 83.33;
+var numIncomeBins = 10;
 
-var ranges = ["0", "10,000", "10,001", "14,999", "15,000", "24,999", "25,000", "34,999", "35,000", "49,999",
+var incomeRanges = ["0", "10,000", "10,001", "14,999", "15,000", "24,999", "25,000", "34,999", "35,000", "49,999",
 			"50,000", "74,999", "75,000", "99,999", "100,000", "149,999", "150,000", "199,999", "200,000+"];
+
+var zillowRanges = ["0", "360,000", "360,0001", "720,000", "720,001", "1,080,000", "1,080,001", "1,440,000",
+					"1,440,001", "1,800,000", "1,800,001", "2,160,000", "2,160,001", "2,520,000",
+					"2,520,001", "2,880,000", "2,880,001", "3,240,000", "3,240,000+"];
 
 String.prototype.toTitleCase = function(){
 	"use strict";
@@ -67,15 +73,15 @@ String.prototype.width = function(font) {
 	return w;
 };
 
-function generateIncomeDistributionBar(nameType, data){
+function generateIncomeDistributionBarZillow(nameType, data){
 	"use strict";
-	var numBins = 10;
 	var values = data;
+
 	var dimensions = {top: 0, right: 0, bottom: 15, left: 0},
 	width = 400 - dimensions.left - dimensions.right,
-	height = 50 - dimensions.top - dimensions.bottom,
-	barWidth = width/numBins;
+	height = 50 - dimensions.top - dimensions.bottom;
 	var svg;
+
 	if(nameType == "surname"){
 		$("#loadingsurnamehistogram").hide();
 		d3.select("#surname_distribution_bar > svg").remove();
@@ -95,12 +101,72 @@ function generateIncomeDistributionBar(nameType, data){
 		.attr("transform", "translate(" + dimensions.left + "," + dimensions.top + ")");
 	}
 
-	// var max = d3.max(values);
-	// var min = 0;
-	var fakeData = [1000, 12000, 20000, 30000, 40000, 60000, 80000, 125000, 175000, 250000];
+	var bar = createHistogram(svg);
+	createHistogramBar(bar, width, height, values, zillowRanges, zillowRangeMax);
+	createHistogramBarAppendTitle(bar, zillowRanges, values);
+	appendHistogramLabels(svg, zillowRanges, dimensions, width, height);
+	
+	if(nameType == "surname"){
+		$("#surnamehistogram").show();
+		$("#surname_histogram_options").show();
+		$("#loadingsurnamehistogram").hide();
+		$("#distributionToolContainer").show();
+	}
+	else if(nameType == "forename"){
+		$("#forename_distribution_bar").show();
+		$("#forename_histogram_options").show();
+		$("#loadingforenamehistogram").hide();
+	}
+}
 
-	var coloring = Greens[6];
-	var formatPercents = d3.format(".2f");
+function generateIncomeDistributionBar(nameType, data){
+	"use strict";
+	var values = data;
+
+	var dimensions = {top: 0, right: 0, bottom: 15, left: 0},
+	width = 400 - dimensions.left - dimensions.right,
+	height = 50 - dimensions.top - dimensions.bottom;
+	var svg;
+
+	if(nameType == "surname"){
+		$("#loadingsurnamehistogram").hide();
+		d3.select("#surname_distribution_bar > svg").remove();
+		svg = d3.select("#surname_distribution_bar").append("svg")
+		.attr("width", width + dimensions.left + dimensions.right)
+		.attr("height", height + dimensions.top + dimensions.bottom)
+		.append("g")
+		.attr("transform", "translate(" + dimensions.left + "," + dimensions.top + ")");
+	}
+	else if(nameType == "forename"){
+		$("#loadingforenamehistogram").hide();
+		d3.select("#forename_distribution_bar > svg").remove();
+		svg = d3.select("#forename_distribution_bar").append("svg")
+		.attr("width", width + dimensions.left + dimensions.right)
+		.attr("height", height + dimensions.top + dimensions.bottom)
+		.append("g")
+		.attr("transform", "translate(" + dimensions.left + "," + dimensions.top + ")");
+	}
+
+	var bar = createHistogram(svg);
+	createHistogramBar(bar, width, height, values, incomeRanges, histogramRangeMax);
+	createHistogramBarAppendTitle(bar, incomeRanges, values);
+	appendHistogramLabels(svg, incomeRanges, dimensions, width, height);
+	
+	if(nameType == "surname"){
+		$("#surnamehistogram").show();
+		$("#surname_histogram_options").show();
+		$("#loadingsurnamehistogram").hide();
+		$("#distributionToolContainer").show();
+	}
+	else if(nameType == "forename"){
+		$("#forename_distribution_bar").show();
+		$("#forename_histogram_options").show();
+		$("#loadingforenamehistogram").hide();
+	}
+}
+
+function createHistogram(svg){
+	var fakeData = [1000, 12000, 20000, 30000, 40000, 60000, 80000, 125000, 175000, 250000];
 
 	var bar = svg.selectAll(".distributionBar")
 		.data(fakeData)
@@ -117,20 +183,34 @@ function generateIncomeDistributionBar(nameType, data){
 			var nodeSelection = d3.select(this);
 			nodeSelection.style("opacity", 1.0);
 	});
+	return bar;	
+}
+
+function createHistogramBar(bar, width, height, values, ranges, rangeMax){
+	var coloring = Greens[6];
+	var formatPercents = d3.format(".2f");
+	var barWidth = width/numIncomeBins;
+
 	bar.append("rect")
 		.attr("x", function(d, i){ return i*barWidth;})
 		.attr("width", (barWidth) - 1)
 		.attr("height", height)
-		.style("fill", function(d,i){ return generateHistogramColorFixed(values[i], histogramRangeMax, coloring);
-		})
-		.append("title")
+		.style("fill", function(d,i){ return generateHistogramColorFixed(values[i], rangeMax, coloring);
+		});
+}
+
+function createHistogramBarAppendTitle(bar, ranges, values){
+	var formatPercents = d3.format(".2f");
+	bar.append("title")
 		.text(function(d, i){
-			if(i < 9)
+			if(i < values.length-1)
 				return "Range $" + ranges[i*2] +" to $" + ranges[i*2+1] + ":\n" + formatPercents(values[i]) + "%";
 			else
-				return "$" + ranges[18] + ":\n" + formatPercents(values[i]) + "%";
+				return "$" + ranges[ranges.length-1] + ":\n" + formatPercents(values[i]) + "%";
 	});
-	
+}
+
+function appendHistogramLabels(svg, ranges, dimensions, width, height){
 	var minLabel = "$" + ranges[0];
 	svg.append("text")
 		.attr("class", "axisLabel")
@@ -138,46 +218,12 @@ function generateIncomeDistributionBar(nameType, data){
 		.attr("y", height + dimensions.top + 10)
 		.text(minLabel);
 
-	var maxLabel = "$" + ranges[18];
+	var maxLabel = "$" + ranges[ranges.length-1];
 	svg.append("text")
 		.attr("class", "axisLabel")
 		.attr("x", width-maxLabel.width("10px sans-serif"))
 		.attr("y", height + dimensions.top + 10)
 		.text(maxLabel);
-	if(nameType == "surname"){
-		$("#surnamehistogram").show();
-		$("#surname_histogram_options").show();
-		$("#loadingsurnamehistogram").hide();
-		$("#distributionToolContainer").show();
-	}
-	else if(nameType == "forename"){
-		$("#forename_distribution_bar").show();
-		$("#forename_histogram_options").show();
-		$("#loadingforenamehistogram").hide();
-	}
-}
-
-function setupHistogramData(nameType){
-	"use strict";
-	var values;
-	var svg;
-	var titleText;
-	if(nameType == "surname"){
-		svg = surnameHistogramSVG;
-		values = state.surnameIncomeRanges;
-		titleText = "Histogram of Income Ranges for Surname " + state.kdeSurname.toLowerCase().toTitleCase();
-	}
-	else if(nameType == "forename"){
-		svg = forenameHistogramSVG;
-		values = state.forenameIncomeRanges;
-		titleText = "Histogram of Income Ranges for Forename " + state.kdeForename.toLowerCase().toTitleCase();
-	}
-	var returnValues = {
-		values : values,
-		svg : svg,
-		titleText : titleText
-	};
-	return returnValues;
 }
 
 function incomeRangesQuery(nameType, incomeType){
@@ -192,22 +238,34 @@ function incomeRangesQuery(nameType, incomeType){
 		return;
 	}
 
-	if(incomeType == "census"){
-		state.incomeServiceBase = state.serviceBase;
-	}
-	else if(incomeType == "zillow"){
-		state.incomeServiceBase = "http://localhost:8080/webservice/";
-	}
+	
 
 	if(nameType == "surname"){
 		if(typeof (state.kdeSurname) == "undefined" || state.kdeSurname === null){
 			return;
 		}
-		boundsOnEarth = kde.map.getBounds();
-		queryData = {
-			surname : state.kdeSurname,
-			incomeType : incomeType
-		};
+
+		if(incomeType == "census"){
+			state.incomeServiceBase = state.serviceBase;
+			queryData = {
+				surname : state.kdeSurname,
+				incomeType : incomeType
+			};
+		}
+		else if(incomeType == "zillow"){
+			state.incomeServiceBase = "http://localhost:8080/webservice/";
+			boundsOnEarth = kde.map.getBounds();
+
+			queryData = {
+				surname : state.kdeSurname,
+				latsw : boundsOnEarth.getSouthWest().lat(),
+				lngsw : boundsOnEarth.getSouthWest().lng(),
+				latne : boundsOnEarth.getNorthEast().lat(),
+				lngne : boundsOnEarth.getNorthEast().lng(),
+				incomeType : incomeType
+			};
+		}
+		
 	}
 	else if(nameType == "forename"){
 		if(typeof (state.kdeForename) == "undefined" || state.kdeForename === null){
@@ -236,7 +294,7 @@ function incomeRangesQueryImp(configuredData, nameType, incomeType){
 			scriptLocation = state.incomeServiceBase + "services/queryIncomeRangesSurname?callback=?";
 		}
 		else if (incomeType == "zillow"){
-			scriptLocation = state.incomeServiceBase + "services/surname/queryIncomeRanges?callback=?";
+			scriptLocation = state.incomeServiceBase + "services/surname/queryZillowIncome?callback=?";
 		}
 	}
 	else if(nameType == "forename"){
@@ -262,8 +320,14 @@ function incomeRangesQueryImp(configuredData, nameType, incomeType){
 			alert("Error");
 		},
 		success : function(data, textStatus, jqXHR) {
+			console.log(data);
 			state.surnameIncomeRanges = data;
-			generateIncomeDistributionBar(nameType, data);
+			if(incomeType == "census"){
+				generateIncomeDistributionBar(nameType, data);
+			}
+			else if(incomeType == "zillow"){
+				generateIncomeDistributionBarZillow(nameType, data);
+			}
 		}
 	});
 }

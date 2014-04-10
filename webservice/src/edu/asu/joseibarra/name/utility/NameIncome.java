@@ -12,26 +12,27 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.LinkedList;
+import java.util.Vector;
 
 import javax.naming.NamingException;
 
 import org.xml.sax.SAXException;
 
+import edu.asu.joseibarra.geo.LatLng;
 import edu.asu.joseibarra.services.WFQuery;
 import edu.asu.joseibarra.utility.IncomeSimilarity;
 import edu.asu.joseibarra.zillow.ZillowQuery;
 
 public class NameIncome extends WFQuery{
 //public class NameIncome{
+private static final int zillowBinSize = 50000;
 	
 	public double[] queryIncomeRangeSurname(String surname, String incomeType) throws NamingException{
 		if(incomeType.equals("census")){
 			return queryIncomeRangeName("surname", surname);
+		}else{
+			return new double[10];
 		}
-		else if(incomeType.equals("zillow")){
-			return queryIncomeRangeNameZillow("surname", surname);
-		}
-		return new double[10];
 	}
 	
 	public double[] queryIncomeRangeForename(String forename, String incomeType) throws NamingException{
@@ -42,16 +43,102 @@ public class NameIncome extends WFQuery{
 	 * Find the income range based on zillow. Get the list of location of names then
 	 * query zillow for data to correlate together.
 	 */
-	private double[] queryIncomeRangeNameZillow(String nameType, String name){
+	public double[] queryIncomeRangeNameZillow(String name, String nameType, LatLng sw, LatLng ne){
+		
 		ZillowQuery zillow = new ZillowQuery();
 		try {
-			zillow.getRegionChildren("NV", "zipcode");
+			zillow.loadRegionChildren("zipcode");
 		} catch (SAXException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return new double[10];
+		
+		Vector<String> zipVec = new Vector<String>();
+		Connection connection = null;
+		String sql;
+		PreparedStatement statement = null;
+		ResultSet resultset = null;
+		
+		try {
+			connection = connectDatabase();
+			//SQL LOCATED HERE
+			sql = "select postcode from phonebook where " + nameType + "=? and latitude between ? and ? and longitude between ? and ?";
+			
+
+			statement = connection.prepareStatement(sql, java.sql.ResultSet.TYPE_FORWARD_ONLY,
+					java.sql.ResultSet.CONCUR_READ_ONLY);
+			
+			statement.setString(1, name);
+			statement.setDouble(2, sw.lat());
+			statement.setDouble(3, ne.lat());
+			statement.setDouble(4, sw.lng());
+			statement.setDouble(5, ne.lng());
+
+			resultset = statement.executeQuery();
+			while (resultset.next()) {
+				//Store each returned zip, as long as they are proper format (5 digits)
+				String zip = resultset.getString(1);
+				if(!(zip.length() < 5)){
+					zipVec.add(zip.substring(0, 5));
+//					int hyphenIndex = zip.indexOf("-");
+//					if(hyphenIndex >= 0){
+//						zipVec.add(zip.substring(0, hyphenIndex));
+//					}
+//					else{
+//						zipVec.add(zip);
+//					}
+				}
+				
+			}
+			resultset.close();
+			statement.close();
+			connection.close();
+		} catch (NamingException e) {
+			e.printStackTrace();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		Vector<Integer> incomeVec = new Vector<Integer>();
+		int max = 0;
+		int min = 999999999;
+		int count = 0;
+		double [] bins = new double[10];
+		//Get the income value for each zip code found
+		for(int i = 0; i < zipVec.size(); i++){
+			Integer value = zillow.getZipCodeValue(zipVec.elementAt(i));
+			if(value != null && value > 0){
+				incomeVec.add(value);
+				if(max < value){
+					max = value;
+				}
+				if(min > value){
+					min = value;
+				}
+				int index;
+				if(value > 499999){
+					if(value < 1000000){
+						index = 8;
+					}
+					else{
+						index = 9;
+					}
+				}
+				else{
+					index = (int)Math.floor(value / zillowBinSize);
+				}
+				
+				bins[index]++;
+				count++;
+			}
+		}
+		
+		for(int i = 0; i < bins.length; i++){
+			bins[i] = (bins[i] / count) * 100;
+		}
+		
+		return bins;
 	}
 	
 	private double[] queryIncomeRangeName(String nameType, String name) throws NamingException{

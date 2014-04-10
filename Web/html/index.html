@@ -120,6 +120,14 @@
 
   function incomeTypeSelected(nameType){
     incomeRangesQuery("surname", $('#incomeDataType').val());
+    if($('#incomeDataType').val() == "census"){
+      $("#incomeLegend").show();
+      $("#incomeZillowLegend").hide();
+    }
+    else if($('#incomeDataType').val() == "zillow"){
+      $("#incomeLegend").hide();
+      $("#incomeZillowLegend").show();
+    }
   }
 
 </script>
@@ -194,6 +202,8 @@
         </div>
         <!-- Legend for the income distribution -->
         <div id="incomeLegend" style="float:left;"></div>
+        <!-- Legend for the income distribution -->
+        <div id="incomeZillowLegend" style="float:left;"></div>
       </div>
 
       <!-- Container to hold the map -->

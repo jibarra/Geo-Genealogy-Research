@@ -21,7 +21,7 @@ var OrRd = {
 var maxFontSize = 50;
 var minFontSize = 8;
 var wordPadding = 1;
-var numBins = 6;
+var numWordleBins = 6;
 
 function generateWordleColor(data, maxValue, colors){
 	"use strict";
@@ -136,8 +136,8 @@ function updateSimilarIncomeWordleForBin(nametype, binNumber) {
 			//this is an inverse scale so smaller closeness means they are more similar
 			//thus the text size will be bigger
 			var fontSizes = [];
-			var fontDifference = (maxFontSize-minFontSize) / (numBins-1);
-			for(var i =0; i < numBins; i++){
+			var fontDifference = (maxFontSize-minFontSize) / (numWordleBins-1);
+			for(var i =0; i < numWordleBins; i++){
 				fontSizes[i] = i*fontDifference+minFontSize;
 			}
 			
@@ -268,8 +268,8 @@ function updateSimilarIncomeWordleForTool(nametype) {
 			//this is an inverse scale so smaller closeness means they are more similar
 			//thus the text size will be bigger
 			var fontSizes = [];
-			var fontDifference = (maxFontSize-minFontSize) / (numBins-1);
-			for(var i =0; i < numBins; i++){
+			var fontDifference = (maxFontSize-minFontSize) / (numWordleBins-1);
+			for(var i =0; i < numWordleBins; i++){
 				fontSizes[i] = i*fontDifference+minFontSize;
 			}
 		
@@ -393,8 +393,8 @@ function updateSimilarIncomeWordle(nametype) {
 			//this is an inverse scale so smaller closeness means they are more similar
 			//thus the text size will be bigger
 			var fontSizes = [];
-			var fontDifference = (maxFontSize-minFontSize) / (numBins-1);
-			for(var i =0; i < numBins; i++){
+			var fontDifference = (maxFontSize-minFontSize) / (numWordleBins-1);
+			for(var i =0; i < numWordleBins; i++){
 				fontSizes[i] = i*fontDifference+minFontSize;
 			}
 		
@@ -517,8 +517,8 @@ function updateSimilarMapWordle(nametype, wordletype) {
 			//this is an inverse scale so smaller closeness means they are more similar
 			//thus the text size will be bigger
 			var fontSizes = [];
-				var fontDifference = (maxFontSize-minFontSize) / (numBins-1);
-				for(var i =0; i < numBins; i++){
+				var fontDifference = (maxFontSize-minFontSize) / (numWordleBins-1);
+				for(var i =0; i < numWordleBins; i++){
 					fontSizes[i] = i*fontDifference+minFontSize;
 				}
 			if (wordletype == "l2"){
@@ -571,7 +571,7 @@ function updateSimilarMapWordle(nametype, wordletype) {
 
 function drawSurnameWordle(words) {
 	"use strict";
-	var coloring = OrRd[numBins];
+	var coloring = OrRd[numWordleBins];
 	var width = $("#surnameWordleChart").width();
 	var height = $("#surnameWordleChart").height();
 	var svg = d3.select("#surnameWordleChart").append("svg")

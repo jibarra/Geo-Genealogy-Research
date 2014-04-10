@@ -146,6 +146,7 @@ $(window).load(function() {
 	$("#loadingforenamehistogram").hide();
 	$("#wordleLegend").hide();
 	$("#mapLegend").hide();
+	$("#incomeZillowLegend").hide();
 	$("#distributionToolContainer").hide();
 	var curURL = "http://goo.gl/gOGEVJ";
 	var completeTweet = "https://twitter.com/share?url=" + curURL + " &text=I found my surname heatmap and similar surnames to mine at " + curURL;
@@ -182,6 +183,7 @@ $(window).load(function() {
 
 	generateMapLegend();
 	generateIncomeLegend();
+	generateIncomeZillowLegend();
 	generateWordleLegend();
 	generateDistributionTool();
 });

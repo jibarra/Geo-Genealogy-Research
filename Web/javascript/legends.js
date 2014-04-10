@@ -189,6 +189,57 @@ function generateIncomeLegend(){
 		.text(typeLabel);
 }
 
+function generateIncomeZillowLegend(){
+	"use strict";
+	var numBins = 6;
+	var incomeEdges = ["0%", "16.67%", "33.33%", "50%", "66.67%", "38.33%", "100%"];
+	var dimensions = {top: 18, right: 38, bottom: 10, left: 10},
+	width = 83 - dimensions.left - dimensions.right,
+	height = 125 - dimensions.top - dimensions.bottom,
+	barWidth = width/numBins;
+	var barHeight = height/numBins;
+
+	var coloring = Greens[numBins];
+	d3.select("#incomeZillowLegend > svg").remove();
+	var svg = d3.select("#incomeZillowLegend").append("svg")
+		.attr("width", width + dimensions.left + dimensions.right)
+		.attr("height", height + dimensions.top + dimensions.bottom)
+			.append("g")
+		.attr("transform", "translate(" + dimensions.left + "," + dimensions.top + ")");
+
+	var fakeData = [];
+	var i;
+	for(i = 0; i < numBins; i++){
+		fakeData[i] = i;
+	}
+	var bar = svg.selectAll(".distributionBar")
+		.data(fakeData)
+			.enter().append("g")
+		.attr("class", "distributionBar");
+	bar.append("rect")
+		.attr("y", function(d, i){ return i*barHeight; })
+			.attr("width", width)
+		.attr("height", barHeight)
+		.style("fill", function(d,i){ return coloring[i]; })
+		.append("title");
+	for(i = 0; i <= numBins; i++){
+		svg.append("text")
+			.attr("class", "axisLabel")
+			.attr("x", width)
+			.attr("y", 5 + i*barHeight)
+			.text(incomeEdges[i]);
+	}
+
+	var typeLabel = "% Population";
+	svg.append("text")
+		.attr("class", "axisLabel")
+		.attr("x", (width/2)-(typeLabel.width("10px sans-serif")/2)+10)
+		.attr("y", -8)
+		.style("font-weight", "bold")
+		.style("font-style", "italic")
+		.text(typeLabel);
+}
+
 function generateMapLegend(){
 	"use strict";
 	var numBins = 7;

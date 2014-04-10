@@ -304,6 +304,22 @@ public class SurnameService extends WFQuery{
 	
 	@GET
 	@Produces("application/x-javascript")
+	@Path("/queryZillowIncome")
+	public JSONWithPadding queryZillowIncome(
+			@QueryParam("surname") @DefaultValue("") String surname,
+			@QueryParam("latsw") @DefaultValue("0.0") double latsw,
+			@QueryParam("lngsw") @DefaultValue("0.0") double lngsw,
+			@QueryParam("latne") @DefaultValue("0.0") double latne,
+			@QueryParam("lngne") @DefaultValue("0.0") double lngne,
+			@QueryParam("callback") @DefaultValue("callback") String callback
+			){
+		NameIncome query = new NameIncome();
+		double result[] = query.queryIncomeRangeNameZillow(surname, "surname", new LatLng(latsw, lngsw), new LatLng(latne, lngne));
+		return new JSONWithPadding(result, callback);
+	}
+	
+	@GET
+	@Produces("application/x-javascript")
 	@Path("/queryIncome")
 	public JSONWithPadding queryIncome(
 			@QueryParam("surname") @DefaultValue("") String surname,
