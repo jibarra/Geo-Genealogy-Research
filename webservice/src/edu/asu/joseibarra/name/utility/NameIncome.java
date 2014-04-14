@@ -117,8 +117,8 @@ private static final int zillowBinSize = 50000;
 					min = value;
 				}
 				int index;
-				if(value > 499999){
-					if(value < 1000000){
+				if(value > 449999){
+					if(value < 500000){
 						index = 8;
 					}
 					else{

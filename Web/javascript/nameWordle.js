@@ -55,7 +55,7 @@ function updateSimilarIncomeWordleForBin(nametype, binNumber) {
 	if(nametype == "surname"){
 		positionWordleLoading();
 		$("#loadingsurnamewordle").show();
-		scriptLocation = state.serviceBase + "services/SurnameIncomeBinWordle?callback=?";
+		scriptLocation = state.serviceBase + "services/surname/incomeBinWordle?callback=?";
 		configuredData = {
 			surname : state.kdeSurname,
 			limit : 100,
@@ -185,7 +185,7 @@ function updateSimilarIncomeWordleForTool(nametype) {
 	if(nametype == "surname"){
 		positionWordleLoading();
 		$("#loadingsurnamewordle").show();
-		scriptLocation = state.serviceBase + "services/IncomeSimilarityWordle?callback=?";
+		scriptLocation = state.serviceBase + "services/surname/incomeToolWordle?callback=?";
 		configuredData = {
 			limit : 100,
 			bin1 : distributionToolData[0],
@@ -317,7 +317,7 @@ function updateSimilarIncomeWordle(nametype) {
 	if(nametype == "surname"){
 		positionWordleLoading();
 		$("#loadingsurnamewordle").show();
-		scriptLocation = state.serviceBase + "services/SurnameIncomeWordle?callback=?";
+		scriptLocation = state.serviceBase + "services/surname/incomeWordle?callback=?";
 		configuredData = {
 			surname : state.kdeSurname,
 			limit : 100
@@ -440,7 +440,7 @@ function updateSimilarMapWordle(nametype, wordletype) {
 	var scriptLocation;
 	var configuredData;
 	if(nametype == "surname"){
-		scriptLocation = state.serviceBase + "services/SurnameMapWordle?callback=?";
+		scriptLocation = state.serviceBase + "services/surname/mapWordle?callback=?";
 		configuredData = {
 			surname : state.kdeSurname,
 			type : wordletype,

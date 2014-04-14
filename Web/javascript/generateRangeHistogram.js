@@ -26,15 +26,16 @@ var Greens = {
 var surnameHistogramSVG = null;
 var forenameHistogramSVG = null;
 var histogramRangeMax = 20;
-var zillowRangeMax = 83.33;
+// var zillowRangeMax = 83.33;
+var zillowRangeMax = 20;
 var numIncomeBins = 10;
 
 var incomeRanges = ["0", "10,000", "10,001", "14,999", "15,000", "24,999", "25,000", "34,999", "35,000", "49,999",
-			"50,000", "74,999", "75,000", "99,999", "100,000", "149,999", "150,000", "199,999", "200,000+"];
+					"50,000", "74,999", "75,000", "99,999", "100,000", "149,999", "150,000", "199,999", "200,000+"];
 
-var zillowRanges = ["0", "360,000", "360,0001", "720,000", "720,001", "1,080,000", "1,080,001", "1,440,000",
-					"1,440,001", "1,800,000", "1,800,001", "2,160,000", "2,160,001", "2,520,000",
-					"2,520,001", "2,880,000", "2,880,001", "3,240,000", "3,240,000+"];
+var zillowRanges = ["0", "50,000", "50,0001", "100,000", "100,001", "150,000", "150,001", "200,000",
+					"200,001", "250,000", "250,001", "300,000", "300,001", "350,000",
+					"350,001", "400,000", "400,001", "450,000", "500,000+"];
 
 String.prototype.toTitleCase = function(){
 	"use strict";
@@ -246,14 +247,12 @@ function incomeRangesQuery(nameType, incomeType){
 		}
 
 		if(incomeType == "census"){
-			state.incomeServiceBase = state.serviceBase;
 			queryData = {
 				surname : state.kdeSurname,
 				incomeType : incomeType
 			};
 		}
 		else if(incomeType == "zillow"){
-			state.incomeServiceBase = "http://localhost:8080/webservice/";
 			boundsOnEarth = kde.map.getBounds();
 
 			queryData = {
@@ -291,10 +290,10 @@ function incomeRangesQueryImp(configuredData, nameType, incomeType){
 	if(nameType == "surname"){
 		$("#loadingsurnamehistogram").show();
 		if(incomeType == "census"){
-			scriptLocation = state.incomeServiceBase + "services/queryIncomeRangesSurname?callback=?";
+			scriptLocation = state.serviceBase + "services/surname/queryIncomeRanges?callback=?";
 		}
 		else if (incomeType == "zillow"){
-			scriptLocation = state.incomeServiceBase + "services/surname/queryZillowIncome?callback=?";
+			scriptLocation = state.serviceBase + "services/surname/queryZillowIncome?callback=?";
 		}
 	}
 	else if(nameType == "forename"){

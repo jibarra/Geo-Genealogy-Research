@@ -24,7 +24,7 @@ function onClickShowKDE(nametype) {
 		$("#surname_histogram_options").hide();
 		if(state.kdeSurname){
 			if($("#surnameMapType").val() == "regular")
-				kdeQuery(nametype, "");
+				kdeQuery(nametype, "Regular");
 			else if($("#surnameMapType").val() == "probabilistic")
 				kdeQuery(nametype, "Probabilistic");
 			$("#mapLegend").show();
@@ -49,7 +49,7 @@ function onClickShowKDE(nametype) {
 		$("#forename_histogram_options").hide();
 		if(state.kdeForename){
 			if($("#forenameMapType").val() == "regular")
-				kdeQuery(nametype, "");
+				kdeQuery(nametype, "Regular");
 			else if($("#forenameMapType").val() == "probabilistic")
 				kdeQuery(nametype, "Probabilistic");
 			incomeRangesQuery("forename");
@@ -111,13 +111,13 @@ function KDEWindow(nameType) {
 		}
 		that.overlay = new KDEOverlay(that.map, nameType);
 	});
-	if(nameType == "surname"){
-		google.maps.event.addListener(this.map, "idle", function() {
-			if (state.kdeSurname !== "") {
-				kdeQuery(nameType);
-			}
-		});
-	}
+	// if(nameType == "surname"){
+	// 	google.maps.event.addListener(this.map, "idle", function() {
+	// 		if (state.kdeSurname !== "") {
+	// 			kdeQuery(nameType);
+	// 		}
+	// 	});
+	// }
 }
 
 

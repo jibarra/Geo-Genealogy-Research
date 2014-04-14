@@ -92,7 +92,7 @@ function kdeQueryImp(configuredData, nameType, mapType) {
 	"use strict";
 	var scriptLocation;
 	if(nameType == "surname"){
-		scriptLocation = state.serviceBase + "services/querySurname" + mapType +"?callback=?";
+		scriptLocation = state.serviceBase + "services/surname/queryMap" + mapType +"?callback=?";
 		$("#loadingsurname").show();
 	}
 	else if(nameType == "forename"){

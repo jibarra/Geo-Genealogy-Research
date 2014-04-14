@@ -35,7 +35,7 @@ var state = {
 	kdeColor : "quantile",
 	//This is the location for the web services. If this is set up
 	//using your own computer as the server, the address should be something "like http://localhost:8080/nameservice/"
-	// serviceBase: "http://localhost:8080/nameservice/",
-	serviceBase: "http://ec2-54-201-211-102.us-west-2.compute.amazonaws.com:8080/surnameservice/",
+	serviceBase: "http://localhost:8080/webservice/",
+	// serviceBase: "http://ec2-54-201-211-102.us-west-2.compute.amazonaws.com:8080/surnameservice/",
 	incomeServiceBase : "",
 };
