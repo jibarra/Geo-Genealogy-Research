@@ -676,5 +676,298 @@ public class KDEPainterEfficient {
 	    	KDEPainterEfficient test = new KDEPainterEfficient();
 	    	test.sqlQuery("SIMPSON");
 	    }
+	    
+	    /*
+	     * BELOW ARE THE UTILITY PARTS OF THIS CLASS.
+	     * NEEDS TO BE REFACTORED
+	     */
+
+	    public void drawProbabilisticKDEMap(String surname) throws IOException {
+	    	long start = System.nanoTime();
+			width = rightBottomPixel.x - leftTopPixel.x;
+			height = rightBottomPixel.y - leftTopPixel.y;
+			
+			GoogleMercator mercator = new GoogleMercator();
+			mercator.setZoom(zoom);
+			
+			//Create a hashmap of the duplicate pixels
+			HashMap<Point, Double> valueMap = createValueMap(mercator);
+			HashMap<Point, Double> savedMap = null;
+			InputStream inFile = new FileInputStream("C:\\Users\\jlibarr1\\Documents\\Code\\Facebook Code\\webservice\\resources\\USvalueMap.ser");
+		    InputStream inBuffer = new BufferedInputStream(inFile);
+		    ObjectInput input = new ObjectInputStream (inBuffer);
+		    try {
+				savedMap = (HashMap<Point, Double>)input.readObject();
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		    
+		    input.close();
+		    inBuffer.close();
+		    inFile.close();
+		    input = null;
+		    inBuffer = null;
+		    inFile = null;
+		    
+		    Double amount;
+			Point[] keyArray = valueMap.keySet().toArray(new Point[valueMap.keySet().size()]);
+		    HashMap<Point, Double> probMap = new HashMap<Point, Double>();
+		    int nulls = 0;
+		    for (Point point : keyArray) {
+				amount = savedMap.get(point);
+				if(amount != null && amount > 0.0001){
+					probMap.put(point, valueMap.get(point)/amount);
+				}
+				else{
+					nulls++;
+				}
+			}
+		    keyArray = null;
+		    savedMap = null;
+		    
+		    keyArray = probMap.keySet().toArray(new Point[probMap.keySet().size()]);
+		    for (Point point : keyArray) {
+		    	valueMap.put(point, probMap.get(point));
+		    }
+		    probMap = null;
+		    keyArray = null;
+		    
+			int pixelBandwidth = calculateBandwidth(mercator);
+
+			//An array of the distinct pixels on the map.
+			Point[] distinctPointArray = valueMap.keySet().toArray(new Point[valueMap.keySet().size()]);
+
+			//Create an array of weighted distances for each distinct pixel
+			//Each array row contains the weighted distance between another pixel
+			double[][] distance = new double[distinctPointArray.length][distinctPointArray.length];
+			
+			weightDistances(valueMap, distinctPointArray, distance);
+			
+			valueMap = null;
+
+			double sumWeight = distance[0][distance[0].length - 1];
+			
+			double[][] pixel = new double[height][width];
+			for (int i = 0; i < height; i++) {
+				Arrays.fill(pixel[i], 0);
+			}
+
+			//Color each pixel based on the weight and distance between other pixels
+			//that were calculated above
+			for (int i = 0; i < distance.length; i++) {
+				double weight = distance[i][0];
+				Point centerPoint = distinctPointArray[i];
+				int indexBound = pixelBandwidth;
+				int[] searchRange = { centerPoint.x - indexBound, centerPoint.y - indexBound, 
+						centerPoint.x + indexBound, centerPoint.y + indexBound };
+
+				for (int x = searchRange[0]; x <= searchRange[2]; x++) {
+					for (int y = searchRange[1]; y <= searchRange[3]; y++) {
+						// in image?
+						Point curPixel = new Point(x, y);
+
+						if (!(curPixel.x >= 0 && curPixel.x < width && curPixel.y >= 0 && curPixel.y < height)) {
+							continue;
+						}
+						
+						// we use circle
+						Point diff = new Point(curPixel.x - centerPoint.x, curPixel.y - centerPoint.y);
+						double squareDistance = diff.x * diff.x + diff.y * diff.y;
+						double squareBandwidth = pixelBandwidth * pixelBandwidth;
+						if (squareDistance > squareBandwidth) {
+							continue;
+						}
+						pixel[y][x] += weight * kernelFunction(diff, sumWeight, pixelBandwidth, squareBandwidth);
+					}
+				}
+			}
+			distance = null;
+			distinctPointArray=null;
+			
+			char firstChar = surname.charAt(0);
+			if(firstChar < 65 || firstChar > 90)
+				firstChar = '1';
+
+			// weight to image
+			ColorBrewer colorBrewer = new ColorBrewer();
+			colorBrewer.init(pixel);
+			File file = new File("C:\\Users\\jlibarr1\\Downloads\\test\\surnameFiles\\probabilistic\\"+firstChar+"\\image\\"+surname+"image.png");
+			file.createNewFile();
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+			int[] scanline = new int[width];
+			// we use a fake image for testing
+			for (int i = 0; i < height; i++) {
+				for (int k = 0; k < width; k++) {
+					scanline[k] = colorBrewer.getSurnameColor(pixel[i][k]);
+				}
+				image.setRGB(0, i, width, 1, scanline, 0, 0);
+			}
+					
+			pixel = null;
+			image.flush();
+			ImageIO.write(image, "png", file);
+	    	long end = System.nanoTime();
+	    }
+
+	    public void drawKDEMapForename(String name) throws IOException{
+	    	long start = System.nanoTime();
+			width = rightBottomPixel.x - leftTopPixel.x;
+			height = rightBottomPixel.y - leftTopPixel.y;
+			
+			GoogleMercator mercator = new GoogleMercator();
+			mercator.setZoom(zoom);
+			
+			//Create a hashmap of the duplicate pixels
+			HashMap<Point, Double> valueMap = createValueMapWithOverallSave(mercator);
+			
+			int pixelBandwidth = calculateBandwidth(mercator);
+
+			//An array of the distinct pixels on the map.
+			Point[] distinctPointArray = valueMap.keySet().toArray(new Point[valueMap.keySet().size()]);
+
+			//Create an array of weighted distances for each distinct pixel
+			//Each array row contains the weighted distance between another pixel
+			double[][] distance = new double[distinctPointArray.length][distinctPointArray.length];
+			
+			weightDistances(valueMap, distinctPointArray, distance);
+			
+			valueMap = null;
+
+			double sumWeight = distance[0][distance[0].length - 1];
+			
+			double[][] pixel = new double[height][width];
+			for (int i = 0; i < height; i++) {
+				Arrays.fill(pixel[i], 0);
+			}
+
+			//Color each pixel based on the weight and distance between other pixels
+			//that were calculated above
+			for (int i = 0; i < distance.length; i++) {
+				double weight = distance[i][0];
+				Point centerPoint = distinctPointArray[i];
+				int indexBound = pixelBandwidth;
+				int[] searchRange = { centerPoint.x - indexBound, centerPoint.y - indexBound, 
+						centerPoint.x + indexBound, centerPoint.y + indexBound };
+
+				for (int x = searchRange[0]; x <= searchRange[2]; x++) {
+					for (int y = searchRange[1]; y <= searchRange[3]; y++) {
+						// in image?
+						Point curPixel = new Point(x, y);
+
+						if (!(curPixel.x >= 0 && curPixel.x < width && curPixel.y >= 0 && curPixel.y < height)) {
+							continue;
+						}
+						
+						// we use circle
+						Point diff = new Point(curPixel.x - centerPoint.x, curPixel.y - centerPoint.y);
+						double squareDistance = diff.x * diff.x + diff.y * diff.y;
+						double squareBandwidth = pixelBandwidth * pixelBandwidth;
+						if (squareDistance > squareBandwidth) {
+							continue;
+						}
+						pixel[y][x] += weight * kernelFunction(diff, sumWeight, pixelBandwidth, squareBandwidth);
+					}
+				}
+			}
+			
+			char firstChar = name.charAt(0);
+			if(firstChar < 65 || firstChar > 90)
+				firstChar = '1';
+			
+			
+			distance = null;
+			distinctPointArray=null;
+			
+			// weight to image
+			ColorBrewer colorBrewer = new ColorBrewer();
+			colorBrewer.init(pixel);
+			File file = new File("C:\\Users\\jlibarr1\\Downloads\\test\\forenameFiles\\"+firstChar+"\\regularforename"+name+"w776h419z4clat37.10496353951387clng-97.07862899999998.png");
+			file.createNewFile();
+			BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
+			int[] scanline = new int[width];
+			// we use a fake image for testing
+			for (int i = 0; i < height; i++) {
+				for (int k = 0; k < width; k++) {
+					scanline[k] = colorBrewer.getForenameColor(pixel[i][k]);
+				}
+				image.setRGB(0, i, width, 1, scanline, 0, 0);
+			}
+					
+			pixel = null;
+			image.flush();
+			ImageIO.write(image, "png", file);
+	    	long end = System.nanoTime();
+			
+	    }
+
+	    public HashMap<Point, Double> createValueMapWithOverallSave(GoogleMercator mercator) throws IOException{
+	    	//Convert the lat/longs from the inputted list to map points
+			//then convert to pixels on the screen
+			Vector<Point> pointVec = new Vector<Point>(sampleList.size());
+			for (LatLng latlng : sampleList) {
+				Point p = mercator.fromLatLngToPoint(latlng);
+				Point q = new Point(p.x-leftTopPixel.x, p.y-leftTopPixel.y);
+				pointVec.add(q);
+			}
+			
+			InputStream inFile = new FileInputStream("C:\\Users\\jlibarr1\\Downloads\\forenameValueMap.ser");
+		    InputStream inBuffer = new BufferedInputStream(inFile);
+		    ObjectInput input = new ObjectInputStream (inBuffer);
+		    HashMap<Point, Double> savedMap = null;
+		    try {
+				savedMap = (HashMap<Point, Double>)input.readObject();
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			}
+		    
+		    input.close();
+		    input = null;
+		    inBuffer.close();
+		    inBuffer = null;
+		    inFile.close();
+		    inFile = null;
+		    		    
+		    for (Point point : pointVec) {
+				Double v = savedMap.get(point);
+				Double newValue = null;
+				if (v == null) {
+					newValue = new Double(1);
+				} else {
+					newValue = new Double(v.doubleValue() + 1);
+				}
+				savedMap.put(point, newValue);
+			}	    
+			
+			OutputStream outFile = new FileOutputStream("C:\\Users\\jlibarr1\\Downloads\\forenameValueMap.ser");
+			OutputStream outBuffer = new BufferedOutputStream(outFile);
+		    ObjectOutput output = new ObjectOutputStream(outBuffer);
+		    output.writeObject(savedMap);
+		    
+		    output.close();
+		    output = null;
+		    outBuffer.close();
+		    outBuffer = null;
+		    outFile.close();
+		    outFile = null;
+			
+			sampleList=null;
+			
+			//Create a hashmap of the duplicate pixels
+			HashMap<Point, Double> valueMap = new HashMap<Point, Double>();
+			for (Point point : pointVec) {
+				Double v = valueMap.get(point);
+				Double newValue = null;
+				if (v == null) {
+					newValue = new Double(1);
+				} else {
+					newValue = new Double(v.doubleValue() + 1);
+				}
+				valueMap.put(point, newValue);
+			}
+			
+			pointVec = null;
+			return valueMap;
+	    }
 
 }
