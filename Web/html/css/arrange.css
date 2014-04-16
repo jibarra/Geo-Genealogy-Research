@@ -1,0 +1,212 @@
+/*
+ @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
+ created on November 25, 2013 ane edited into 2014
+*/
+html,body{
+    font: 100%;
+    margin: 0;
+    padding: 0;
+    /*text-align: center;*/
+    height: 100%;
+}
+
+.ui-widget {
+  font-family: Verdana,Arial,sans-serif;
+  font-size: 1.0em;
+}
+
+#layout {
+    width: 100%;
+    height: 100%;
+    margin: 0px auto;
+}
+
+.namemap{
+  height: 419px;
+  width: 776px;
+  float:left;
+}
+
+/*#centercontainter #combinationmap {
+   height: 100%;
+    width: 800px;
+    float:left;
+}*/
+#centercontainer{
+  clear:both;
+  overflow:hidden;
+}
+
+#capturedimagelink {
+    
+}
+
+.social_media{
+    clear:both;
+    text-align: center;
+    width: 776px;
+}
+
+#loadingforename{
+    position:absolute;
+    z-index:5;
+}
+
+#loadingsurname{
+	position:absolute;
+  z-index:5;
+}
+
+#loadingsurnamewordle{
+  position:absolute;
+  z-index:5;
+}
+#footer {
+    position: relative;
+    height: 20%;
+}
+#surnamewordlediv{
+  margin-left:15px;
+  float:left;
+}
+#surname_distribution_bar{
+  float:left;
+}
+#incomeLegend{
+  float:left;margin-left:10px;
+}
+.clearfloat {
+    clear:both;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
+
+#mapLegend{
+  margin-top:5px;
+  text-align:center;
+  width:776px;
+}
+
+#wordleLegend{
+  text-align:center;
+  margin-top:5px;
+  width:555px;
+}
+
+.legendspace {
+    clear:both;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
+
+
+.palette {
+  cursor: pointer;
+  display: inline-block;
+  vertical-align: bottom;
+  margin: 4px 0 4px 6px;
+  padding: 4px;
+  background: #fff;
+  border: solid 1px #aaa;
+}
+
+.swatch {
+  display: block;
+  vertical-align: middle;
+  width: 37px;
+  height: 22px;
+}
+
+svg {
+  font: 10px sans-serif;
+}
+
+.histogramTitle{
+  font: 16px sans-serif;
+}
+
+.axisLabel{
+  font: 10px sans-serif;
+}
+
+.bar rect {
+  fill: steelblue;
+  shape-rendering: crispEdges;
+}
+
+.bar text {
+  fill: #000000;
+}
+
+.axis path, .axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+/*
+  From http://www.scientificpsychic.com/etc/css-mouseover.html
+*/
+span.helpdialog {
+  background: #ffffff;
+  color: #000000;
+}
+span.helpdialog:hover {
+  color: #0066FF;
+  text-decoration: none;
+  background: #ffffff;
+  z-index: 6;
+}
+span.helpdialog span {
+  position: absolute;
+  float:left;
+  left: -9999px;
+  padding: 3px 3px 3px 3px;
+  border-style:solid;
+  border-color:black;
+  border-width:1px;
+  z-index: 6;
+  color: #000000;
+}
+span.helpdialog:hover span {
+  margin: 20px 0 0 170px;
+  background: #ffffff;
+  z-index:6;
+  position:absolute;
+  float:left;
+  left: 2%;
+  background: #ffffff;
+}
+
+span.wordlehelpwide:hover span {
+  margin: 20px 0 0 170px;
+  background: #ffffff;
+  z-index:6;
+  position:absolute;
+  float:left;
+  left: 45%;
+  background: #ffffff;
+} 
+
+span.wordlehelpthin:hover span {
+  margin: 20px 0 0 170px;
+  background: #ffffff;
+  z-index:6;
+  position:absolute;
+  float:left;
+  top:68%;
+  left: 2%;
+  background: #ffffff;
+} 
+
+span.helpdescription:hover span {
+  margin: 20px 0 0 170px;
+  background: #ffffff;
+  z-index:6;
+  position:absolute;
+  float:left;
+  left: -6%;
+  background: #ffffff;
+} 
