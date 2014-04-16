@@ -31,7 +31,6 @@
     -->
     
     <Resource name="jdbc/phonebook" auth="Container" type="javax.sql.DataSource"
-	<Resource name="jdbc/phonebook" auth="Container" type="javax.sql.DataSource"
                maxActive="100" maxIdle="30" maxWait="10000"
                url="jdbc:mysql://localhost:3306/phonebook"
                driverClassName="com.mysql.jdbc.Driver"
