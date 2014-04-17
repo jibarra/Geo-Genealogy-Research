@@ -23,7 +23,7 @@ import edu.asu.joseibarra.scripts.threads.NameIncomeThread;
 import edu.asu.joseibarra.utility.IncomeSimilarity;
 
 //public class NameIncome extends WFQuery{
-public class NameIncome{
+public class NameIncomeScript{
 	
 	public void transferDB() throws SQLException{
 		Connection connectionSelect = null;
@@ -514,7 +514,7 @@ public class NameIncome{
 	}
 	
 	public static void main(String[] args) throws NamingException, IOException, SQLException {
-		NameIncome test = new NameIncome();
+		NameIncomeScript test = new NameIncomeScript();
 //		test.transferDB();
 //		test.createAllIncomeRangesForename();
 		test.findAllSimilarNames();
