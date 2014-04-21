@@ -314,7 +314,8 @@ public class SurnameService extends WFQuery{
 			@QueryParam("callback") @DefaultValue("callback") String callback
 			){
 		NameIncome query = new NameIncome();
-		double result[] = query.queryIncomeRangeNameZillow(surname, "surname", new LatLng(latsw, lngsw), new LatLng(latne, lngne));
+//		double result[] = query.queryIncomeRangeNameZillow(surname, "surname", new LatLng(latsw, lngsw), new LatLng(latne, lngne));
+		double result[] = query.queryPrecomputeIncomeRangeNameZillow(surname, "surname");
 		return new JSONWithPadding(result, callback);
 	}
 	

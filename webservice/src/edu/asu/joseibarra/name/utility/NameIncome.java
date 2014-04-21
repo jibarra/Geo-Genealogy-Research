@@ -23,8 +23,8 @@ import edu.asu.joseibarra.services.WFQuery;
 import edu.asu.joseibarra.utility.IncomeSimilarity;
 import edu.asu.joseibarra.zillow.ZillowQuery;
 
-public class NameIncome extends WFQuery{
-//public class NameIncome{
+//public class NameIncome extends WFQuery{
+public class NameIncome{
 private static final int zillowBinSize = 50000;
 	
 	public double[] queryIncomeRangeSurname(String surname, String incomeType) throws NamingException{
@@ -37,6 +37,47 @@ private static final int zillowBinSize = 50000;
 	
 	public double[] queryIncomeRangeForename(String forename, String incomeType) throws NamingException{
 		return queryIncomeRangeName("forename", forename);
+	}
+	
+	public double[] queryPrecomputeIncomeRangeNameZillow(String name, String nameType){
+		double incomes[] = new double[10];
+		
+		name = name.toUpperCase();
+		
+		Connection connection = null;
+		String sql;
+		PreparedStatement statement = null;
+		ResultSet resultset = null;
+		
+		try {
+//			connection = connectDatabase();
+			
+			String selectSQL = "SELECT income_range_avg_1, income_range_avg_2, income_range_avg_3, "
+					+ "income_range_avg_4, income_range_avg_5, income_range_avg_6, income_range_avg_7, "
+					+ "income_range_avg_8, income_range_avg_9, income_range_avg_10 "
+					+ "FROM " + nameType + "_zillow_income_ranges_avg WHERE "
+					+ nameType + "=?";
+
+			statement = connection.prepareStatement(selectSQL, java.sql.ResultSet.TYPE_FORWARD_ONLY,
+					java.sql.ResultSet.CONCUR_READ_ONLY);
+
+			statement.setString(1, name);
+			
+			resultset = statement.executeQuery();
+			
+			while (resultset.next()) {
+				for(int i = 0; i < incomes.length; i++){
+					incomes[i] = resultset.getDouble(i+1);
+				}
+			}
+			resultset.close();
+			statement.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return incomes;
 	}
 	
 	/*
@@ -61,7 +102,8 @@ private static final int zillowBinSize = 50000;
 		ResultSet resultset = null;
 		
 		try {
-			connection = connectDatabase();
+			connection = connectDatabase("phonebook", "root", "password");
+//			connection = connectDatabase();
 			//SQL LOCATED HERE
 			sql = "select postcode from phonebook where " + nameType + "=? and latitude between ? and ? and longitude between ? and ?";
 			
@@ -94,9 +136,12 @@ private static final int zillowBinSize = 50000;
 			resultset.close();
 			statement.close();
 			connection.close();
-		} catch (NamingException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
+		}
+//		catch (NamingException e) {
+//			e.printStackTrace();
+//		} 
+		catch (SQLException e) {
+			
 			e.printStackTrace();
 		}
 		
@@ -149,7 +194,7 @@ private static final int zillowBinSize = 50000;
 		ResultSet resultset = null;
 		
 		try {
-			connection = connectDatabase();
+//			connection = connectDatabase();
 
 			sql = "select income_range_avg_1, income_range_avg_2, income_range_avg_3, income_range_avg_4"
 					+ ", income_range_avg_5, income_range_avg_6, income_range_avg_7, income_range_avg_8"
