@@ -11,6 +11,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -22,6 +23,7 @@ import edu.asu.joseibarra.geo.LatLng;
 import edu.asu.joseibarra.services.WFQuery;
 import edu.asu.joseibarra.utility.IncomeSimilarity;
 import edu.asu.joseibarra.zillow.ZillowQuery;
+import edu.asu.joseibarra.zillow.ZillowQuery.ZipCodeNotFoundException;
 
 //public class NameIncome extends WFQuery{
 public class NameIncome{
@@ -75,7 +77,11 @@ private static final int zillowBinSize = 50000;
 			connection.close();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		}
+		} 
+//		catch (NamingException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		
 		return incomes;
 	}
@@ -103,7 +109,12 @@ private static final int zillowBinSize = 50000;
 		
 		try {
 			connection = connectDatabase("phonebook", "root", "password");
-//			connection = connectDatabase();
+//			try {
+//				connection = connectDatabase();
+//			} catch (NamingException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
 			//SQL LOCATED HERE
 			sql = "select postcode from phonebook where " + nameType + "=? and latitude between ? and ? and longitude between ? and ?";
 			
@@ -146,23 +157,31 @@ private static final int zillowBinSize = 50000;
 		}
 		
 		Vector<Integer> incomeVec = new Vector<Integer>();
-		int max = 0;
-		int min = 999999999;
+//		int max = 0;
+//		int min = 999999999;
 		int count = 0;
 		double [] bins = new double[10];
+		Arrays.fill(bins, 0.0);
 		//Get the income value for each zip code found
 		for(int i = 0; i < zipVec.size(); i++){
-			Integer value = zillow.getZipCodeValue(zipVec.elementAt(i));
+			Integer value;
+			try{
+				value = zillow.getZipCodeValue(zipVec.elementAt(i));
+			}
+			catch(ZipCodeNotFoundException ex){
+				continue;
+			}
+			
 			if(value != null && value > 0){
 				incomeVec.add(value);
-				if(max < value){
-					max = value;
-				}
-				if(min > value){
-					min = value;
-				}
+//				if(max < value){
+//					max = value;
+//				}
+//				if(min > value){
+//					min = value;
+//				}
 				int index;
-				if(value > 449999){
+				if(value > 400000){
 					if(value < 500000){
 						index = 8;
 					}
@@ -180,6 +199,9 @@ private static final int zillowBinSize = 50000;
 		}
 		
 		for(int i = 0; i < bins.length; i++){
+			if(Double.isNaN(bins[i])){
+				bins[i] = 0;
+			}
 			bins[i] = (bins[i] / count) * 100;
 		}
 		

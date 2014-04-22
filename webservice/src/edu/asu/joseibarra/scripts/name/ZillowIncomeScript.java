@@ -60,10 +60,10 @@ public class ZillowIncomeScript {
 		PreparedStatement insertStatement = null;
 	    Connection connectionInsert = connectDatabase("phonebook", "root", "password");
 	    
-	    String nameTemp = names.poll();
-	    while(!nameTemp.equals("KAMERMAN")){
-	    	nameTemp = names.poll();
-	    }
+//	    String nameTemp = names.poll();
+//	    while(!nameTemp.equals("LEFCOURT")){
+//	    	nameTemp = names.poll();
+//	    }
 		
 		for(String name : names){
 			double incomes[] = query.queryIncomeRangeNameZillow(name, "surname", 
@@ -82,7 +82,7 @@ public class ZillowIncomeScript {
 			insertStatement.setString(1, name);
 
 			for(int i = 2; i <= 11; i++){
-				if(incomes[i-2] == Double.NaN){
+				if(Double.isNaN(incomes[i-2])){
 					insertStatement.setDouble(i, 0.0);
 				}
 				else{

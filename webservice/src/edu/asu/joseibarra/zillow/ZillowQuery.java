@@ -135,24 +135,28 @@ public class ZillowQuery {
 //		System.out.println("# Zips: " + zipCount);
 	}
 	
-	public Integer getZipCodeValue(String state, String zipcode){
+	public Integer getZipCodeValue(String state, String zipcode) throws StateDoesNotExistException, ZipCodeNotFoundException{
 		checkStateZipDemographics("zipcode");
 		
 		ZillowStateZipDemographics stateDemographics = ZillowQuery.stateZipDemographics.get(state);
 		if(stateDemographics == null){
-			return -1;
+			throw new StateDoesNotExistException();
 		}
 		
 		HashMap<String, Integer> values = stateDemographics.getZipValues();
 		if(values == null){
-			return -1;
+			throw new ZipCodeNotFoundException();
 		}
 		
 		return values.get(zipcode);
 	}
 	
-	public Integer getZipCodeValue(String zipcode){
+	public Integer getZipCodeValue(String zipcode) throws ZipCodeNotFoundException{
 		checkStateZipDemographics("zipcode");
+		Integer value = zipDemographics.get(zipcode);
+		if(value == null){
+			throw new ZipCodeNotFoundException();
+		}
 		return zipDemographics.get(zipcode);
 	}
 	
@@ -184,6 +188,30 @@ public class ZillowQuery {
             throw new RuntimeException(e);
         }
     }
+	
+	public class StateDoesNotExistException extends Exception
+	{
+	      //Parameterless Constructor
+	      public StateDoesNotExistException() {}
+
+	      //Constructor that accepts a message
+	      public StateDoesNotExistException(String message)
+	      {
+	         super(message);
+	      }
+	 }
+	
+	public class ZipCodeNotFoundException extends Exception
+	{
+	      //Parameterless Constructor
+	      public ZipCodeNotFoundException() {}
+
+	      //Constructor that accepts a message
+	      public ZipCodeNotFoundException(String message)
+	      {
+	         super(message);
+	      }
+	 }
 	
 	private static final String[] US_STATES = {"AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL",
 		"GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE",
