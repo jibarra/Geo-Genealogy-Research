@@ -1,6 +1,11 @@
-/* Modified by Jose Ibarra
- * Combined surname services into one file for cleaner
- * code. Surname services can now be found at /surname/SERVICE_NAME/
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * This combines all the queries for a surname within one class.
+ * All surname services exist here and this is the entry point
+ * for any surname service.
  */
 
 package edu.asu.joseibarra.services;
@@ -42,12 +47,19 @@ public class SurnameService extends WFQuery{
 	private String imageDir;
 	private String fileDir;
 	
+	//On server start, fills in information for the image directory and file directory.
 	@Context
 	public void setServletContext(ServletContext context) {
 		imageDir = context.getRealPath("") + File.separatorChar + "resources" + File.separatorChar;
 		fileDir = context.getRealPath("") + File.separatorChar + "resources" + File.separatorChar;
 	}
 	
+	/*
+	 * Outputs the income wordle based on the surname inputted.
+	 * Queries the database to find the similar surnames ordered by
+	 * similar incomes and returns the result. Values are limited
+	 * by the inputted limit.
+	 */
 	@GET
 	@Produces("application/x-javascript")
 	@Path("/incomeWordle")
@@ -93,6 +105,12 @@ public class SurnameService extends WFQuery{
 		return new JSONWithPadding(names, callback);
 	}
 	
+	/*
+	 * Returns the map similarity wordle based on the type inputted.
+	 * Types can be 'core' or 'l2'. The surname is then queried and
+	 * the query is limited based on an input.
+	 * A collection of the similar names is returned.
+	 */
 	@GET
 	@Produces("application/x-javascript")
 	@Path("/mapWordle")
@@ -147,6 +165,13 @@ public class SurnameService extends WFQuery{
 		return new JSONWithPadding(names, callback);
 	}
 	
+	/*
+	 * Returns a wordle based on a set of bins inputted.
+	 * This method must have 10 bins inputted or defaults will be
+	 * used instead. The method queries the database for similar names,
+	 * comparing each bin inputted to the data within the census
+	 * income bin table, calculating a simple l2 norm between bins.
+	 */
 	@GET
 	@Produces("application/x-javascript")
 	@Path("/incomeToolWordle")
@@ -214,6 +239,10 @@ public class SurnameService extends WFQuery{
 		return new JSONWithPadding(closest, callback);
 	}
 	
+	/*
+	 * Simple method for incomeToolWordle method to compare between
+	 * incomes. Returns the l2 norm for two incomes.
+	 */
 	public double compareIncomeRanges(double[] base, double[] compare){
 		if(base.length != compare.length){
 			return -1;
@@ -226,10 +255,15 @@ public class SurnameService extends WFQuery{
 		return Math.sqrt(value);
 	}
 	
+	/*
+	 * Returns a similarity wordle based on a selected income bin.
+	 * The income bin inputted will just compare one bin from a surname
+	 * to all other names by the same bin #. This is an l2 comparison.
+	 */
 	@GET
 	@Produces("application/x-javascript")
 	@Path("/incomeBinWordle")
-	public JSONWithPadding incomeToolWordle(
+	public JSONWithPadding incomeBinWordle(
 			@QueryParam("callback") @DefaultValue("callback") String callback,
 			@QueryParam("surname") @DefaultValue("") String surname,
 			@QueryParam("limit") @DefaultValue("10") int limit,
@@ -302,6 +336,11 @@ public class SurnameService extends WFQuery{
 		return new JSONWithPadding(names, callback);
 	}
 	
+	/*
+	 * Gets the zillow income based on an input. Can compare either from the regular
+	 * Zillow API call (which takes a while) or query a precomputed average table (much faster)
+	 * It will return a set of bins (10 total)
+	 */
 	@GET
 	@Produces("application/x-javascript")
 	@Path("/queryZillowIncome")
@@ -314,11 +353,17 @@ public class SurnameService extends WFQuery{
 			@QueryParam("callback") @DefaultValue("callback") String callback
 			){
 		NameIncome query = new NameIncome();
+		//This method queries the Zillow API, which takes a while.
 //		double result[] = query.queryIncomeRangeNameZillow(surname, "surname", new LatLng(latsw, lngsw), new LatLng(latne, lngne));
+		//This method queries the precomputed table.
 		double result[] = query.queryPrecomputeIncomeRangeNameZillow(surname, "surname");
 		return new JSONWithPadding(result, callback);
 	}
 	
+	/*
+	 * Queries the income mean and median of a name. This method isn't really used
+	 * anymore as its not as telling of a name's income distribution.
+	 */
 	@GET
 	@Produces("application/x-javascript")
 	@Path("/queryIncome")
@@ -335,6 +380,11 @@ public class SurnameService extends WFQuery{
 		return new JSONWithPadding(result, callback);
 	}
 	
+	/*
+	 * Returns the income range of a name, placed into bins according
+	 * to the Census (10 bin ranges). This will query the precomputed table
+	 * for averages.
+	 */
 	@GET
 	@Produces("application/x-javascript")
 	@Path("/queryIncomeRanges")
@@ -352,6 +402,10 @@ public class SurnameService extends WFQuery{
 		return new JSONWithPadding(result, callback);
 	}
 	
+	/*
+	 * Queries the regular map image based on the inputted surname.
+	 * Can return a precomputed map (fast) or create a new map (slow).
+	 */
 	@GET
 	@Produces("application/x-javascript")
 	@Path("/queryMapRegular")
@@ -369,12 +423,18 @@ public class SurnameService extends WFQuery{
 			@QueryParam("zoom_level") @DefaultValue("5") int zoom
 			) throws IOException{
 		QueryName query = new QueryName();
+		//Precomputed map method call.
 		QueryBean result = query.queryCreatedName(surname, imageDir, "regular");
+		//Non precomptued map method call. Will create a brand new map.
 //		QueryBean result = query.queryName(surname, new LatLng(latsw, lngsw), new LatLng(latne, lngne), 
 //				new LatLng(latcenter, lngcenter), width, height, zoom, "surname", imageDir, "regular", -1);
 		return new JSONWithPadding(result, callback);
 	}
 	
+	/*
+	 * Returns the probabilistic map based on inputted surname.
+	 * Can return a precomputed map or create a new map.
+	 */
 	@GET
 	@Produces("application/x-javascript")
 	@Path("/queryMapProbabilistic")
@@ -392,7 +452,9 @@ public class SurnameService extends WFQuery{
 			@QueryParam("zoom_level") @DefaultValue("5") int zoom
 			) throws IOException{
 		QueryName query = new QueryName();
+		//Precomputed map method
 		QueryBean result = query.queryCreatedName(surname, imageDir, "probabilistic");
+		//Create a new map
 //		QueryBean result = query.queryName(surname, new LatLng(latsw, lngsw), new LatLng(latne, lngne), 
 //				new LatLng(latcenter, lngcenter), width, height, zoom, "surname", imageDir, "probabilistic", -1);
 		return new JSONWithPadding(result, callback);

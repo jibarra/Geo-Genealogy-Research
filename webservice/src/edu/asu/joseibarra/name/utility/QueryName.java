@@ -1,3 +1,13 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Queries for the map files of a name. Can query based
+ * on precomputed names (queryCreatedName) or compute
+ * a new map (queryName)
+ */
+
 package edu.asu.joseibarra.name.utility;
 
 import java.io.File;

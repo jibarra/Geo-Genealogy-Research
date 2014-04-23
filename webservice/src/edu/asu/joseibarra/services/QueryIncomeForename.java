@@ -1,6 +1,14 @@
-/* Modified by Jose Ibarra
- * Added functionality for proper Google Map Coordinate to Lat
- * Long conversion
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * This class is the public exposure of the forename query for income.
+ * This service needs to be updated to match the surname service,
+ * as it is behind what the surname service actually does.
+ * It should be combined with QueryForename to reduce the amount
+ * of classes.
+ * The current method returns the mean/median income for a forename.
  */
 
 package edu.asu.joseibarra.services;

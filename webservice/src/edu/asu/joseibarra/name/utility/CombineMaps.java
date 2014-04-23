@@ -1,4 +1,13 @@
-package edu.asu.joseibarra.scripts.name;
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * This class allows for the combination of two maps
+ * into a new map file.
+ */
+
+package edu.asu.joseibarra.name.utility;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -11,13 +20,17 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 import edu.asu.joseibarra.geo.LatLng;
-import edu.asu.joseibarra.name.utility.NameMapBuilder;
 import edu.asu.wangfeng.service.netbeans.BuildResultBean;
 
 public class CombineMaps {
 	public final int zLevel = 4;
 	public final LatLng topLeft = new LatLng(61.62728630386718, -133.64112899999998);
 	
+	/*
+	 * Combines two images into a new BufferedImage, given that
+	 * they are the same width and height The color between the two
+	 * can be ANDed together or ORed together.
+	 */
 	public BufferedImage combineMapsIntoImage(int width, int height, BufferedImage kdeImage1, 
 			BufferedImage kdeImage2)
 			throws IOException{
@@ -87,6 +100,10 @@ public class CombineMaps {
 		return combinedImage;
 	}
 	
+	/*
+	 * Combine two given map locations into a new map, and return a File of that
+	 * new map. Uses the combineMapsIntoImage method above.
+	 */
 	public File combineMapsIntoFile(String map1Loc, String map2Loc, String mapDir1, String mapDir2, 
 			String outputDir) throws IOException{
 		
@@ -141,6 +158,10 @@ public class CombineMaps {
 		return combinedFile;
 	}
 	
+	/*
+	 * Returns a Bean of two combiend maps, given the location of two
+	 * maps to combine.
+	 */
 	public BuildResultBean combineMapsCapture(String map1Loc, String map2Loc, String mapDir1, String mapDir2, 
 			int zoom, LatLng topLeftLatLng, String outputDir) throws IOException{
 		BuildResultBean result;

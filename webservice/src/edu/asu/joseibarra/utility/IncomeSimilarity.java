@@ -1,3 +1,12 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Stores income similarity information (the similarity
+ * to another name) and the name it represents
+ */
+
 package edu.asu.joseibarra.utility;
 
 public class IncomeSimilarity {

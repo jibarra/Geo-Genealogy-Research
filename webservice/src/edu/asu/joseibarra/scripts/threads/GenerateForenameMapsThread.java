@@ -1,3 +1,13 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Generates precomputed forename maps.
+ * This is a threaded class so it can generate maps
+ * based on an inputted list.
+ */
+
 package edu.asu.joseibarra.scripts.threads;
 
 import java.io.IOException;
@@ -21,6 +31,10 @@ public class GenerateForenameMapsThread extends Thread {
 		this.names = names;
 	}
 	
+	/*
+	 * Gets a name from the list. Synchronized to prevent threads from
+	 * accessing the same name.
+	 */
 	public synchronized String getListName(LinkedList<String> list){
 		if(list.isEmpty())
 			return null;
@@ -31,6 +45,11 @@ public class GenerateForenameMapsThread extends Thread {
 		
 	}
 	
+	/*
+	 * Generates the forename maps at a precomputed levels
+	 * with a prespecified resolution (the resolution of the map
+	 * on the webpage).
+	 */
 	public void generateForenames(){
 		KDEPainterEfficient painter = new KDEPainterEfficient();
 		GoogleMercator mercator = new GoogleMercator();

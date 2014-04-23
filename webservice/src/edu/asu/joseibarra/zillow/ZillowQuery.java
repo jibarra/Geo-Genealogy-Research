@@ -1,5 +1,14 @@
 package edu.asu.joseibarra.zillow;
 
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Class to query the zillow API.
+ * See this URL for more information: http://www.zillow.com/howto/api/APIOverview.htm
+ */
+
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,6 +24,9 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class ZillowQuery {
+	
+	//Gets the Zestimate for a zipcode, which is the estimated house value
+	//for all houses in that zip
 	public String getZestimate(String zpid, boolean rentZestimate) throws SAXException, IOException{
 		Document serviceDoc = docBuilder.parse(ZESTIMATE_URL + "?zws-id=" + ZWSID + "&zpid=" + zpid + "&rentzestimate=" + rentZestimate);
         Element zestimate = (Element)serviceDoc.getElementsByTagName("zestimate").item(0);
@@ -42,10 +54,17 @@ public class ZillowQuery {
 		return "";
 	}
 	
+	/*
+	 * Get the "region children" for a state.
+	 * This method stores the zipcode children into a state storage and zip storage within this class.
+	 * The class queries based on the state and childtype entered (which should be 'zipcode')
+	 * then gets the results of all the zipcode Zindexes for that state.
+	 */
 	public void getRegionChildrenForState(String state, String childtype, ZillowStateZipDemographics stateStorage){
-		if(state.equals("GA")){
-			return;
-		}
+		//Georgia data is supposed to be fixed by May 1, 2014
+//		if(state.equals("GA")){
+//			return;
+//		}
 		
 		Document serviceDoc = null;
 		try {
@@ -71,6 +90,11 @@ public class ZillowQuery {
 		}
 	}
 	
+	/*
+	 * Sets up the demographics for a state (see getRegionChildrenForState above).
+	 * This class initializes the required hash maps then gets all the demographics for
+	 * all US states.
+	 */
 	public void setupStateZipDemographics(String childtype){
 		ZillowQuery.stateZipDemographics = new HashMap<String, ZillowStateZipDemographics>();
 		ZillowQuery.zipDemographics = new HashMap<String, Integer>();
@@ -80,6 +104,14 @@ public class ZillowQuery {
 		}
 	}
 	
+	
+	/*
+	 * This class checks if the demographics (see above methods, esp. getRegionChildrenForState)
+	 * are up to date. The class checks the current time and compares it to the last update.
+	 * This should update within a specified number of days (ZillowQuery.numUpdateDays),
+	 * using setupStateZipDemographics method.
+	 * If it has only been run once, it automatically sets up the demograhpics.
+	 */
 	public synchronized void checkStateZipDemographics(String childtype){
 		Calendar currentTime = Calendar.getInstance();
 		
@@ -97,42 +129,12 @@ public class ZillowQuery {
 		}
 	}
 	
+	/*
+	 * This class is a buffer method, which just runs the check state zip demographics.
+	 */
+	
 	public void loadRegionChildren(String childtype) throws SAXException, IOException{
 		checkStateZipDemographics(childtype);
-		
-//		int max = 0;
-//		int min = 999999999;
-//		int zipCount = 0;
-//		String minZip = "";
-//		String maxZip = "";
-//		for(int i = 0; i < US_STATES.length; i++){
-//			ZillowStateZipDemographics stateDemographics = ZillowQuery.stateZipDemographics.get(US_STATES[i]);
-//			HashMap<String, Integer> values = stateDemographics.getZipValues();
-//			for(String s : values.keySet()){
-//				zipCount++;
-//				int value = values.get(s);
-//				if(value < min){
-//					min = value;
-//					minZip=s;
-//				}
-//				else if(value > max){
-//					max = value;
-//					maxZip=s;
-//				}
-//			}
-//		}
-//		
-//		for(int i = 0; i < US_STATES.length; i++){
-//			ZillowStateZipDemographics stateDemographics = ZillowQuery.stateZipDemographics.get(US_STATES[i]);
-//			HashMap<String, Integer> values = stateDemographics.getZipValues();
-//			for(String s : values.keySet()){
-//				System.out.println(values.get(s));
-//			}
-//		}
-//		
-//		System.out.println("Min-> Zip: " + minZip + ", " + min);
-//		System.out.println("Max-> Zip: " + maxZip + ", " + max);
-//		System.out.println("# Zips: " + zipCount);
 	}
 	
 	public Integer getZipCodeValue(String state, String zipcode) throws StateDoesNotExistException, ZipCodeNotFoundException{
@@ -151,6 +153,10 @@ public class ZillowQuery {
 		return values.get(zipcode);
 	}
 	
+	/*
+	 * This method gets the $ value for the specified zipcode. First it checks to see
+	 * if the data needs an update, then it gets the information for an entered zip code.
+	 */
 	public Integer getZipCodeValue(String zipcode) throws ZipCodeNotFoundException{
 		checkStateZipDemographics("zipcode");
 		Integer value = zipDemographics.get(zipcode);
@@ -168,12 +174,18 @@ public class ZillowQuery {
 //		System.out.println(service.getRegionChildren("az", "zipcode"));
 	}
 	
+	//Number of days to wait to update zillow data
 	private static final int numUpdateDays = 7;
+	//The last update of the zillow data
 	private static Calendar lastUpdate = null;
-	private static HashMap<String, ZillowStateZipDemographics> stateZipDemographics = null;
-	private static HashMap<String, Integer> zipDemographics = null;
-//	private static ZillowStateZipDemographics[] stateZipDemographics = null;
 	
+	//hashmap that stores the state demographics information based on state and zip
+	//This is linked state(String)->demographicInfo(ZillowStateZipDemographics)
+	private static HashMap<String, ZillowStateZipDemographics> stateZipDemographics = null;
+	//hashmap that stores the state demographics based soley on zip (linked zip(String)->$value(Integer)
+	private static HashMap<String, Integer> zipDemographics = null;
+	
+	//Static variables to read XML documents.
 	private static final DocumentBuilderFactory dbFac;
     private static final DocumentBuilder docBuilder;
 	static
@@ -189,6 +201,9 @@ public class ZillowQuery {
         }
     }
 	
+	/*
+	 * Exception thrown when an inputted state cannot be found.
+	 */
 	public class StateDoesNotExistException extends Exception
 	{
 	      //Parameterless Constructor
@@ -201,6 +216,9 @@ public class ZillowQuery {
 	      }
 	 }
 	
+	/*
+	 * Exception thrown when an inputted zip cannot be found.
+	 */
 	public class ZipCodeNotFoundException extends Exception
 	{
 	      //Parameterless Constructor
@@ -213,11 +231,13 @@ public class ZillowQuery {
 	      }
 	 }
 	
+	//US States
 	private static final String[] US_STATES = {"AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL",
 		"GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE",
 		"NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT",
 		"VT","VA","WA","WV","WI","WY"};
 	
+	//Zillow constants, including developer key and URL.
 	private final String ZWSID = "X1-ZWz1b8t7153ksr_728x4";
 	private final String ZESTIMATE_URL = "http://www.zillow.com/webservice/GetZestimate.htm";
 	private final String SEARCH_RESULTS_URL = "http://www.zillow.com/webservice/GetSearchResults.htm";

@@ -1,3 +1,11 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Generates the income ranges for a name.
+ */
+
 package edu.asu.joseibarra.scripts.name;
 
 import java.io.BufferedInputStream;
@@ -84,6 +92,9 @@ public class NameIncomeScript{
 		connectionInsert.close();
 	}
 	
+	/*
+	 * Generates income ranges for all forename.
+	 */
 	public void createAllIncomeRangesForename() throws SQLException, IOException{
 		InputStream inFile = new FileInputStream("C:\\Users\\jlibarr1\\Downloads\\test\\listForenames25.ser");
 	    InputStream inBuffer = new BufferedInputStream(inFile);
@@ -130,7 +141,9 @@ public class NameIncomeScript{
 	}
 	
 
-	
+	/*
+	 * Generates income ranges for all suranmes.
+	 */
 	public void createAllIncomeRanges() throws SQLException, IOException{
 		InputStream inFile = new FileInputStream("C:\\Users\\jlibarr1\\Downloads\\test\\listNames25.ser");
 	    InputStream inBuffer = new BufferedInputStream(inFile);
@@ -204,6 +217,9 @@ public class NameIncomeScript{
 		return queryIncomeRangeName("surname", surname);
 	}
 	
+	/*
+	 * Creates an income range for a specified name
+	 */
 	private double[] queryIncomeRangeName(String nameType, String name) throws NamingException{
 		// prepare the data
 		double[] averages = new double[10];

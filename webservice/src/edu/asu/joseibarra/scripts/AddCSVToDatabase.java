@@ -1,3 +1,13 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Class to add CSV information to afile.
+ * This currently uploads based on the American
+ * Census Survey data.
+ */
+
 package edu.asu.joseibarra.scripts;
 
 import java.sql.Connection;

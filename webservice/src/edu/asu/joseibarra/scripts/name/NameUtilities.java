@@ -1,3 +1,14 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Utility class to do name operations. Mostly
+ * generates a list of names within the database
+ * and a list of names with more than a specified amount
+ * within the database.
+ */
+
 package edu.asu.joseibarra.scripts.name;
 
 import java.awt.Point;

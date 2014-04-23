@@ -1,3 +1,23 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Generates the income ranges for a name. This can query
+ * zillow or the census data.
+ * 
+ * For zillow, it can query
+ * the existing zillow data that's precomputed or do a
+ * new query for new data. The precomputed is faster.
+ * 
+ * For census, it will query the precomputed averages for
+ * a name within our database.
+ * 
+ * It also has methods to do computations to generate the
+ * incomes for all names, but this has since been moved to
+ * a threaded class.
+ */
+
 package edu.asu.joseibarra.name.utility;
 
 import java.io.BufferedInputStream;
@@ -25,8 +45,8 @@ import edu.asu.joseibarra.utility.IncomeSimilarity;
 import edu.asu.joseibarra.zillow.ZillowQuery;
 import edu.asu.joseibarra.zillow.ZillowQuery.ZipCodeNotFoundException;
 
-//public class NameIncome extends WFQuery{
-public class NameIncome{
+public class NameIncome extends WFQuery{
+//public class NameIncome{
 private static final int zillowBinSize = 50000;
 	
 	public double[] queryIncomeRangeSurname(String surname, String incomeType) throws NamingException{
@@ -52,7 +72,7 @@ private static final int zillowBinSize = 50000;
 		ResultSet resultset = null;
 		
 		try {
-//			connection = connectDatabase();
+			connection = connectDatabase();
 			
 			String selectSQL = "SELECT income_range_avg_1, income_range_avg_2, income_range_avg_3, "
 					+ "income_range_avg_4, income_range_avg_5, income_range_avg_6, income_range_avg_7, "
@@ -78,10 +98,10 @@ private static final int zillowBinSize = 50000;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} 
-//		catch (NamingException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
+		catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		return incomes;
 	}
@@ -108,13 +128,8 @@ private static final int zillowBinSize = 50000;
 		ResultSet resultset = null;
 		
 		try {
-			connection = connectDatabase("phonebook", "root", "password");
-//			try {
-//				connection = connectDatabase();
-//			} catch (NamingException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
+//			connection = connectDatabase("phonebook", "root", "password");
+			connection = connectDatabase();
 			//SQL LOCATED HERE
 			sql = "select postcode from phonebook where " + nameType + "=? and latitude between ? and ? and longitude between ? and ?";
 			
@@ -148,9 +163,9 @@ private static final int zillowBinSize = 50000;
 			statement.close();
 			connection.close();
 		}
-//		catch (NamingException e) {
-//			e.printStackTrace();
-//		} 
+		catch (NamingException e) {
+			e.printStackTrace();
+		} 
 		catch (SQLException e) {
 			
 			e.printStackTrace();
@@ -216,7 +231,7 @@ private static final int zillowBinSize = 50000;
 		ResultSet resultset = null;
 		
 		try {
-//			connection = connectDatabase();
+			connection = connectDatabase();
 
 			sql = "select income_range_avg_1, income_range_avg_2, income_range_avg_3, income_range_avg_4"
 					+ ", income_range_avg_5, income_range_avg_6, income_range_avg_7, income_range_avg_8"

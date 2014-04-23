@@ -1,3 +1,13 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Class to hold the information about a wordle.
+ * Can hold the closeness value to an entered name
+ * and the name that the closeness value represents.
+ */
+
 package edu.asu.joseibarra.name.utility;
 
 public class Wordle {

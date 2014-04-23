@@ -1,6 +1,20 @@
-/* Modified by Jose Ibarra
- * Added functionality for proper Google Map Coordinate to Lat
- * Long conversion
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * This class produced a KDE heatmap of a name.
+ * Some variables must be set for it to work
+ * properly before calling a method including:
+ * the topleft and rightbottom pixels,
+ * the list of latitude and longitude points (sampleList)
+ * the zoom level, the bandwidth and the 
+ * filename for output.
+ * 
+ * This class creates many, many repeated methods and
+ * can be refactored. Methods will be commented to show
+ * what each one can do but lots of code within methods are
+ * repeated.
  */
 
 package edu.asu.joseibarra.geo;
@@ -67,7 +81,13 @@ public class KDEPainterEfficient {
     }
     
     
-    
+    /*
+     * Create a hashmap of the points inputted.
+     * This converts the latitude and longitude inputted into this
+     * class into a hashmap of map points (pixels) and the amount
+     * of people on that pixel (which would be the Double part
+     * of the hashmap)
+     */
     public HashMap<Point, Double> createValueMap(GoogleMercator mercator){
     	//Convert the lat/longs from the inputted list to map points
 		//then convert to pixels on the screen
@@ -96,6 +116,10 @@ public class KDEPainterEfficient {
 		return valueMap;
     }
     
+    /*
+     * Calculates the bandwidth of the map. Typically this will
+     * always be the input.
+     */
     public int calculateBandwidth(GoogleMercator mercator){
     	//Calculate the bandwidth for the pixel distances
 		int limit = width/2;
@@ -114,6 +138,10 @@ public class KDEPainterEfficient {
 		return 2*distanceI;
     }
     
+    /*
+     * Weight teh distances between distinct points that were inputted.
+     * Results will be placed in teh distance array.
+     */
     public void weightDistances(HashMap<Point, Double> valueMap, Point[] distinctPointArray, double[][] distance){
     	for (int i = 0; i < distance.length; i++) {
 			//Calculate the distance and weight between pixels
@@ -128,6 +156,12 @@ public class KDEPainterEfficient {
 		}
     }
     
+    /*
+     * Computes a proabilistic KDE map based on the precomputed population
+     * of the United States. What this method does is create a regular
+     * map of a person, then divide that person's population at each
+     * point by the US population to deemphasize densely populated areas.
+     */
     @SuppressWarnings("unchecked")
 	public void drawProbabilisticKDEMap(int type) throws IOException {
 		width = rightBottomPixel.x - leftTopPixel.x;
@@ -258,6 +292,9 @@ public class KDEPainterEfficient {
 		ImageIO.write(image, "png", file);
     }
     
+    /*
+     * Draws a KDE map based on an already calculated distinct point hashmap
+     */
     public void drawKDEMapWithHash(HashMap<Point, Double> valueMap) throws IOException{
     	long start = System.nanoTime();
 		width = rightBottomPixel.x - leftTopPixel.x;
@@ -342,6 +379,15 @@ public class KDEPainterEfficient {
     	System.out.println("Time to create KDE map from hash: " + ((end-start) / 1000000000.0) + " seconds");
     }
     
+    /*
+     * Draws a regular KDE map, comparing it to nothing.
+     * Will output to a specified file.
+     * Current implementation also outputs the computed name to another file
+     * that will hold the information of the US overall. This can be
+     * removed to eliminate this. This is a similar implementation to the
+     * drawKDEMap() function below. Use that instead for simiply drawing
+     * maps.
+     */
     public void drawKDEMap(String surname) throws IOException{
 		width = rightBottomPixel.x - leftTopPixel.x;
 		height = rightBottomPixel.y - leftTopPixel.y;
@@ -448,6 +494,9 @@ public class KDEPainterEfficient {
 		ImageIO.write(image, "png", file);
     }
     
+    /*
+     * Draws a KDE map based on the inputted pixels and type of the map. 
+     */
     public void drawKDEMap(double[][] pixel, int type) throws IOException{
     	ColorBrewer colorBrewer = new ColorBrewer();
 		colorBrewer.init(pixel);
@@ -478,6 +527,9 @@ public class KDEPainterEfficient {
 		ImageIO.write(image, "png", file);
     }
 
+    /*
+     * Draws a regular KDE map based on inputs.
+     */
     public void drawKDEMap(int type) throws IOException {
 		width = rightBottomPixel.x - leftTopPixel.x;
 		height = rightBottomPixel.y - leftTopPixel.y;
@@ -570,10 +622,16 @@ public class KDEPainterEfficient {
 //    	System.out.println("Time to create KDE: " + ((end-start) / 1000000000.0) + " seconds");
     }
     
+    /*
+     * Calculates an epanechnikov value based on input
+     */
     static double epanechnikov(double u) {
 		return 0.75 * (1 - u * u);
 	}
 
+    /*
+     * The kernel function for the KDE calculation
+     */
 	static double kernelFunction(Point diff, double sumWeight, double h, double h2) {
 		Point2D.Double diffF = new Point2D.Double(diff.x / h, diff.y / h);
 		return epanechnikov(diffF.x) * epanechnikov(diffF.y) / (h2 * sumWeight);
@@ -611,6 +669,9 @@ public class KDEPainterEfficient {
 
 	    }
 	    
+	    /*
+	     * Does a query of a surname and generates a map to a test file.
+	     */
 	    public void sqlQuery(String surname) throws IOException{
 			Connection connection = null;
 			String sql;
@@ -652,6 +713,9 @@ public class KDEPainterEfficient {
 	    	drawKDEMap(1);
 		}
 	    
+	    /*
+	     * Connects to the database.
+	     */
 		public Connection connectDatabase() throws NamingException, SQLException {
 //			javax.naming.Context initContext = new InitialContext();
 //			javax.naming.Context envContext = (javax.naming.Context) initContext.lookup("java:/comp/env");
@@ -681,7 +745,13 @@ public class KDEPainterEfficient {
 	     * BELOW ARE THE UTILITY PARTS OF THIS CLASS.
 	     * NEEDS TO BE REFACTORED
 	     */
-
+	    
+	    
+	    
+	    /*
+	     * Draws a probabilistic heatmap of the iniputted name.
+	     * Also outputs to a file.
+	     */
 	    public void drawProbabilisticKDEMap(String surname) throws IOException {
 	    	long start = System.nanoTime();
 			width = rightBottomPixel.x - leftTopPixel.x;
@@ -810,6 +880,9 @@ public class KDEPainterEfficient {
 	    	long end = System.nanoTime();
 	    }
 
+	    /*
+	     * Draws a KDE map for a surname and outputs to a file.
+	     */
 	    public void drawKDEMapForename(String name) throws IOException{
 	    	long start = System.nanoTime();
 			width = rightBottomPixel.x - leftTopPixel.x;
@@ -901,6 +974,10 @@ public class KDEPainterEfficient {
 			
 	    }
 
+	    /*
+	     * Creates a value map of the US overall and saves it.
+	     * Currently does this for forenames.
+	     */
 	    public HashMap<Point, Double> createValueMapWithOverallSave(GoogleMercator mercator) throws IOException{
 	    	//Convert the lat/longs from the inputted list to map points
 			//then convert to pixels on the screen

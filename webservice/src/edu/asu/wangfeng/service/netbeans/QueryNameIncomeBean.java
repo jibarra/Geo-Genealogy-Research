@@ -1,3 +1,12 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Class that stores service bean information for the mean
+ * and medians of a person.
+ */
+
 package edu.asu.wangfeng.service.netbeans;
 
 import java.util.LinkedList;

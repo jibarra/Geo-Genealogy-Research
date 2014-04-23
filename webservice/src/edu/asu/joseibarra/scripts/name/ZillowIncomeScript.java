@@ -1,3 +1,13 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Calculates the bin averages for all names and
+ * puts into a database to make the query times
+ * much shorter.
+ */
+
 package edu.asu.joseibarra.scripts.name;
 
 import java.io.BufferedReader;

@@ -1,3 +1,12 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Class that compares income between people.
+ * Stores the name and the closeness to another name.
+ */
+
 package edu.asu.wangfeng.service.netbeans;
 
 public class IncomeComparisonBean implements Comparable<IncomeComparisonBean>{

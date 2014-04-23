@@ -1,3 +1,14 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Threaded class. Allows for name income comparisons
+ * and stores the similarity between names within teh database.
+ * Supports forenames and surnames.
+ * Similarity is based on l2 norm
+ */
+
 package edu.asu.joseibarra.scripts.threads;
 
 import java.sql.Connection;
@@ -15,15 +26,25 @@ import edu.asu.joseibarra.scripts.resources.NameRange;
 import edu.asu.joseibarra.utility.IncomeSimilarity;
 
 public class NameIncomeSimilarityThread extends Thread{
+	/*
+	 * Saved data for the name income. This will not change.
+	 */
 	private LinkedList<NameRange> savedRanges;
+	/*
+	 * income data for names that will change. Methods will
+	 * iterate through this collection.
+	 */
 	private LinkedList<NameRange> iterRanges;
 
 	public NameIncomeSimilarityThread(LinkedList<NameRange> savedRanges, LinkedList<NameRange> iterRanges) {
+		
 		this.savedRanges = savedRanges;
 		this.iterRanges = iterRanges;
 	}
 	
-	
+	/*
+	 * Change based on what method you would like a thread to run.
+	 */
 	public void run(){
 		compareAndAdd();
 	}
@@ -34,6 +55,11 @@ public class NameIncomeSimilarityThread extends Thread{
 		return list.poll();
 	}
 	
+	/*
+	 * Compares a forenmae to all other forenames and finds the
+	 * most similar. The comparison information is stored into a database
+	 * table.
+	 */
 	public void compareAndAddForename(){
 		Connection connection = connectDatabase("phonebook", "root", "password");
 		while(!iterRanges.isEmpty()){
@@ -79,6 +105,11 @@ public class NameIncomeSimilarityThread extends Thread{
 	    }
 	}
 	
+	/*
+	 * Compares surnames to all other surnames to find the
+	 * ones with the most similar income. This method will save
+	 * the results to a database table.
+	 */
 	public void compareAndAdd(){
 		System.out.println("Starting");
 		Connection connection = connectDatabase("phonebook", "root", "password");
@@ -145,6 +176,11 @@ public class NameIncomeSimilarityThread extends Thread{
 		}
 	}
 
+	/*
+	 * Finds the similar names based on a base range (compareRange)
+	 * and a linked list of ranges to compare to.
+	 * Returns the most similar names, with their similarity metric.
+	 */
 	private IncomeSimilarity[] findSimilarNames(NameRange compareRange, LinkedList<NameRange> ranges) throws SQLException{
 		ranges.remove(compareRange);
 		IncomeSimilarity[] arraySimilar = new IncomeSimilarity[201];
@@ -176,6 +212,9 @@ public class NameIncomeSimilarityThread extends Thread{
 	    return arraySimilar;
 	}
 	
+	/*
+	 * Compares two ranges, based on l2 norm.
+	 */
 	private double compareRanges(double[] range1, double[] range2){
 		if(range1.length != range2.length){
 			return 1000000;
@@ -187,6 +226,10 @@ public class NameIncomeSimilarityThread extends Thread{
 		return Math.sqrt(sum);
 	}
 	
+	/*
+	 * Adds a similarity to the vector of similar names. Uses a
+	 * binary search to find where to add it.
+	 */
 	private void addSimilarityToVector(IncomeSimilarity currentSim, Vector<IncomeSimilarity> addVector, int max){
 		if(currentSim.similarity > addVector.get(max).similarity)
 			return;
@@ -205,6 +248,9 @@ public class NameIncomeSimilarityThread extends Thread{
 			
 	}
 	
+	/*
+	 * Searches for a place to add the similarity.
+	 */
 	private int binarySearch(IncomeSimilarity compare, Vector<IncomeSimilarity> vector, int min, int max){
 		if(max <= min){
 			if(max < min)
@@ -225,6 +271,9 @@ public class NameIncomeSimilarityThread extends Thread{
 			return mid;
 	}
 	
+	/*
+	 * Connect to the database.
+	 */
 	private static Connection connectDatabase(String localdb,
 			String username, String password) {
 		Connection connection = null;

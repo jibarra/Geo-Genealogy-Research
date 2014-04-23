@@ -1,3 +1,13 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Queries for the name income of a name.
+ * This is basic name income information (mean
+ * and median income) and isn't used anymore.
+ */
+
 package edu.asu.joseibarra.name.utility;
 
 import java.sql.Connection;

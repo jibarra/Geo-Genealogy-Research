@@ -1,3 +1,14 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Creates sample small maps for a group of names.
+ * 
+ * Can also create all small maps but this was moved
+ * to a threaded class.
+ */
+
 package edu.asu.joseibarra.scripts.name;
 
 import java.awt.Point;
