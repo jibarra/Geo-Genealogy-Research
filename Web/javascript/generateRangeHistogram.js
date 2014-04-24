@@ -1,6 +1,10 @@
  // @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
  // created on November 25, 2013 ane edited into 2014
 
+ /*
+ Generates the histogram for the income ranges. This works for census and zillow.
+ */
+
  //Linted on April 7, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
 
 var OrRd = {

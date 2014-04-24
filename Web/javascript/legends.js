@@ -1,6 +1,8 @@
 /** @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
  created in February 2014 ane edited into 2014
 
+ All legend creation is stored here. The method names represent the legend created.
+
  Linted on April 8, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
 */
 

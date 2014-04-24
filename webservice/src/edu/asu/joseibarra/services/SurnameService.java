@@ -222,6 +222,8 @@ public class SurnameService extends WFQuery{
 	 * used instead. The method queries the database for similar names,
 	 * comparing each bin inputted to the data within the census
 	 * income bin table, calculating a simple l2 norm between bins.
+	 * Inputting a different type ("census" or "zillow") will return a
+	 * wordle based on that type's income.
 	 */
 	@GET
 	@Produces("application/x-javascript")

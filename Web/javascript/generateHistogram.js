@@ -2,6 +2,10 @@
  * @author Jose Ibarra, Jose.Ibarra@asu.edu, Arizona State University
  * Created in 2014
 
+ Generates a histogram of the data.
+
+ generateRangeHistogram.js is used instead of this now
+
   Linted on April 8, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
  */
 

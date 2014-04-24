@@ -2,6 +2,9 @@
  * @author Feng Wang, fwang49@asu.edu, Arizona State University
  * @author Jose Ibarra, Jose.Ibarra@asu.edu, Arizona State University
  * Modified on September 9, 2013 and after into 2014
+
+Produces the heatmap overlay for the map
+
  Linted on April 8, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
  */
 
