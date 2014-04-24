@@ -484,7 +484,6 @@ public class NameIncomeScript{
 	    for(int i = 0; i < threads.length; i++){
 	    	threads[i].start();
 	    }
-	    
 	}
 	
 	public void findAllSimilarForenames() throws IOException, SQLException{

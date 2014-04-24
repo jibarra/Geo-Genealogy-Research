@@ -31,6 +31,9 @@ public class AddCSVToDatabase {
 		test.addUStoDatabase();
 	}
 	
+	/*
+	 * Adds all Census income estimate CSV files to the database.
+	 */
 	public void addUStoDatabase() throws SQLException{
 		String csvFile = "C:\\Users\\jlibarr1\\Desktop\\temp\\data\\ACS_12_5YR_S1901 ";
 		for(int i = 1; i <= 51; i++){
@@ -39,6 +42,10 @@ public class AddCSVToDatabase {
 		}
 	}
 	
+	/*
+	 * Reads a CSV and returns a linked list of what was read. This method
+	 * is specific to teh Census income estimate files.
+	 */
 	public LinkedList<CensusTractIncomePercent> readCSV(String fileLocation){
 		LinkedList<CensusTractIncomePercent> list = new LinkedList<CensusTractIncomePercent>();
 		BufferedReader br = null;
@@ -85,6 +92,9 @@ public class AddCSVToDatabase {
 		return list;
 	}
 	
+	/*
+	 * Adds a linked list to the database, separating data into columns.
+	 */
 	public void addLinkedListToDB(LinkedList<CensusTractIncomePercent> list) throws SQLException{
 		Connection connection = connectMySQLDatabase("phonebook","root", "password");
 		CensusTractIncomePercent area = null;
