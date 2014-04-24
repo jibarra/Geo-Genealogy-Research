@@ -62,8 +62,59 @@ public class SurnameService extends WFQuery{
 	 */
 	@GET
 	@Produces("application/x-javascript")
-	@Path("/incomeWordle")
-	public JSONWithPadding incomeWordle(
+	@Path("/zillowIncomeWordle")
+	public JSONWithPadding zillowIncomeWordle(
+			@QueryParam("callback") @DefaultValue("callback") String callback,
+			@QueryParam("surname") @DefaultValue("") String surname,
+			@QueryParam("limit") @DefaultValue("10") int limit
+			) throws IOException, NamingException{
+		if(surname.length() < 1 || limit < 1){
+			return new JSONWithPadding(new LinkedList<Wordle>(), callback);
+		}
+			
+		surname = surname.toUpperCase();
+		LinkedList<Wordle> names = new LinkedList<Wordle>();
+		
+		Connection connection = null;
+		String sql;
+		PreparedStatement statement = null;
+		ResultSet resultset = null;
+		
+		try {
+			connection = connectDatabase();
+			sql = "SELECT surnameSimilar, incomeSimilarity FROM similar_zillow_incomes_surname WHERE surname=? ORDER BY incomeSimilarity LIMIT ?";
+
+			statement = connection.prepareStatement(sql, java.sql.ResultSet.TYPE_FORWARD_ONLY,
+					java.sql.ResultSet.CONCUR_READ_ONLY);
+
+			statement.setString(1, surname);
+			statement.setInt(2, limit);
+
+			resultset = statement.executeQuery();
+			
+			while (resultset.next()) {
+				names.add(new Wordle(resultset.getString(1), resultset.getFloat(2) * 100));
+			}
+			resultset.close();
+			statement.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return new JSONWithPadding(names, callback);
+	}
+	
+	/*
+	 * Outputs the census income wordle based on the surname inputted.
+	 * Queries the database to find the similar surnames ordered by
+	 * similar incomes and returns the result. Values are limited
+	 * by the inputted limit.
+	 */
+	@GET
+	@Produces("application/x-javascript")
+	@Path("/censusIncomeWordle")
+	public JSONWithPadding censusIncomeWordle(
 			@QueryParam("callback") @DefaultValue("callback") String callback,
 			@QueryParam("surname") @DefaultValue("") String surname,
 			@QueryParam("limit") @DefaultValue("10") int limit
@@ -178,6 +229,7 @@ public class SurnameService extends WFQuery{
 	public JSONWithPadding incomeToolWordle(
 			@QueryParam("callback") @DefaultValue("callback") String callback,
 			@QueryParam("limit") @DefaultValue("10") int limit,
+			@QueryParam("type") @DefaultValue("census") String type,
 			@QueryParam("bin1") @DefaultValue("10") double bin1,
 			@QueryParam("bin2") @DefaultValue("10") double bin2,
 			@QueryParam("bin3") @DefaultValue("10") double bin3,
@@ -203,8 +255,14 @@ public class SurnameService extends WFQuery{
 		br.close();
 		
 		PriorityQueue closest = new PriorityQueue<IncomeComparisonBean>();
+		String sql = "";
+		if(type.equals("census")){
+			sql = "SELECT * FROM surname_income_ranges_avg WHERE surname=?";
+		}
+		else if(type.equals("zillow")){
+			sql = "SELECT * FROM surname_zillow_income_ranges_avg WHERE surname=?";
+		}
 		
-		String sql = "SELECT * FROM surname_income_ranges_avg WHERE surname=?";
 		PreparedStatement statement = null;
 		Connection connection = null;
 		ResultSet resultset = null;

@@ -83,8 +83,11 @@
       else if($('#surnameWordleType').val() == 'core'){
         updateSimilarMapWordle(nameType, 'core');
       }
-      else if($('#surnameWordleType').val() == 'income'){
-        updateSimilarIncomeWordle(nameType);
+      else if($('#surnameWordleType').val() == 'censusIncome'){
+        updateSimilarCensusIncomeWordle(nameType);
+      }
+      else if($('#surnameWordleType').val() == 'zillowIncome'){
+        updateSimilarZillowIncomeWordle(nameType);
       }
       else if($('#surnameWordleType').val() == 'distributiontool'){
         updateSimilarIncomeWordleForTool(nameType);
@@ -122,6 +125,11 @@
 
   function incomeTypeSelected(nameType){
     incomeRangesQuery("surname", $('#incomeDataType').val());
+
+    if($('#surnameWordleType').val() == 'distributiontool'){
+      updateSimilarIncomeWordleForTool(nameType);
+    }
+    
     if($('#incomeDataType').val() == "census"){
       $('#incomename').text("Income");
       $("#incomeLegend").show();
@@ -287,7 +295,8 @@
         <select name="surnameWordleType" id="surnameWordleType" onchange="wordleTypeChanged('surname')">
           <option value="core">Core Map Similarity</option>
           <option value="l2">L2 Map Similarity</option>
-          <option value="income">Income Similarity</option>
+          <option value="censusIncome">Census Income Similarity</option>
+          <option value="zillowIncome">Zillow Income Similarity</option>
           <option value="distributiontool">Distribution Tool Similarity</option>
         </select>
         <!-- The word cloud output -->
