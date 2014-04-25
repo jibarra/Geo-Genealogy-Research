@@ -77,7 +77,7 @@ public class ZillowSimilarityScript {
 	    LinkedList<NameRange> iterRanges = getAllAverages(savedNameList);
 	    LinkedList<NameRange> savedRanges = (LinkedList<NameRange>)iterRanges.clone();
 	    
-	    ZillowSimilarityThread[] threads = new ZillowSimilarityThread[6];
+	    ZillowSimilarityThread[] threads = new ZillowSimilarityThread[5];
 	    System.out.println("Creating threads...");
 	    for(int i = 0; i < threads.length; i++){
 	    	threads[i] = new ZillowSimilarityThread(savedRanges, iterRanges);
