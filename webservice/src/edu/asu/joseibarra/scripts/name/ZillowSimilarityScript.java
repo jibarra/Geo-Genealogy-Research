@@ -47,7 +47,7 @@ public class ZillowSimilarityScript {
 			        // use comma as separator
 				String[] lineName = line.split(cvsSplitBy);
 	 
-				names.add(lineName[1]);
+				names.add(lineName[0]);
 			}
 	 
 		} catch (FileNotFoundException e) {
@@ -139,7 +139,7 @@ public class ZillowSimilarityScript {
 		return connection;
 	}
 	
-	private final String csvFile = "C:\\Users\\jlibarr1\\Downloads\\textRepNames25.csv";
+	private final String csvFile = "C:\\Users\\jlibarr1\\Downloads\\surname_count_fileterd.csv";
 	
 	public static void main(String[] args)
 	{
