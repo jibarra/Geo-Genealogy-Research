@@ -1,3 +1,12 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * This class stores infformation about a latitude/longitude
+ * pair.
+ */
+
 package edu.asu.joseibarra.geo;
 
 public class LatLng {

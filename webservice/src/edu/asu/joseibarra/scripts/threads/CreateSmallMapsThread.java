@@ -1,3 +1,16 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * This class creates the small maps for Map comparison
+ * The maps should be 170x90 at 2 zoom level. It extends
+ * Thread so it can be threaded by other methods (check
+ * CreateSmallMaps class in the scripts.name package)
+ * This class currently supports forenames but with minor
+ * modifications can also support surnames.
+ */
+
 package edu.asu.joseibarra.scripts.threads;
 
 import java.io.IOException;
@@ -31,6 +44,11 @@ public class CreateSmallMapsThread extends Thread {
 		return list.poll();
 	}
 	
+	/*
+	 * Generate the small maps. Every name is fixed to output at a zoom level of two
+	 * and a resolution of 170x90. This method is for forenames at the moment but can
+	 * be changed for surnames.
+	 */
 	public void generateForenameSmallMaps(LinkedList<String> forenameList) {
 		KDEPainterEfficient painter = new KDEPainterEfficient();
 		GoogleMercator mercator = new GoogleMercator();

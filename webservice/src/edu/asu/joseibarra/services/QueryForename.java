@@ -1,3 +1,14 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * This class is the public exposure of the forename query.
+ * This service needs to be updated to match the surname service,
+ * as it is behind what the surname service actually does.
+ * The only current method returns a map of the inputted surname.
+ */
+
 package edu.asu.joseibarra.services;
 
 import java.io.File;
@@ -17,10 +28,7 @@ import edu.asu.joseibarra.geo.LatLng;
 import edu.asu.joseibarra.name.utility.QueryName;
 import edu.asu.wangfeng.service.netbeans.QueryBean;
 
-/* Modified by Jose Ibarra
- * Added functionality for proper Google Map Coordinate to Lat
- * Long conversion
- */
+
 
 @Path("/queryForename")
 public class QueryForename extends WFQuery{

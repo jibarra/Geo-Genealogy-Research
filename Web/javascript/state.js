@@ -3,6 +3,8 @@
  * @author Jose Ibarra, Jose.Ibarra@asu.edu, Arizona State University
  * Modified on September 10, 2013 and after into 2014
 
+Variables here represent the state of the application.
+
   Linted on April 7, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
 
  */

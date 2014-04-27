@@ -2,6 +2,9 @@
  *  @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
  created on November 25, 2013 ane edited into 2014
 
+ Updates the name wordle based on the method. The method name indicates the wordle
+ type that is updated.
+
  Linted on April 7, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
  */
  
@@ -185,20 +188,45 @@ function updateSimilarIncomeWordleForTool(nametype) {
 	if(nametype == "surname"){
 		positionWordleLoading();
 		$("#loadingsurnamewordle").show();
+
 		scriptLocation = state.serviceBase + "services/surname/incomeToolWordle?callback=?";
-		configuredData = {
-			limit : 100,
-			bin1 : distributionToolData[0],
-			bin2 : distributionToolData[1],
-			bin3 : distributionToolData[2],
-			bin4 : distributionToolData[3],
-			bin5 : distributionToolData[4],
-			bin6 : distributionToolData[5],
-			bin7 : distributionToolData[6],
-			bin8 : distributionToolData[7],
-			bin9 : distributionToolData[8],
-			bin10 : distributionToolData[9]
-		};
+
+		if($("#incomeDataType").val() == "census"){
+			configuredData = {
+					limit : 100,
+					type : "census",
+					bin1 : distributionToolData[0],
+					bin2 : distributionToolData[1],
+					bin3 : distributionToolData[2],
+					bin4 : distributionToolData[3],
+					bin5 : distributionToolData[4],
+					bin6 : distributionToolData[5],
+					bin7 : distributionToolData[6],
+					bin8 : distributionToolData[7],
+					bin9 : distributionToolData[8],
+					bin10 : distributionToolData[9]
+				};
+		}
+		else if($("#incomeDataType").val() == "zillow"){
+			configuredData = {
+					limit : 100,
+					type : "zillow",
+					bin1 : distributionToolData[0],
+					bin2 : distributionToolData[1],
+					bin3 : distributionToolData[2],
+					bin4 : distributionToolData[3],
+					bin5 : distributionToolData[4],
+					bin6 : distributionToolData[5],
+					bin7 : distributionToolData[6],
+					bin8 : distributionToolData[7],
+					bin9 : distributionToolData[8],
+					bin10 : distributionToolData[9]
+				};
+		}
+		else{
+			return;
+		}
+		
 	}
 	else if (nametype == "forename"){
 		scriptLocation = state.serviceBase + "services/ForenameIncomeWordle?callback=?";
@@ -310,14 +338,139 @@ function updateSimilarIncomeWordleForTool(nametype) {
 	});
 }
 
-function updateSimilarIncomeWordle(nametype) {
+function updateSimilarCensusIncomeWordle(nametype) {
 	"use strict";
 	var scriptLocation;
 	var configuredData;
 	if(nametype == "surname"){
 		positionWordleLoading();
 		$("#loadingsurnamewordle").show();
-		scriptLocation = state.serviceBase + "services/surname/incomeWordle?callback=?";
+		scriptLocation = state.serviceBase + "services/surname/censusIncomeWordle?callback=?";
+		configuredData = {
+			surname : state.kdeSurname,
+			limit : 100
+		};
+	}
+	else if (nametype == "forename"){
+		scriptLocation = state.serviceBase + "services/ForenameIncomeWordle?callback=?";
+		configuredData = {
+			forename : state.kdeForename,
+			limit : 100
+		};
+	}
+		
+	$.ajax(scriptLocation, {
+		data: configuredData,
+		dataType: "jsonp",
+
+		error: function (jqXHR, textStatus, errorThrown) {
+			 //do something when error...
+			 console.log(errorThrown);
+		},
+		success: function (data, textStatus, jqXHR) {
+			$("#wordleLegend").show();
+			if(data === null || typeof(data) == "undefined" || data.length < 1){
+				if (document.getElementById("wordleSVG")) {
+				 var el = document.getElementById("wordleSVG");
+				 el.parentNode.removeChild(el);
+				}
+				if(nametype == "surname"){
+					$("#surnameWordleChart").width(0);
+					$("#surnameWordleChart").height(0);
+				}
+				else if (nametype == "forename"){
+					$("#forenameWordleChart").width(0);
+					$("#forenameWordleChart").height(0);
+				}
+				return;
+			}
+			var width;
+			var height;
+			if(nametype == "surname"){
+				$("#surnameWordleChart").width(500);
+				$("#surnameWordleChart").height(393);
+				width = $("#surnameWordleChart").width();
+				height = $("#surnameWordleChart").height();
+			}
+			else if (nametype == "forename"){
+				$("#forenameWordleChart").width(500);
+				$("#forenameWordleChart").height(393);
+				width = $("#forenameWordleChart").width();
+				height = $("#forenameWordleChart").height();
+			}
+			
+			if (document.getElementById("wordleSVG")) {
+				 var ele = document.getElementById("wordleSVG");
+				 ele.parentNode.removeChild(ele);
+			}
+			
+
+			wordleMin = data[0].closeness;
+			wordleMax = data[0].closeness;
+
+			data.forEach(function(d) {
+				if(d.closeness < wordleMin){
+					wordleMin = d.closeness;
+				}
+				else if(d.closeness > wordleMax){
+					wordleMax = d.closeness;
+				}
+			});
+
+			//range from min closeness to max closeness
+			//this is an inverse scale so smaller closeness means they are more similar
+			//thus the text size will be bigger
+			var fontSizes = [];
+			var fontDifference = (maxFontSize-minFontSize) / (numWordleBins-1);
+			for(var i =0; i < numWordleBins; i++){
+				fontSizes[i] = i*fontDifference+minFontSize;
+			}
+		
+			var x = d3.scale.linear()
+				.domain([wordleMax, wordleMin])
+				.range([wordleMin, wordleMax]);
+			data.forEach(function(d) {
+				d.closeness = x(d.closeness);
+				d.fontSize = generateWordSize(d, wordleMax, wordleMin, fontSizes);
+			});
+			
+
+			if(nametype == "surname"){
+				d3.layout.cloud().size([width, height]).timeInterval(10).padding(wordPadding).words(data)
+				.text(function(d){
+					return d.name;
+				})
+				.rotate(function() {
+					return 0;
+				}).font("Impact")
+					.fontSize(function(d){
+						return d.fontSize;
+				}).on("end", drawSurnameWordle).start();
+			}
+			else if (nametype == "forename"){
+				d3.layout.cloud().size([width, height]).timeInterval(10).padding(wordPadding).words(data)
+				.text(function(d){
+					return d.name;
+				})
+				.rotate(function() {
+					return 0;
+				}).font("Impact")
+					.fontSize(function(d){
+						return d.fontSize;
+				}).on("end", drawForenameWordle).start();
+			}
+		}
+	});
+}
+
+function updateSimilarZillowIncomeWordle(nametype) {
+	"use strict";
+	var scriptLocation;
+	var configuredData;
+	if(nametype == "surname"){
+		positionWordleLoading();
+		$("#loadingsurnamewordle").show();
+		scriptLocation = state.serviceBase + "services/surname/zillowIncomeWordle?callback=?";
 		configuredData = {
 			surname : state.kdeSurname,
 			limit : 100

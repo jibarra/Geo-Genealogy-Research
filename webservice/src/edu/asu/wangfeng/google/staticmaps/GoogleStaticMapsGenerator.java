@@ -1,3 +1,10 @@
+/*
+ * @author Feng Wang
+ * © Arizona State University 2014
+ * 
+ * Class to create a static google map.
+ */
+
 package edu.asu.wangfeng.google.staticmaps;
 
 import java.awt.geom.Point2D;

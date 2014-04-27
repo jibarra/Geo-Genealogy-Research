@@ -1,3 +1,12 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Stores information about a name and its income
+ * range.
+ */
+
 package edu.asu.joseibarra.scripts.resources;
 
 public class NameRange {

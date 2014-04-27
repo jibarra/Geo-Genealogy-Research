@@ -1,4 +1,16 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Generates a histogram of a user's income
+ * based on census tract data. This is no
+ * longer used as d3.js does this for us now and
+ * we are using a different data set.
+ */
+
 package edu.asu.joseibarra.scripts.name;
+
 
 import java.awt.Color;
 import java.awt.Font;
@@ -76,6 +88,9 @@ public class IncomeHistogram extends WFQuery{
 		return money;
 	}
 	
+	/*
+	 * Generates a histogram based on an inputted name.
+	 */
 	public void calculateHistogram(String name, String nameType) throws IOException{
 		
 		Connection connection = null;

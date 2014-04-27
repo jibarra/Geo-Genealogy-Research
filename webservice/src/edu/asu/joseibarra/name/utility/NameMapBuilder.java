@@ -1,3 +1,13 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Generates a static image of for a heatmap file.
+ * This will allow portability of the heatmap, instead of
+ * a basic image lay over.
+ */
+
 package edu.asu.joseibarra.name.utility;
 
 import java.awt.Graphics2D;

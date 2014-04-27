@@ -1,3 +1,23 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Generates the income ranges for a name. This can query
+ * zillow or the census data.
+ * 
+ * For zillow, it can query
+ * the existing zillow data that's precomputed or do a
+ * new query for new data. The precomputed is faster.
+ * 
+ * For census, it will query the precomputed averages for
+ * a name within our database.
+ * 
+ * It also has methods to do computations to generate the
+ * incomes for all names, but this has since been moved to
+ * a threaded class.
+ */
+
 package edu.asu.joseibarra.name.utility;
 
 import java.io.BufferedInputStream;
@@ -11,6 +31,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Vector;
 
@@ -22,6 +43,7 @@ import edu.asu.joseibarra.geo.LatLng;
 import edu.asu.joseibarra.services.WFQuery;
 import edu.asu.joseibarra.utility.IncomeSimilarity;
 import edu.asu.joseibarra.zillow.ZillowQuery;
+import edu.asu.joseibarra.zillow.ZillowQuery.ZipCodeNotFoundException;
 
 public class NameIncome extends WFQuery{
 //public class NameIncome{
@@ -37,6 +59,51 @@ private static final int zillowBinSize = 50000;
 	
 	public double[] queryIncomeRangeForename(String forename, String incomeType) throws NamingException{
 		return queryIncomeRangeName("forename", forename);
+	}
+	
+	public double[] queryPrecomputeIncomeRangeNameZillow(String name, String nameType){
+		double incomes[] = new double[10];
+		
+		name = name.toUpperCase();
+		
+		Connection connection = null;
+		String sql;
+		PreparedStatement statement = null;
+		ResultSet resultset = null;
+		
+		try {
+			connection = connectDatabase();
+			
+			String selectSQL = "SELECT income_range_avg_1, income_range_avg_2, income_range_avg_3, "
+					+ "income_range_avg_4, income_range_avg_5, income_range_avg_6, income_range_avg_7, "
+					+ "income_range_avg_8, income_range_avg_9, income_range_avg_10 "
+					+ "FROM " + nameType + "_zillow_income_ranges_avg WHERE "
+					+ nameType + "=?";
+
+			statement = connection.prepareStatement(selectSQL, java.sql.ResultSet.TYPE_FORWARD_ONLY,
+					java.sql.ResultSet.CONCUR_READ_ONLY);
+
+			statement.setString(1, name);
+			
+			resultset = statement.executeQuery();
+			
+			while (resultset.next()) {
+				for(int i = 0; i < incomes.length; i++){
+					incomes[i] = resultset.getDouble(i+1);
+				}
+			}
+			resultset.close();
+			statement.close();
+			connection.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} 
+		catch (NamingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return incomes;
 	}
 	
 	/*
@@ -61,6 +128,7 @@ private static final int zillowBinSize = 50000;
 		ResultSet resultset = null;
 		
 		try {
+//			connection = connectDatabase("phonebook", "root", "password");
 			connection = connectDatabase();
 			//SQL LOCATED HERE
 			sql = "select postcode from phonebook where " + nameType + "=? and latitude between ? and ? and longitude between ? and ?";
@@ -94,30 +162,41 @@ private static final int zillowBinSize = 50000;
 			resultset.close();
 			statement.close();
 			connection.close();
-		} catch (NamingException e) {
+		}
+		catch (NamingException e) {
 			e.printStackTrace();
-		} catch (SQLException e) {
+		} 
+		catch (SQLException e) {
+			
 			e.printStackTrace();
 		}
 		
 		Vector<Integer> incomeVec = new Vector<Integer>();
-		int max = 0;
-		int min = 999999999;
+//		int max = 0;
+//		int min = 999999999;
 		int count = 0;
 		double [] bins = new double[10];
+		Arrays.fill(bins, 0.0);
 		//Get the income value for each zip code found
 		for(int i = 0; i < zipVec.size(); i++){
-			Integer value = zillow.getZipCodeValue(zipVec.elementAt(i));
+			Integer value;
+			try{
+				value = zillow.getZipCodeValue(zipVec.elementAt(i));
+			}
+			catch(ZipCodeNotFoundException ex){
+				continue;
+			}
+			
 			if(value != null && value > 0){
 				incomeVec.add(value);
-				if(max < value){
-					max = value;
-				}
-				if(min > value){
-					min = value;
-				}
+//				if(max < value){
+//					max = value;
+//				}
+//				if(min > value){
+//					min = value;
+//				}
 				int index;
-				if(value > 449999){
+				if(value > 400000){
 					if(value < 500000){
 						index = 8;
 					}
@@ -135,6 +214,9 @@ private static final int zillowBinSize = 50000;
 		}
 		
 		for(int i = 0; i < bins.length; i++){
+			if(Double.isNaN(bins[i])){
+				bins[i] = 0;
+			}
 			bins[i] = (bins[i] / count) * 100;
 		}
 		

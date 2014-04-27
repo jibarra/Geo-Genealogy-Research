@@ -1,6 +1,12 @@
 /* Modified by Jose Ibarra
+ * 
+ * The class allows conversions from earth coordinates
+ * to google coordinates. ie Latitude/longitude to pixel
+ * coordinates
+ * 
  * Added functionality for proper Google Map Coordinate to Lat
  * Long conversion
+ * 
  */
 
 package edu.asu.joseibarra.geo;

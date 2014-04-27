@@ -1,6 +1,8 @@
 /** @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
  created in February 2014 ane edited into 2014
 
+ All legend creation is stored here. The method names represent the legend created.
+
  Linted on April 8, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
 */
 
@@ -192,9 +194,9 @@ function generateIncomeLegend(){
 function generateIncomeZillowLegend(){
 	"use strict";
 	var numBins = 6;
-	var incomeEdges = ["0%", "16.67%", "33.33%", "50%", "66.67%", "38.33%", "100%"];
-	var dimensions = {top: 18, right: 38, bottom: 10, left: 10},
-	width = 83 - dimensions.left - dimensions.right,
+	var incomeEdges = ["0%", "4%", "8%", "12%", "16%", "20%", "20+%"];
+	var dimensions = {top: 18, right: 30, bottom: 10, left: 10},
+	width = 75 - dimensions.left - dimensions.right,
 	height = 125 - dimensions.top - dimensions.bottom,
 	barWidth = width/numBins;
 	var barHeight = height/numBins;

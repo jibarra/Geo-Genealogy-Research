@@ -3,6 +3,8 @@
  * @author Jose Ibarra, Jose.Ibarra@asu.edu, Arizona State University
  * Modified on September 10, 2013 and after into 2014
 
+ General queries for the map generation to the web service.
+
   Linted on April 7, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
 
  */

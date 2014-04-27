@@ -1,3 +1,13 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * This class is the parent class for most classes that need to connect to
+ * the database. Inherit this class to connect to a database but only
+ * for methods used on a server.
+ */
+
 package edu.asu.joseibarra.services;
 
 import java.sql.Connection;

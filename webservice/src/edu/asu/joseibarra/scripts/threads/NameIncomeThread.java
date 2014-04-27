@@ -1,3 +1,16 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Threaded class. Generates the incomes for
+ * names based on the Census income tract data, separating
+ * it into bins (10) also based on the Census income data.
+ * 
+ * Supports forenames but can be changed to support surnames
+ * relatively easily.
+ */
+
 package edu.asu.joseibarra.scripts.threads;
 
 import java.io.BufferedInputStream;
@@ -16,6 +29,7 @@ import java.util.Vector;
 
 public class NameIncomeThread extends Thread{
 	
+	//List of names to iterate through.
 	LinkedList<String> currentNameList;
 	
 	public NameIncomeThread(LinkedList<String> nameList) {
@@ -32,12 +46,20 @@ public class NameIncomeThread extends Thread{
 		}
 	}
 	
+	//Synchronized method to iterate through the list and
+	//ensure methods don't do teh same name.
 	public synchronized String getName(LinkedList<String> list){
 		if(list.isEmpty())
 			return null;
 		return list.poll();
 	}
 	
+	/*
+	 * Creates all the income ranges for all inputted forenames.
+	 * Gets a count of the forenames in the phonebook then
+	 * Gets an average of their income bins from the census.
+	 * Stores the result within another table for quicker access.
+	 */
 	public void createAllIncomeRangesForename() throws SQLException, IOException{
 	    Connection connectionSelect = null;
 	    Connection connectionSelectCheck = null;

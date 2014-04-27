@@ -1,3 +1,11 @@
+/*
+ * @author Fang Weng
+ * © Arizona State University 2014
+ * 
+ * Class to store the return bean for services.
+ * Stores the return filename(image) and url
+ */
+
 package edu.asu.wangfeng.service.netbeans;
 
 public class BuildResultBean {

@@ -37,8 +37,10 @@ function onClickShowKDE(nametype) {
 				updateSimilarMapWordle(nametype, "l2");
 			else if($("#surnameWordleType").val() == "core")
 				updateSimilarMapWordle(nametype, "core");
-			else if($("#surnameWordleType").val() == "income")
-				updateSimilarIncomeWordle(nametype);
+			else if($("#surnameWordleType").val() == "censusIncome")
+				updateSimilarCensusIncomeWordle(nametype);
+			else if($("#surnameWordleType").val() == "zillowIncome")
+				updateSimilarZillowIncomeWordle(nametype);
 			else if($("#surnameWordleType").val() == "distributiontool")
 				updateSimilarIncomeWordleForTool(nametype);
 		}
@@ -56,7 +58,7 @@ function onClickShowKDE(nametype) {
 			if($("#forenameWordleType").val() == "regularmap")
 				updateSimilarMapWordle(nametype);
 			else if($("#forenameWordleType").val() == "income")
-				updateSimilarIncomeWordle(nametype);
+				updateSimilarCensusIncomeWordle(nametype);
 		}
 	}
 }

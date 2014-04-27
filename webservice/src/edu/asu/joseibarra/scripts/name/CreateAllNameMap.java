@@ -1,3 +1,17 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Creates a representation of the population of the US,
+ * based on a pre specified zoom level and latlng to make 
+ * an adequate resolution. The image will match the size 
+ * of the maps on the webpage. Also has methods to 
+ * generate maps of the United States overall, like
+ * the distinct position of people and a heatmap of
+ * the US
+ */
+
 package edu.asu.joseibarra.scripts.name;
 
 import java.awt.Point;
@@ -51,11 +65,14 @@ public class CreateAllNameMap extends WFQuery{
 //	    outFile.close();
 //	    outFile = null;
 		CreateAllNameMap allNames = new CreateAllNameMap();
-		allNames.queryName("*", new LatLng(22.75592037564069, -131.83937118749998), new LatLng(51.454006703387115, -62.31788681249998), 
-				new LatLng(37.1049635395139, -97.73780868749998), 776, 419, 4, "surname", "C:\\Users\\jlibarr1\\Desktop\\temp", -1);
+		allNames.queryName(new LatLng(22.75592037564069, -131.83937118749998), new LatLng(51.454006703387115, -62.31788681249998), 
+				4);
 //		allNames.createHeatMap();
 	}
 	
+	/*
+	 * Create a heatmap of the united states as a whole.
+	 */
 	public void createHeatMap() throws IOException{
 		InputStream inFile = new FileInputStream("C:\\Users\\jlibarr1\\Desktop\\temp\\valueMap.ser");
 	    InputStream inBuffer = new BufferedInputStream(inFile);
@@ -89,6 +106,9 @@ public class CreateAllNameMap extends WFQuery{
 				new LatLng(51.454006703387115, -131.83937118749998), 4, "C:\\Users\\jlibarr1\\Desktop\\", "");
 	}
 	
+	/*
+	 * Create a map of all the distinct poitns within the United States.
+	 */
 	public void createDistinctMap(String name, LatLng sw, LatLng ne, LatLng center, int width,
 			int height, int zoom, String nameType, String imageDir, int sqlLimit) throws IOException{
 		GoogleMercator mercator = new GoogleMercator();
@@ -142,8 +162,13 @@ public class CreateAllNameMap extends WFQuery{
 		ImageIO.write(image, "png", file);
 	}
 	
-	public void queryName(String name, LatLng sw, LatLng ne, LatLng center, int width,
-			int height, int zoom, String nameType, String imageDir, int sqlLimit) 
+	/*
+	 * Method to generate fixed data sets for the names within the United States.
+	 * Generates large data sets to represent the popuplation throughout the
+	 * United States. It will result in an output of the data set Serialized
+	 * into a file (using the doQuery method)
+	 */
+	public void queryName(LatLng sw, LatLng ne, int zoom) 
 					throws IOException{
 		GoogleMercator mercator = new GoogleMercator();
 		mercator.setZoom(zoom);
@@ -166,6 +191,11 @@ public class CreateAllNameMap extends WFQuery{
 		doQuery(currentChar, lastChar, additional, mercator, topLeft);
 	}
 	
+	/*
+	 * Adds names to the data set of the population of the United States.
+	 * This method loads a file that contains the data set and then adds
+	 * each name it computes to that data set and file again.
+	 */
 	public void doQuery(char currentChar, char lastChar, char addChar, GoogleMercator mercator, Point topLeft) throws IOException{
 		do{
 			Vector<LatLng> coordinateVec = new Vector<LatLng>();

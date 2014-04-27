@@ -1,31 +1,17 @@
-/*
- * @author Jose Ibarra
- * Jose.Ibarra@asu.edu
- * © Arizona State University 2014
- * 
- * Threaded class. Allows for name income comparisons
- * and stores the similarity between names within teh database.
- * Supports forenames and surnames.
- * Similarity is based on l2 norm
- */
-
 package edu.asu.joseibarra.scripts.threads;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Vector;
 
-import com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException;
-
 import edu.asu.joseibarra.scripts.resources.NameRange;
 import edu.asu.joseibarra.utility.IncomeSimilarity;
 
-public class NameIncomeSimilarityThread extends Thread{
+public class ZillowSimilarityThread extends Thread{
 	/*
 	 * Saved data for the name income. This will not change.
 	 */
@@ -36,7 +22,7 @@ public class NameIncomeSimilarityThread extends Thread{
 	 */
 	private LinkedList<NameRange> iterRanges;
 
-	public NameIncomeSimilarityThread(LinkedList<NameRange> savedRanges, LinkedList<NameRange> iterRanges) {
+	public ZillowSimilarityThread(LinkedList<NameRange> savedRanges, LinkedList<NameRange> iterRanges) {
 		
 		this.savedRanges = savedRanges;
 		this.iterRanges = iterRanges;
@@ -56,56 +42,6 @@ public class NameIncomeSimilarityThread extends Thread{
 	}
 	
 	/*
-	 * Compares a forenmae to all other forenames and finds the
-	 * most similar. The comparison information is stored into a database
-	 * table.
-	 */
-	public void compareAndAddForename(){
-		Connection connection = connectDatabase("phonebook", "root", "password");
-		while(!iterRanges.isEmpty()){
-		    NameRange currentRange = getRange(iterRanges);
-		    if(currentRange == null)
-		    	continue;
-		    LinkedList<NameRange> inRanges = (LinkedList<NameRange>)savedRanges.clone();
-		    System.out.println("Currently on: " + currentRange.name);
-		    IncomeSimilarity[] similar = null;
-			try {
-				similar = findSimilarNames(currentRange, inRanges);
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		    
-			String sql;
-			PreparedStatement statement = null;
-		    
-			//add the list to the database
-			sql = "INSERT INTO similar_incomes_surname (forename, forenameSimilar, incomeSimilarity) VALUES(?,?,?)";
-			
-			for(int i = 0; i < similar.length; i++){
-				try {
-					statement = connection.prepareStatement(sql, java.sql.ResultSet.TYPE_FORWARD_ONLY,
-							java.sql.ResultSet.CONCUR_READ_ONLY);
-					statement.setString(1, currentRange.name);
-					statement.setString(2, similar[i].name);
-					statement.setDouble(3, similar[i].similarity);
-					
-					statement.executeUpdate();
-					
-				} catch (SQLException e) {
-					e.printStackTrace();
-				} 
-			}
-			try {
-				statement.close();
-				connection.close();
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-	    }
-	}
-	
-	/*
 	 * Compares surnames to all other surnames to find the
 	 * ones with the most similar income. This method will save
 	 * the results to a database table.
@@ -119,21 +55,6 @@ public class NameIncomeSimilarityThread extends Thread{
 		    	continue;
 			String sql;
 			PreparedStatement statement = null;
-
-//			System.out.println("Checking " + currentRange.name);
-//			sql = "SELECT COUNT(*) FROM similar_incomes_surname WHERE surname=?";
-//			ResultSet resultset;
-//			try {
-//				statement = connection.prepareStatement(sql, java.sql.ResultSet.TYPE_FORWARD_ONLY,
-//						java.sql.ResultSet.CONCUR_READ_ONLY);
-//				statement.setString(1, currentRange.name);
-//				resultset = statement.executeQuery();
-//				resultset.next();
-//				if(resultset.getInt(1) > 0)
-//					continue;
-//			} catch (SQLException e1) {
-//				e1.printStackTrace();
-//			}
 			
 		    LinkedList<NameRange> inRanges = (LinkedList<NameRange>)savedRanges.clone();
 		    System.out.println("Currently on: " + currentRange.name);
@@ -146,7 +67,7 @@ public class NameIncomeSimilarityThread extends Thread{
 		    
 		    
 			//add the list to the database
-			sql = "INSERT INTO similar_incomes_surname (surname, surnameSimilar, incomeSimilarity) VALUES(?,?,?)";
+			sql = "INSERT INTO similar_zillow_incomes_surname (surname, surnameSimilar, incomeSimilarity) VALUES(?,?,?)";
 			
 			for(int i = 0; i < similar.length; i++){
 				try {
@@ -175,7 +96,7 @@ public class NameIncomeSimilarityThread extends Thread{
 			e.printStackTrace();
 		}
 	}
-
+	
 	/*
 	 * Finds the similar names based on a base range (compareRange)
 	 * and a linked list of ranges to compare to.
@@ -245,7 +166,6 @@ public class NameIncomeSimilarityThread extends Thread{
 		else{
 			addVector.add(addSpot+1, currentSim);
 		}
-			
 	}
 	
 	/*

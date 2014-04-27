@@ -1,6 +1,10 @@
  // @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
  // created on November 25, 2013 ane edited into 2014
 
+ /*
+ Generates the histogram for the income ranges. This works for census and zillow.
+ */
+
  //Linted on April 7, 2014 using JSHint (https://github.com/jshint/jshint/blob/master/examples/.jshintrc)
 
 var OrRd = {
@@ -35,7 +39,13 @@ var incomeRanges = ["0", "10,000", "10,001", "14,999", "15,000", "24,999", "25,0
 
 var zillowRanges = ["0", "50,000", "50,0001", "100,000", "100,001", "150,000", "150,001", "200,000",
 					"200,001", "250,000", "250,001", "300,000", "300,001", "350,000",
-					"350,001", "400,000", "400,001", "450,000", "500,000+"];
+					"350,001", "400,000", "400,001", "499,999", "500,000+"];
+
+var zillowEdges = ["$0", "$50,000", "$100,000", "$150,000", "$200,000", "$250,000", "$300,000", 
+					"$350,000", "$400,000", "$500,000", "$500,000+"];
+
+var censusEdges = ["$0", "$10,000", "$15,000", "$25,000", "$35,000", "$50,000", "$75,000", 
+					"$100,000", "$150,000", "$200,000", "200,000+"];
 
 String.prototype.toTitleCase = function(){
 	"use strict";
@@ -78,9 +88,9 @@ function generateIncomeDistributionBarZillow(nameType, data){
 	"use strict";
 	var values = data;
 
-	var dimensions = {top: 0, right: 0, bottom: 15, left: 0},
-	width = 400 - dimensions.left - dimensions.right,
-	height = 50 - dimensions.top - dimensions.bottom;
+	var dimensions = {top: 15, right: 25, bottom: 15, left: 5},
+	width = 430 - dimensions.left - dimensions.right,
+	height = 65 - dimensions.top - dimensions.bottom;
 	var svg;
 
 	if(nameType == "surname"){
@@ -105,7 +115,7 @@ function generateIncomeDistributionBarZillow(nameType, data){
 	var bar = createHistogram(svg);
 	createHistogramBar(bar, width, height, values, zillowRanges, zillowRangeMax);
 	createHistogramBarAppendTitle(bar, zillowRanges, values);
-	appendHistogramLabels(svg, zillowRanges, dimensions, width, height);
+	appendHistogramLabels(svg, zillowEdges, dimensions, width, height);
 	
 	if(nameType == "surname"){
 		$("#surnamehistogram").show();
@@ -124,9 +134,9 @@ function generateIncomeDistributionBar(nameType, data){
 	"use strict";
 	var values = data;
 
-	var dimensions = {top: 0, right: 0, bottom: 15, left: 0},
-	width = 400 - dimensions.left - dimensions.right,
-	height = 50 - dimensions.top - dimensions.bottom;
+	var dimensions = {top: 15, right: 25, bottom: 15, left: 5},
+	width = 430 - dimensions.left - dimensions.right,
+	height = 65 - dimensions.top - dimensions.bottom;
 	var svg;
 
 	if(nameType == "surname"){
@@ -151,7 +161,7 @@ function generateIncomeDistributionBar(nameType, data){
 	var bar = createHistogram(svg);
 	createHistogramBar(bar, width, height, values, incomeRanges, histogramRangeMax);
 	createHistogramBarAppendTitle(bar, incomeRanges, values);
-	appendHistogramLabels(svg, incomeRanges, dimensions, width, height);
+	appendHistogramLabels(svg, censusEdges, dimensions, width, height);
 	
 	if(nameType == "surname"){
 		$("#surnamehistogram").show();
@@ -212,19 +222,39 @@ function createHistogramBarAppendTitle(bar, ranges, values){
 }
 
 function appendHistogramLabels(svg, ranges, dimensions, width, height){
-	var minLabel = "$" + ranges[0];
-	svg.append("text")
-		.attr("class", "axisLabel")
-		.attr("x", 0)
-		.attr("y", height + dimensions.top + 10)
-		.text(minLabel);
+	// var minLabel = ranges[0];
+	// svg.append("text")
+	// 	.attr("class", "axisLabel")
+	// 	.attr("x", 0-dimensions.left)
+	// 	.attr("y", height + dimensions.bottom)
+	// 	.text(minLabel);
 
-	var maxLabel = "$" + ranges[ranges.length-1];
-	svg.append("text")
-		.attr("class", "axisLabel")
-		.attr("x", width-maxLabel.width("10px sans-serif"))
-		.attr("y", height + dimensions.top + 10)
-		.text(maxLabel);
+	var binWidth=(width-(ranges.length-1))/(ranges.length-1);
+
+	var i;
+	for(i = 0; i < ranges.length; i++){
+		if(i % 2 == 0){
+			svg.append("text")
+				.attr("class", "axisLabel")
+				.attr("x", (dimensions.left/2)+binWidth*i-(ranges[i].width("10px sans-serif")/2))
+				.attr("y", height + dimensions.bottom-3)
+				.text(ranges[i]);
+		}
+		else if(i % 2 == 1){
+			svg.append("text")
+				.attr("class", "axisLabel")
+				.attr("x", (dimensions.left/2)+binWidth*i-(ranges[i].width("10px sans-serif")/2))
+				.attr("y", -3)
+				.text(ranges[i]);
+		}
+	}
+
+	// var maxLabel = ranges[ranges.length-1];
+	// svg.append("text")
+	// 	.attr("class", "axisLabel")
+	// 	.attr("x", width-maxLabel.width("10px sans-serif")+dimensions.right)
+	// 	.attr("y", height + dimensions.bottom)
+	// 	.text(maxLabel);
 }
 
 function incomeRangesQuery(nameType, incomeType){
@@ -238,8 +268,6 @@ function incomeRangesQuery(nameType, incomeType){
 	if(typeof(incomeType) == "undefined" || incomeType === null){
 		return;
 	}
-
-	
 
 	if(nameType == "surname"){
 		if(typeof (state.kdeSurname) == "undefined" || state.kdeSurname === null){
@@ -319,7 +347,6 @@ function incomeRangesQueryImp(configuredData, nameType, incomeType){
 			alert("Error");
 		},
 		success : function(data, textStatus, jqXHR) {
-			console.log(data);
 			state.surnameIncomeRanges = data;
 			if(incomeType == "census"){
 				generateIncomeDistributionBar(nameType, data);

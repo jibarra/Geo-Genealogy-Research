@@ -1,3 +1,13 @@
+/*
+ * @author Jose Ibarra
+ * Jose.Ibarra@asu.edu
+ * © Arizona State University 2014
+ * 
+ * Class to store the informatino about a
+ * census tract, including the percentages
+ * for the Census bins and its tract id
+ */
+
 package edu.asu.joseibarra.scripts.resources;
 
 public class CensusTractIncomePercent {

@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+
 <!--
  @author Jose Ibarra, Arizona State University, Jose.Ibarra@asu.edu
  created on November 25, 2013 and edited into 2014
 -->
+
 <html lang="en">
 <head>
   <!-- meta properties for facebook and social media crawlers -->
@@ -81,8 +83,11 @@
       else if($('#surnameWordleType').val() == 'core'){
         updateSimilarMapWordle(nameType, 'core');
       }
-      else if($('#surnameWordleType').val() == 'income'){
-        updateSimilarIncomeWordle(nameType);
+      else if($('#surnameWordleType').val() == 'censusIncome'){
+        updateSimilarCensusIncomeWordle(nameType);
+      }
+      else if($('#surnameWordleType').val() == 'zillowIncome'){
+        updateSimilarZillowIncomeWordle(nameType);
       }
       else if($('#surnameWordleType').val() == 'distributiontool'){
         updateSimilarIncomeWordleForTool(nameType);
@@ -120,11 +125,18 @@
 
   function incomeTypeSelected(nameType){
     incomeRangesQuery("surname", $('#incomeDataType').val());
+
+    if($('#surnameWordleType').val() == 'distributiontool'){
+      updateSimilarIncomeWordleForTool(nameType);
+    }
+    
     if($('#incomeDataType').val() == "census"){
+      $('#incomename').text("Income");
       $("#incomeLegend").show();
       $("#incomeZillowLegend").hide();
     }
     else if($('#incomeDataType').val() == "zillow"){
+      $('#incomename').text("Zindex®");
       $("#incomeLegend").hide();
       $("#incomeZillowLegend").show();
     }
@@ -179,12 +191,15 @@
       <div id="surnamehistogram">
         <div style="float:left;margin-top:30px;">
           <div id="histogramLabel">
-            <b>Income Distribution:</b>
+            <b><span id="incomename">Income</span> Distribution:</b>
             <span class="helpdialog">?
               <span>The colored histogram displays the income<br />
-              distribution for the inputted name. The bins<br />
-              represent the Census's distribution bins for<br />
-              census tract areas. Hover over a bin to see<br />
+              distribution for the inputted name. The<br />
+              <b>Census Data</b> shows the income data based<br />
+              on Census income tracts. The <b>Zillow Data</b><br />
+              shows the Zindex® data based on zip code.<br />
+              The bins represent the selected income's<br />
+              distribution bins. Hover over a bin to see<br />
               the bin's range and the specific percentage<br />
               of people within that bin's range. Click on a<br />
               range to find similar names according to that<br />
@@ -280,7 +295,8 @@
         <select name="surnameWordleType" id="surnameWordleType" onchange="wordleTypeChanged('surname')">
           <option value="core">Core Map Similarity</option>
           <option value="l2">L2 Map Similarity</option>
-          <option value="income">Income Similarity</option>
+          <option value="censusIncome">Census Income Similarity</option>
+          <option value="zillowIncome">Zillow Income Similarity</option>
           <option value="distributiontool">Distribution Tool Similarity</option>
         </select>
         <!-- The word cloud output -->
@@ -323,10 +339,27 @@
           the question mark.
         </span>
       </span>
-      to view help and descriptions about a part of the page. Best viewed at 1600x900 resolution or higher, in Chrome (Version 33 or higher) or Firefox (Version 24 or higher).
+      to view help and descriptions about a part of the page.
+      <br />
+      Please view our <a href="http://youtu.be/pANl4YJ1C5I" target="_blank">YouTube video</a> for a short demo of this page.
+      <br />
+      This page is best viewed at 1600x900 resolution or higher, in Chrome (Version 33 or higher) or Firefox (Version 24 or higher).
     </div>
     <br />
-    <div style="font-size: 0.7em; clear:both;">Copyright © 2014 Arizona State University</div>
+    <div style="font-size: 0.7em; clear:both;">
+      Application developed by Feng Wang and Jose Ibarra, researchers at Arizona State University's <a href="http://vader.lab.asu.edu/">VADER Lab</a>.
+      <br />
+      Copyright © 2014 Arizona State University
+    </div>
+    <br />
+    <div style="font-size: 0.7em; clear:both;">Zillow data (including Zindex® and Zestimate® data):
+      <br />
+      © Zillow, Inc., 2006-2013. Use is subject to <a href="http://www.zillow.com/corp/Terms.htm" target="_blank">Terms of Use</a>.
+      <br />
+      <a href="http://www.zillow.com/zestimate/" target="_blank">What's a Zestimate?</a>
+      <br />
+      <a href="http://www.zillow.com/" target="_blank"><img src="http://www.zillow.com/widgets/GetVersionedResource.htm?path=/static/logos/Zillowlogo_150x40_rounded.gif" width="150" height="40" alt="Real Estate on Zillow" /></a>
+    </div>
   </div>
   
 
